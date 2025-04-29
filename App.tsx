@@ -2,11 +2,17 @@ import React from "react";
 
 import { View, StyleSheet } from "react-native";
 
+import Button from './src/components/button'
+import Input from "./src/components/input";
+
 
 export default function App() {
   return (
     <View style={styles.container}>
-      
+
+      <Input />
+      <Input />
+      <Button />
       
     </View>
   );
