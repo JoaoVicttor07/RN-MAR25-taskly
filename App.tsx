@@ -1,21 +1,23 @@
-import React from "react";
+import React from 'react';
+import { SafeAreaView, FlatList, Text, ListRenderItemInfo } from 'react-native';
+import { AppStyles } from './AppStyles';
 
-import { View, StyleSheet } from "react-native";
+const data: string[] = ['Amanda Meneghini', 'Jailson Neiva', 'João Victor', 'Diogo', 'Camila'];
 
-
-export default function App() {
+const App: React.FC = () => {
+  const renderItem = ({item}: ListRenderItemInfo<string>) => {
+    return <Text style={AppStyles.equipe}>{item}</Text>;
+  };
   return (
-    <View style={styles.container}>
-      
-      
-    </View>
+    <SafeAreaView style={AppStyles.container}>
+      <Text style={AppStyles.text}>CLUSTER SQUAD</Text>
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => index.toString()}
+      />
+    </SafeAreaView>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#F4F4F4',
-    flex: 1,
-    padding: 32
-  }
-});
+export default App;
