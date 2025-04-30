@@ -1,15 +1,21 @@
-import React, { useState } from 'react'; 
-import { View, Text, Image, TouchableOpacity } from 'react-native'; 
-import { useNavigation } from '@react-navigation/native'; 
-import styles from './home.styles';
+// PÁGINA INICIAL - HOME
+
+import React, {useState} from 'react';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import styles from './style';
 import Button from '../../components/button';
-import CreateTaskModal from './CreateTaskModal';
+import CreateTaskModal from './Modal/Index';
 
 const Home: React.FC = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
 
-  const handleCreateTask = (task: { title: string; description: string; deadline: string }) => {
+  const handleCreateTask = (task: {
+    title: string;
+    description: string;
+    deadline: string;
+  }) => {
     console.log('handleCreateTask chamada com:', task);
     setModalVisible(false);
   };
@@ -35,7 +41,7 @@ const Home: React.FC = () => {
       <View style={styles.header}>
         <Text style={styles.title}>TASKLY</Text>
         <Image
-          source={require('../../assets/images/Ellipse1.png')}
+          source={require('../../Assets/Images/Ellipse1.png')}
           style={styles.avatar}
         />
       </View>
@@ -43,7 +49,7 @@ const Home: React.FC = () => {
       {/* Smiles Sad */}
       <View style={styles.containerNoTask}>
         <Image
-          source={require('../../assets/images/SmileySad.png')}
+          source={require('../../Assets/Images/SmileySad.png')}
           style={styles.smileSad}
           resizeMode="contain"
         />
@@ -51,7 +57,7 @@ const Home: React.FC = () => {
 
         {/* Botão para Criar Tarefa */}
         <Button
-          title='Criar Tarefa'
+          title="Criar Tarefa"
           backgroundColor="#5B3CC4"
           borderColor="#5B3CC4"
           borderWidth={0}
@@ -62,7 +68,9 @@ const Home: React.FC = () => {
 
       {/* Link para Voltar */}
       <View style={styles.containerNoTask}>
-        <TouchableOpacity onPress={handleGoBack} style={styles.buttonNavigation}>
+        <TouchableOpacity
+          onPress={handleGoBack}
+          style={styles.buttonNavigation}>
           <Text style={styles.buttonTextNavigation}>Voltar</Text>
         </TouchableOpacity>
       </View>

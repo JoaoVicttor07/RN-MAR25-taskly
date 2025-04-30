@@ -1,29 +1,27 @@
 import { StyleSheet } from 'react-native';
+import Fonts from '../../../Theme/fonts';
 
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(17, 24, 39, 0.7)', 
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalContent: {
-    width: '90%',
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 20,
+    marginHorizontal: 1,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 24,
   },
   modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 15,
+    ...Fonts.Roboto50018,
     textAlign: 'left',
   },
   label: {
-    marginTop: 10,
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#000',
+    marginTop: 12,
+    ...Fonts.Roboto40012,
+    color: '#1E1E1E',
   },
   input: {
     borderWidth: 1,
@@ -37,9 +35,9 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   error: {
-    color: 'red',
-    fontSize: 12,
-    marginTop: 4,
+    color: '#E63946',
+    ...Fonts.Roboto40012,
+    marginTop: 7,
   },
   modalButtons: {
     flexDirection: 'row',
@@ -48,27 +46,29 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#5B3CC4',
-    width: '48%',
+    borderRadius: 8,
+    borderWidth: 2,   
+    borderColor: '#5B3CC4', 
+    width: 134.5,
+    height: 37,
     alignItems: 'center',
+    justifyContent:'center'
   },
   cancelText: {
     color: '#5B3CC4',
-    fontWeight: 'bold',
+    ...Fonts.Roboto50018,
   },
   createButton: {
     backgroundColor: '#5B3CC4',
-    padding: 10,
-    borderRadius: 5,
-    width: '48%',
+    borderRadius: 8,
+    width: 134.5,
+    height: 37,
     alignItems: 'center',
+    justifyContent:'center'
   },
   createText: {
     color: '#fff',
-    fontWeight: 'bold',
+    ...Fonts.Roboto50018,
   },
 });
 

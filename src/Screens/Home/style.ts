@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 
-import Fonts from '../../theme/Font.ts';
+import Fonts from '../../Theme/fonts.ts';
 
 const stylesHome = StyleSheet.create({
   container: {
@@ -19,9 +19,9 @@ const stylesHome = StyleSheet.create({
   },
   title: {
     ...Fonts.Roboto70024,
-    color: '#000',  
-    fontFamily:'Arial',
-},
+    color: '#000',
+    fontFamily: 'Arial',
+  },
   avatar: {
     width: 50,
     height: 50,
@@ -42,7 +42,7 @@ const stylesHome = StyleSheet.create({
 
   textNoTask: {
     color: '#AAAAAA',
-    ...Fonts.Roboto400, //importa todos argumentos de fonts
+    ...Fonts.Roboto40016, //importa todos argumentos de fonts
     marginBottom: 32,
   },
 
