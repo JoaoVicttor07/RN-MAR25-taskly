@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   },
   buttonTextNavigation: {
     color: '#FFF',
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
   },
 });

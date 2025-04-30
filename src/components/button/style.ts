@@ -1,17 +1,17 @@
 import { StyleSheet } from "react-native";
+import Fonts from '../../theme/Font';
 
 const styles = StyleSheet.create({
     button: {
-        
-        height: 50,
-        borderRadius: 7,
+        width:329,
+        height: 47,
+        borderRadius: 8,
         justifyContent: 'center',
         alignItems: 'center'
     },
     text: {
         color: '#FFFFFF',
-        fontSize: 20,
-        fontWeight: 'bold'
+        ...Fonts.Roboto600,
     }
 })
 
