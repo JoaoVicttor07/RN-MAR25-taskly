@@ -1,28 +1,25 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-    container: {
+    container: { 
+        padding: 15,
         width: 120,
         height: 120,
-        borderRadius: 8,
+        borderRadius: 10,
         backgroundColor: '#fff',
-        marginRight: 12,
-        alignItems: 'center',
-        justifyContent: 'center',
-        // sombra leve
         shadowColor: '#000',
-        shadowOpacity: 0.1,
+        shadowOpacity: 0.5,
         shadowRadius: 4,
-        elevation: 2,
+        elevation: 6,
       },
-      icon: {
-        width: 32,
-        height: 32,
-        marginBottom: 8,
+      icon: { 
+       position: 'absolute',
+       bottom: '22%',
+       left: '15%',
       },
       title: {
-        textAlign: 'center',
-        fontSize: 14,
+        fontSize: 15,
+        fontWeight: 'bold',
       },
 })
 
