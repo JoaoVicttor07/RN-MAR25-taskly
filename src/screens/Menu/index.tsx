@@ -1,9 +1,10 @@
 import { View, Text } from "react-native";
+import styles from "./style.ts";
 
 export default function Menu() {
     return (
-        <View>
-            <Text>Tela Menu</Text>
+        <View style={styles.area}>
+            <Text style={styles.areaText}>Tela Menu</Text>
         </View>
     )
 }

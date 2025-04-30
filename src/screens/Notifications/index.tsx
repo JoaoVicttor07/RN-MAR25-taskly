@@ -1,9 +1,11 @@
 import { View, Text } from "react-native";
+import styles from "./style.ts";
 
 export default function Notifications() {
     return (
-        <View>
-            <Text>Tela Notificações</Text>
+        <View style={styles.area}>
+            <Text style={styles.areaText}>Tela Notificações</Text>
         </View>
     )
 }
+
