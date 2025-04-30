@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 
 import Fonts from '../../theme/Font.ts';
 
-const styles = StyleSheet.create({
+const stylesHome = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
@@ -72,4 +72,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default styles;
+export default stylesHome;
