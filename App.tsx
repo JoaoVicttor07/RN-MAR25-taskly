@@ -1,6 +1,7 @@
 import React from 'react';
 import AppNavigator from './src/Navigation/Index'; // Importa a navegação principal
 
+
 const App: React.FC = () => {
   return <AppNavigator />;
 };
