@@ -7,15 +7,18 @@ import Notifications from '../../screens/Notifications';
 import Menu from '../../screens/Menu';
 import TabIcon from '../../components/TabIcon';
 
-import { ImageSourcePropType } from 'react-native';
+import { ImageSourcePropType, Pressable } from 'react-native';
 
 const Tab = createBottomTabNavigator();
+
+const TabBarButton = (props: any) => (
+  <Pressable android_ripple={{ color: 'transparent' }} {...props} />
+);
 interface TabBarIconProps {
   focused: boolean;
   color: string;
   size: number;
 }
-
 
 const createIcon = (iconSource: ImageSourcePropType) => {
   return ({ color, focused }: TabBarIconProps) => (
@@ -47,6 +50,7 @@ export default function BottomTabNavigator() {
             borderTopRightRadius: 12,
           },
           tabBarIconStyle: { marginTop: 20 },
+          tabBarButton: TabBarButton,
         }}
       >
         <Tab.Screen
