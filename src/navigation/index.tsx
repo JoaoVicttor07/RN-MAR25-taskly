@@ -1,3 +1,5 @@
+//AppNavigator
+
 import React from 'react';
 import { View, TouchableOpacity, SafeAreaView, StyleSheet, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
