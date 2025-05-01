@@ -20,8 +20,8 @@ export default function Button({
     borderColor = "#5B3CC4",
     borderWidth = 0,
     textColor = "#FFFFFF",
-    width,
-    height,
+    width = 300,
+    height = 50,
     fontFamily,
     fontWeight = 'bold',
     onPress

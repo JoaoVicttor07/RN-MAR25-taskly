@@ -1,9 +1,9 @@
 import {FlatList, View} from 'react-native';
 import {CarouselActionItem} from '../carouselActionItem';
-import userIcon from '../../assets/icons/User.png';
-import biometryIcon from '../../assets/icons/FingerprintSimple.png';
-import deleteIcon from '../../assets/icons/Trash.png';
-import logoutIcon from '../../assets/icons/SignOut.png';
+import userIcon from '../../Assets/icons/User.png';
+import biometryIcon from '../../Assets/icons/FingerprintSimple.png';
+import deleteIcon from '../../Assets/icons/Trash.png';
+import logoutIcon from '../../Assets/icons/SignOut.png';
 import styles from './style';
 
 const actions = [
@@ -28,7 +28,6 @@ export function CarouselActionList() {
           <CarouselActionItem
             title={item.title}
             icon={item.icon}
-          //  onPress={item.onPress}
           />
         )}
       />
