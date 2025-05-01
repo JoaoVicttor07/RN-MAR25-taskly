@@ -1,19 +1,19 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import Home from '../../Screens/Home/Index';
+import Home from '../../Screens/Home';
 import Notifications from '../../Screens/Notifications';
 import Menu from '../../Screens/Menu';
 import TabIcon from './TabIcon';
 import bottomTabNavigatorStyles from './style';
 
-import { ImageSourcePropType, Pressable } from 'react-native';
+import {ImageSourcePropType, Pressable} from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
 const TabBarButton = (props: any) => (
-  <Pressable android_ripple={{ color: 'transparent' }} {...props} />
+  <Pressable android_ripple={{color: 'transparent'}} {...props} />
 );
 
 interface TabBarIconProps {
@@ -23,12 +23,8 @@ interface TabBarIconProps {
 }
 
 const createIcon = (iconSource: ImageSourcePropType) => {
-  return ({ color, focused }: TabBarIconProps) => (
-    <TabIcon
-      focused={focused}
-      color={color}
-      iconSource={iconSource}
-    />
+  return ({color, focused}: TabBarIconProps) => (
+    <TabIcon focused={focused} color={color} iconSource={iconSource} />
   );
 };
 
@@ -40,13 +36,14 @@ export default function BottomTabNavigator() {
           ...bottomTabNavigatorStyles,
           tabBarButton: TabBarButton,
           headerShown: false,
-        }}
-      >
+        }}>
         <Tab.Screen
           name="Home"
           component={Home}
           options={{
-            tabBarIcon: createIcon(require('../../assets/images/ClipboardText.png')),
+            tabBarIcon: createIcon(
+              require('../../assets/images/ClipboardText.png'),
+            ),
           }}
         />
         <Tab.Screen

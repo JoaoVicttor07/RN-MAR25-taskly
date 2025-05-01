@@ -1,5 +1,5 @@
 import React from 'react';
-import AppNavigator from './src/navigation'; // Importa a navegação principal
+import AppNavigator from './src/Navigation'; // Importa a navegação principal
 
 
 const App: React.FC = () => {

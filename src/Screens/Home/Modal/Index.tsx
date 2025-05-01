@@ -5,8 +5,6 @@ import styles from './style';
 import { isValidDate } from '../../../Utils/validateDate';
 import { TextInputMask } from 'react-native-masked-text';
 
-
-
 interface CreateTaskModalProps {
   visible: boolean;
   onClose: () => void;
