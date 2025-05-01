@@ -2,9 +2,9 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import Home from '../../screens/home/Home';
-import Notifications from '../../screens/Notifications';
-import Menu from '../../screens/Menu';
+import Home from '../../Screens/Home/Index';
+import Notifications from '../../Screens/Notifications';
+import Menu from '../../Screens/Menu';
 import TabIcon from './TabIcon';
 import bottomTabNavigatorStyles from './style';
 
@@ -39,6 +39,7 @@ export default function BottomTabNavigator() {
         screenOptions={{
           ...bottomTabNavigatorStyles,
           tabBarButton: TabBarButton,
+          headerShown: false,
         }}
       >
         <Tab.Screen
