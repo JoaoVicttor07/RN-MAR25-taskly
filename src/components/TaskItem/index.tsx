@@ -7,7 +7,7 @@ export default function TaskItem() {
       <View style={styles.headerTask}>
         <Text style={{...Fonts.Roboto60020}}>Bater o ponto</Text>
         <TouchableOpacity>
-          <Image source={require('../../assets/icons/uncheck-input.png')}/>
+          <Image source={require('../../Assets/icons/uncheck-input.png')}/>
         </TouchableOpacity>
       </View>
       <Text style={Fonts.Roboto40016}>
