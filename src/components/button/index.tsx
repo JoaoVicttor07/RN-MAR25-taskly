@@ -1,4 +1,4 @@
-import { TouchableOpacity, Text, View } from "react-native";
+import { TouchableOpacity, Text, View, TextStyle, DimensionValue } from "react-native";
 import styles from "./style";
 
 interface ButtonProps {
@@ -7,6 +7,10 @@ interface ButtonProps {
     borderColor?: string;
     borderWidth?: number;
     textColor?: string;
+    width?: DimensionValue;
+    height?: DimensionValue;
+    fontFamily?: string;
+    fontWeight?: TextStyle["fontWeight"];
     onPress?: () => void;
 }
 
@@ -16,6 +20,10 @@ export default function Button({
     borderColor = "#5B3CC4",
     borderWidth = 0,
     textColor = "#FFFFFF",
+    width = 300,
+    height = 50,
+    fontFamily,
+    fontWeight = 'bold',
     onPress
 }: ButtonProps) {
     return (
@@ -23,11 +31,11 @@ export default function Button({
             <TouchableOpacity
                 style={[
                     styles.button,
-                    { backgroundColor, borderColor, borderWidth }
+                    { backgroundColor, borderColor, borderWidth, width, height }
                 ]}
                 onPress={onPress}
             >
-                <Text style={[styles.text, { color: textColor }]}>{title}</Text>
+                <Text style={[styles.text, { color: textColor, fontFamily, fontWeight }]}>{title}</Text>
             </TouchableOpacity>
         </View>
     );

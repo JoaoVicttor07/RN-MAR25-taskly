@@ -1,20 +1,30 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native'
 
-const styles = StyleSheet.create({
-    container: {
-        gap: 5
-    },
-    input: {
-        borderColor: "#5B3CC4",
-        borderWidth: 3,
-        borderRadius: 7,
-        height: 50,
-        paddingLeft: 15,
-        color: "#1E1E1E"
-    },
-    erro: {
-        color: "#E63946"
-    }
+export default StyleSheet.create({
+  container: {
+    width: 300,
+    height: 50,
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 14,
+    marginBottom: 4,
+    color: '#333',
+  },
+  input: {
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 2,
+    borderColor: '#6C5CE7',
+    borderRadius: 8,
+    fontSize: 16,
+  },
+  inputError: {
+    
+  },
+  error: {
+    marginTop: 4,
+    color: '#E74C3C',
+    fontSize: 12,
+  },
 })
-
-export default styles

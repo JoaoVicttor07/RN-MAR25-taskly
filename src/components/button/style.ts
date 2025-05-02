@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#FFFFFF',
-    ...Fonts.Roboto600,
+    ...Fonts.Roboto60020,
   },
 });
 
