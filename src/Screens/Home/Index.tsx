@@ -5,7 +5,7 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import styles from './style';
 import Button from '../../components/button';
-import CreateTaskModal from './Modal/index';
+import CreateTaskModal from './Modal/Index';
 
 const Home: React.FC = () => {
   const navigation = useNavigation();
@@ -41,7 +41,7 @@ const Home: React.FC = () => {
       <View style={styles.header}>
         <Text style={styles.title}>TASKLY</Text>
         <Image
-          source={require('../../Assets/Images/Ellipse1.png')}
+          source={require('../../assets/images/Ellipse1.png')}
           style={styles.avatar}
         />
       </View>
@@ -49,7 +49,7 @@ const Home: React.FC = () => {
       {/* Smiles Sad */}
       <View style={styles.containerNoTask}>
         <Image
-          source={require('../../Assets/Images/SmileySad.png')}
+          source={require('../../assets/images/SmileySad.png')}
           style={styles.smileSad}
           resizeMode="contain"
         />
