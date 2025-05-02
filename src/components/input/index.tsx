@@ -74,7 +74,7 @@ export default function Input({
   const displayValue = textInputProps.value ?? internalValue
 
   return (
-    <View style={[styles.container, containerStyle]}>
+    <View style={[styles.container, { width: '100%' }, containerStyle]}>
       {label != null && (
         <Text style={[styles.label, labelStyle, { fontFamily, fontWeight }]}>
           {label}
@@ -88,7 +88,7 @@ export default function Input({
           styles.input,
           inputStyle,
           (error || emailError) && styles.inputError,
-          { width, height, fontFamily, fontWeight, color: textColor }
+          { width, height, fontFamily, fontWeight, color: textColor },
         ]}
         keyboardType={
           validateEmail ? 'email-address' : textInputProps.keyboardType ?? 'default'

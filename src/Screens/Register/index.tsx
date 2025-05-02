@@ -1,0 +1,166 @@
+import React, {useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {Text, ScrollView, View, Alert} from 'react-native';
+import Button from '../../components/button';
+import Input from '../../components/input';
+
+import styles from './style';
+
+export default function Register() {
+  const navigation = useNavigation();
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [name, setName] = useState('');
+  const [nameError, setNameError] = useState('');
+  const [number, setNumber] = useState('');
+  const [numberError, setNumberError] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
+
+  const validateEmail = (value: string) => {
+    if (!value) {
+      setEmailError('Campo obrigatório');
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      setEmailError(emailRegex.test(value) ? '' : 'e-mail inválido');
+    }
+  };
+
+  const validateName = (value: string) => {
+    if (!value) {
+      setNameError('Campo obrigatório');
+    } else {
+      const parts = value.trim().split(' ').filter(Boolean);
+      if (parts.length < 2) {
+        setNameError('Digite o nome completo');
+      } else if (parts[1].length < 3) {
+        setNameError('Digite o nome completo');
+      } else {
+        setNameError('');
+      }
+    }
+  };
+
+  const validateNumber = (value: string) => {
+    setNumberError(!value ? 'Campo obrigatório' : '');
+  };
+
+  const validatePassword = (value: string) => {
+    setPasswordError(!value ? 'Campo obrigatório' : '');
+  };
+
+  const validateConfirmPassword = (value: string) => {
+    if (!value) setConfirmPasswordError('Campo obrigatório');
+    else if (value !== password) setConfirmPasswordError('Senhas não coincidem');
+    else setConfirmPasswordError('');
+  };
+
+  const handleRegister = () => {
+    validateName(name);
+    validateEmail(email);
+    validateNumber(number);
+    validatePassword(password);
+    validateConfirmPassword(confirmPassword);
+
+    if (
+      !nameError &&
+      !emailError &&
+      !numberError &&
+      !passwordError &&
+      !confirmPasswordError &&
+      name &&
+      email &&
+      number &&
+      password &&
+      confirmPassword &&
+      password === confirmPassword
+    ) {
+      Alert.alert('Tudo ok!');
+    }
+  };
+
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.form}>
+        <Button
+          title="VOLTAR"
+          width={120}
+          backgroundColor="#BDBDBD"
+          fontWeight="bold"
+          onPress={() => navigation.goBack()}
+        />
+        <Text style={styles.title}>CADASTRO</Text>
+        <Input
+          label="Nome Completo"
+          value={name}
+          onChangeText={text => {
+            setName(text);
+            if (nameError) validateName(text);
+          }}
+          onBlur={() => validateName(name)}
+          error={nameError}
+          containerStyle={styles.inputSpacing}
+        />
+        <Input
+          label="E-mail"
+          value={email}
+          onChangeText={text => {
+            setEmail(text);
+            if (emailError) validateEmail(text);
+          }}
+          onBlur={() => validateEmail(email)}
+          error={emailError}
+          containerStyle={styles.inputSpacing}
+        />
+        <Input
+          label="Número"
+          value={number}
+          onChangeText={text => {
+            setNumber(text);
+            if (numberError) validateNumber(text);
+          }}
+          onBlur={() => validateNumber(number)}
+          error={numberError}
+          mask='phone'
+          
+          containerStyle={styles.inputSpacing}
+        />
+        <Input
+          label="Senha"
+          value={password}
+          onChangeText={text => {
+            setPassword(text);
+            if (passwordError) validatePassword(text);
+          }}
+          onBlur={() => validatePassword(password)}
+          error={passwordError}
+          secureTextEntry
+          containerStyle={styles.inputSpacing}
+        />
+        <Input
+          label="Confirmar senha"
+          value={confirmPassword}
+          onChangeText={text => {
+            setConfirmPassword(text);
+            if (confirmPasswordError) validateConfirmPassword(text);
+          }}
+          onBlur={() => validateConfirmPassword(confirmPassword)}
+          error={confirmPasswordError}
+          secureTextEntry
+          containerStyle={styles.inputSpacing}
+        />
+      </View>
+
+      <Button
+        title="CRIAR CONTA"
+        backgroundColor="#5B3CC4"
+        width="100%"
+        fontWeight="bold"
+        style={styles.buttonSpacing}
+        onPress={handleRegister}
+      />
+    </ScrollView>
+  );
+}

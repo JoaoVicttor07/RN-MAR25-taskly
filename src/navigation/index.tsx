@@ -1,24 +1,31 @@
-//AppNavigator
-
 import React from 'react';
-import {View, TouchableOpacity, SafeAreaView, StyleSheet, Text,} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { View, TouchableOpacity, SafeAreaView, StyleSheet, Text } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from '../Screens/Home/Index';
+import Register from '../Screens/Register';
 
 const Stack = createNativeStackNavigator();
 
-const InitialScreen = ({navigation}: any) => (
+const InitialScreen = ({ navigation }: any) => (
   <SafeAreaView style={styles.container}>
     <View style={styles.containerTaskly}>
       <Text style={styles.taskly}>TASKLY</Text>
       <Text style={styles.cluster}>Cluster-2</Text>
     </View>
-    <TouchableOpacity
-      style={styles.containerButton}
-      onPress={() => navigation.navigate('Home')}>
-      <Text style={styles.buttonText}>Pág. Inicial</Text>
-    </TouchableOpacity>
+    <View style={styles.buttonsRow}>
+      <TouchableOpacity
+        style={styles.containerButton}
+        onPress={() => navigation.navigate('Home')}>
+        <Text style={styles.buttonText}>Pág. Inicial</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.containerButton}
+        onPress={() => navigation.navigate('Register')}>
+        <Text style={styles.buttonText}>Cadastro</Text>
+      </TouchableOpacity>
+      {/* aqui será adicionado outros botões apenas para nos ajudar a visualizar cada tela */}
+    </View>
   </SafeAreaView>
 );
 
@@ -27,9 +34,10 @@ export default function AppNavigator() {
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="InitialScreen"
-        screenOptions={{headerShown: false}}>
+        screenOptions={{ headerShown: false }}>
         <Stack.Screen name="InitialScreen" component={InitialScreen} />
         <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Register" component={Register} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -47,10 +55,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  buttonsRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 24,
+  },
   containerButton: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginHorizontal: 4,
   },
   buttonText: {
     backgroundColor: '#0f7892',
@@ -61,6 +72,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingLeft: 10,
     fontSize: 20,
+    marginTop: 0,
   },
   taskly: {
     fontSize: 48,
