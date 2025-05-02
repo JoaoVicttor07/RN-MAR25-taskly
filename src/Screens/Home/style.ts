@@ -60,10 +60,10 @@ const stylesHome = StyleSheet.create({
   },
   buttonNavigation: {
     backgroundColor: '#dd8880',
-    paddingVertical: 15,
+    paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
-    width: 329,
+    width: 100,
   },
   buttonTextNavigation: {
     color: '#FFF',
