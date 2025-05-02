@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
       flex: 1,
     },
     inputSpacing: {
-      marginBottom: 45,
+      marginBottom: 40,
     },
     buttonSpacing: {
       marginTop: 16,

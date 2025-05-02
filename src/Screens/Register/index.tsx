@@ -44,11 +44,22 @@ export default function Register() {
   };
 
   const validateNumber = (value: string) => {
-    setNumberError(!value ? 'Campo obrigatório' : '');
+    if (!value) {
+      setNumberError('Campo obrigatório');
+    } else {
+      const cleaned = value.replace(/\D/g, '');
+      if (cleaned.length === 11) {
+        setNumberError('');
+      } else {
+        setNumberError('Número inválido');
+      }
+    }
   };
 
   const validatePassword = (value: string) => {
-    setPasswordError(!value ? 'Campo obrigatório' : '');
+    if (!value) setPasswordError('Campo obrigatório');
+    else if (value.length < 8) setPasswordError('A senha deve ter no mínimo 8 caracteres');
+    else setPasswordError('');
   };
 
   const validateConfirmPassword = (value: string) => {
