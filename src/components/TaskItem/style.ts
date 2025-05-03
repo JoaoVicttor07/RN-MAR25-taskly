@@ -1,4 +1,3 @@
-// src/components/TaskItem/styles.ts
 import { StyleSheet } from 'react-native';
 import Fonts from '../../Theme/fonts';
 
