@@ -1,8 +1,7 @@
 // MainMenu
 
 import React from 'react';
-import { SafeAreaView, View, Text, Image, TouchableOpacity,
-} from 'react-native';
+import { SafeAreaView, View, Text, Image, TouchableOpacity} from 'react-native';
 import { CarouselActionList } from '../../../components/carouselActionList';
 import styles from './style';
 

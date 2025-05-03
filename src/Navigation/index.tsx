@@ -18,21 +18,21 @@ const InitialScreen = ({ navigation }: any) => (
       <Text style={styles.cluster}>Cluster-2</Text>
     </View>
     <View style={styles.buttonsRow}>
-      {/* 🔹 Botão para navegar para a tela "Home" (Página Inicial) */}
+      {/* 🔹 Botão para navegar para a tela 'Home' (Página Inicial) */}
       <TouchableOpacity
         style={styles.containerButton}
         onPress={() => navigation.navigate('Home')}>
         <Text style={styles.buttonText}>Pág. Inicial</Text>
       </TouchableOpacity>
 
-      {/* 🔹 Botão para navegar para a tela "Register" (Cadastro) */}
+      {/* 🔹 Botão para navegar para a tela 'Register' (Cadastro) */}
       <TouchableOpacity
         style={styles.containerButton}
         onPress={() => navigation.navigate('Register')}>
         <Text style={styles.buttonText}>Cadastro</Text>
       </TouchableOpacity>
 
-      {/* 🔹 Botão para navegar para a nova tela "Menu" */}
+      {/* 🔹 Botão para navegar para a nova tela 'Menu' */}
       <TouchableOpacity
         style={styles.containerButton}
         onPress={() => navigation.navigate('Menu')}>
@@ -46,23 +46,23 @@ export default function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="InitialScreen"
+        initialRouteName='InitialScreen'
         screenOptions={{ headerShown: false }}>
 
         {/* 📌 Tela inicial com botões de navegação */}
-        <Stack.Screen name="InitialScreen" component={InitialScreen} />
+        <Stack.Screen name='InitialScreen' component={InitialScreen} />
 
         {/* 📌 Tela de tarefas (Home) */}
-        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name='Home' component={Home} />
 
         {/* 📌 Tela de cadastro */}
-        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name='Register' component={Register} />
 
         {/* 📌 Tela de menu */}
-        <Stack.Screen name="Menu" component={Menu} />
+        <Stack.Screen name='Menu' component={Menu} />
 
         {/* 📌 Tela de Termos e Regulamentos */}
-        <Stack.Screen name="Regulamentos" component={TermosPage} /> 
+        <Stack.Screen name='Regulamentos' component={TermosPage} /> 
       </Stack.Navigator>
     </NavigationContainer>
   );
