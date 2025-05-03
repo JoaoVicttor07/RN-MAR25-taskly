@@ -66,7 +66,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isC
           renderItem={renderCategoryItem}
           keyExtractor={keyExtractorCategory}
           horizontal={true}
-          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.carousel}
         />
       </View>
