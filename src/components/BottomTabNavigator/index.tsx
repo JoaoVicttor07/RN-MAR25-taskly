@@ -2,7 +2,7 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import Home from '../../Screens/Home';
+import Home from '../../Screens/Home/Index';
 import Notifications from '../../Screens/Notifications';
 import Menu from '../../Screens/Menu';
 import TabIcon from './TabIcon';
