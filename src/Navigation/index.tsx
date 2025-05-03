@@ -46,12 +46,6 @@ const InitialScreen = ({ navigation }: any) => (
         <Text style={styles.buttonText}>Avatar</Text>
       </TouchableOpacity>
 
-      {/* 🔹 Botão para navegar para a nova tela "Menu de preferencias" */}
-      <TouchableOpacity
-        style={styles.containerButton}
-        onPress={() => navigation.navigate('PreferencesMenu')}>
-        <Text style={styles.buttonText}>Menu de preferências</Text>
-      </TouchableOpacity>
     </View>
   </SafeAreaView>
 );

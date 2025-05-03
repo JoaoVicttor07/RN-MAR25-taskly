@@ -17,7 +17,6 @@ export default StyleSheet.create({
     marginBottom: 24,
   },
   textAvatar: {
-   // fontSize: 30,
     color: "#000000",
     marginBottom: 4,
     textAlign: "center",

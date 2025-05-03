@@ -1,13 +1,13 @@
 import React from 'react';
-import { SafeAreaView, View, Text, Image, TouchableOpacity } from 'react-native';
-import { CarouselActionList } from '../../../components/carouselActionList/index';
+import {SafeAreaView, View, Text, Image, TouchableOpacity} from 'react-native';
+import {CarouselActionList} from '../../../components/carouselActionList/index';
 import styles from './style';
 
 type Props = {
   navigation: any;
 };
 
-const MenuPrincipal = ({ navigation }: Props) => {
+const MenuPrincipal = ({navigation}: Props) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.profileSection}>
@@ -16,13 +16,14 @@ const MenuPrincipal = ({ navigation }: Props) => {
           style={styles.avatar}
         />
         <View style={styles.containerInfo}>
-          <Text style={[styles.profileText, styles.profileNome]}>Rafaela Santos</Text>
+          <Text style={[styles.profileText, styles.profileNome]}>
+            Rafaela Santos
+          </Text>
           <Text style={styles.profileText}>rafaela.santos@compasso.com.br</Text>
           <Text style={styles.profileText}>(11) 91234-5678</Text>
         </View>
       </View>
 
-      {/* Passando o CarouselActionList como um componente */}
       <View style={styles.carouselContainer}>
         <CarouselActionList />
       </View>
@@ -30,7 +31,7 @@ const MenuPrincipal = ({ navigation }: Props) => {
       <View style={styles.containerButtons}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Preferencias')}>
+          onPress={() => navigation.navigate('PreferencesMenu')}>
           <Text style={styles.buttonText}>Preferências</Text>
           <Image
             source={require('../../../Assets/icons/VectorBack.png')}
