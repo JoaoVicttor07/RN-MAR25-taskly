@@ -14,29 +14,8 @@ const taskData: Task[] = [
   {
     id: '1',
     title: 'Bater o ponto',
-    description: 'bater o ponto pelo site do Kairos e depois sair para tomar café.',
+    description: 'bater o ponto pelo site do kairos e depois tenho que sair para tomar café.',
     categories: ['TRABALHO', 'CASA', 'ESPORTE', 'ACADEMIA', 'LAZER'],
-    isCompleted: false,
-  },
-  {
-    id: '2',
-    title: 'Reunião com o cliente',
-    description: 'preparar a apresentação e discutir o projeto X.',
-    categories: ['TRABALHO', 'REUNIÃO', 'CLIENTE'],
-    isCompleted: true,
-  },
-  {
-    id: '3',
-    title: 'Ir à academia',
-    description: 'fazer treino de pernas.',
-    categories: ['SAÚDE', 'ESPORTE', 'ACADEMIA'],
-    isCompleted: false,
-  },
-    {
-    id: '4',
-    title: 'Passear com o cachorro',
-    description: 'levar o cachorro para passear no parque.',
-    categories: ['LAZER', 'PETS'],
     isCompleted: false,
   },
 ];
