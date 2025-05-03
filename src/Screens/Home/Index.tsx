@@ -5,7 +5,7 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import styles from './style';
 import Button from '../../components/button';
-import CreateTaskModal from './Modal/Index';
+import CreateTaskModal from './Modal/index';
 
 const Home: React.FC = () => {
   const navigation = useNavigation();
