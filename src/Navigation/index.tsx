@@ -1,12 +1,13 @@
+//NAVIGATION
+
 import React from 'react';
 import { View, TouchableOpacity, SafeAreaView, StyleSheet, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from '../Screens/Home/Index';
 import Register from '../Screens/Register';
-import Menu from '../Screens/Menu/MainMenu';
-import AvatarSelector from '../Screens/AvatarSelector';
-
+import Menu from '../Screens/Menu/MainMenu'; 
+import TermosPage from '../Screens/Menu/TermsMenu'; // ✅ Importando a página de Termos
 
 const Stack = createNativeStackNavigator();
 
@@ -37,12 +38,6 @@ const InitialScreen = ({ navigation }: any) => (
         onPress={() => navigation.navigate('Menu')}>
         <Text style={styles.buttonText}>Menu</Text>
       </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.containerButton}
-        onPress={() => navigation.navigate('AvatarSelector')}>
-        <Text style={styles.buttonText}>Avatar</Text>
-      </TouchableOpacity>
     </View>
   </SafeAreaView>
 );
@@ -63,10 +58,11 @@ export default function AppNavigator() {
         {/* 📌 Tela de cadastro */}
         <Stack.Screen name="Register" component={Register} />
 
-        {/* 📌 Tela de menu (recém adicionada) */}
+        {/* 📌 Tela de menu */}
         <Stack.Screen name="Menu" component={Menu} />
 
-        <Stack.Screen name="AvatarSelector" component={AvatarSelector} />
+        {/* 📌 Tela de Termos e Regulamentos */}
+        <Stack.Screen name="Regulamentos" component={TermosPage} /> 
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -84,16 +80,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   buttonsRow: {
-    flex:0.4,
+    flex: 0.4,
     flexDirection: 'column',
     gap: 12,
-    alignItems: 'center', 
-    justifyContent:'flex-start', 
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   containerButton: {
-    marginVertical: 6,   
+    marginVertical: 6,
   },
   buttonText: {
     backgroundColor: '#0f7892',
@@ -115,4 +110,3 @@ const styles = StyleSheet.create({
     color: '#007219',
   },
 });
-
