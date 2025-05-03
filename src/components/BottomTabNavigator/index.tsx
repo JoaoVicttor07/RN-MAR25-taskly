@@ -42,7 +42,7 @@ export default function BottomTabNavigator() {
           component={Home}
           options={{
             tabBarIcon: createIcon(
-              require('../../assets/images/ClipboardText.png'),
+              require('../../Assets/Images/ClipboardText.png'),
             ),
           }}
         />
@@ -50,14 +50,14 @@ export default function BottomTabNavigator() {
           name="Notifications"
           component={Notifications}
           options={{
-            tabBarIcon: createIcon(require('../../assets/images/Bell.png')),
+            tabBarIcon: createIcon(require('../../Assets/Images/Bell.png')),
           }}
         />
         <Tab.Screen
           name="Menu"
           component={Menu}
           options={{
-            tabBarIcon: createIcon(require('../../assets/images/List.png')),
+            tabBarIcon: createIcon(require('../../Assets/Images/List.png')),
           }}
         />
       </Tab.Navigator>

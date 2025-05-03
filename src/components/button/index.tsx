@@ -1,4 +1,4 @@
-import { TouchableOpacity, Text, View, TextStyle, DimensionValue } from "react-native";
+import { TouchableOpacity, Text, View, TextStyle, DimensionValue, ViewStyle } from "react-native";
 import styles from "./style";
 
 interface ButtonProps {
@@ -11,6 +11,7 @@ interface ButtonProps {
     height?: DimensionValue;
     fontFamily?: string;
     fontWeight?: TextStyle["fontWeight"];
+    style?: ViewStyle
     onPress?: () => void;
 }
 
@@ -24,6 +25,7 @@ export default function Button({
     height = 50,
     fontFamily,
     fontWeight = 'bold',
+    style,
     onPress
 }: ButtonProps) {
     return (
@@ -31,7 +33,8 @@ export default function Button({
             <TouchableOpacity
                 style={[
                     styles.button,
-                    { backgroundColor, borderColor, borderWidth, width, height }
+                    { backgroundColor, borderColor, borderWidth, width, height },
+                    style
                 ]}
                 onPress={onPress}
             >
