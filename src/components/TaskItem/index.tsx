@@ -1,7 +1,14 @@
 import React, { useRef, useCallback } from 'react';
 import { Text, View, TouchableOpacity, Image, FlatList, Animated } from 'react-native';
-import { TaskItemProps } from './types';
 import { styles } from './style';
+
+interface TaskItemProps {
+  title: string;
+  description: string;
+  categories: string[];
+  isCompleted: boolean;
+  onToggleComplete: () => void;
+}
 
 const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isCompleted, onToggleComplete }) => {
   const iconScaleValue = useRef(new Animated.Value(1)).current;
