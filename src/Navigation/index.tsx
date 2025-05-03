@@ -4,8 +4,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from '../Screens/Home/Index';
 import Register from '../Screens/Register';
-import Menu from '../Screens/Menu/index'; // ✅ Importação da nova tela "Menu"
+import Menu from '../Screens/Menu/MainMenu';
 import AvatarSelector from '../Screens/AvatarSelector';
+
 
 const Stack = createNativeStackNavigator();
 

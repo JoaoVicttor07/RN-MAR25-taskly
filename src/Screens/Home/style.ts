@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 
-import Fonts from '../../Theme/fonts.ts';
+import Fonts from '../../Theme/fonts';
 
 const stylesHome = StyleSheet.create({
   container: {
