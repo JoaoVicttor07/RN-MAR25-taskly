@@ -6,6 +6,7 @@ import Home from '../Screens/Home/Index';
 import Register from '../Screens/Register';
 import Menu from '../Screens/Menu/MainMenu';
 import AvatarSelector from '../Screens/AvatarSelector';
+import PreferencesMenu from '../Screens/PreferencesMenu';
 
 
 const Stack = createNativeStackNavigator();
@@ -38,10 +39,18 @@ const InitialScreen = ({ navigation }: any) => (
         <Text style={styles.buttonText}>Menu</Text>
       </TouchableOpacity>
 
+      {/* 🔹 Botão para navegar para a nova tela "seleção de avatar" */}
       <TouchableOpacity
         style={styles.containerButton}
         onPress={() => navigation.navigate('AvatarSelector')}>
         <Text style={styles.buttonText}>Avatar</Text>
+      </TouchableOpacity>
+
+      {/* 🔹 Botão para navegar para a nova tela "Menu de preferencias" */}
+      <TouchableOpacity
+        style={styles.containerButton}
+        onPress={() => navigation.navigate('PreferencesMenu')}>
+        <Text style={styles.buttonText}>Menu de preferências</Text>
       </TouchableOpacity>
     </View>
   </SafeAreaView>
@@ -66,7 +75,11 @@ export default function AppNavigator() {
         {/* 📌 Tela de menu (recém adicionada) */}
         <Stack.Screen name="Menu" component={Menu} />
 
+        {/* 📌 Tela de seleção de avatar */}
         <Stack.Screen name="AvatarSelector" component={AvatarSelector} />
+
+        {/* 📌 Tela de seleção de preferencia de tema */}
+        <Stack.Screen name="PreferencesMenu" component={PreferencesMenu} />
       </Stack.Navigator>
     </NavigationContainer>
   );
