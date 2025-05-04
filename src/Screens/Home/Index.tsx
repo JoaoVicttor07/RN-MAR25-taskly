@@ -21,23 +21,19 @@ const Home: React.FC = () => {
   };
 
   const handleOpenModal = () => {
-    console.log('Abrindo modal de criação de tarefa');
     setModalVisible(true);
   };
 
   const handleCloseModal = () => {
-    console.log('Fechando modal de criação de tarefa');
     setModalVisible(false);
   };
 
   const handleGoBack = () => {
-    console.log('Navegando para a tela anterior');
     navigation.goBack();
   };
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>TASKLY</Text>
         <Image
@@ -46,16 +42,14 @@ const Home: React.FC = () => {
         />
       </View>
 
-      {/* Smiles Sad */}
       <View style={styles.containerNoTask}>
         <Image
-          source={require('../../Assets/Images/SmileySad.png')}
+          source={require('../../Assets/Images/SmileSad.png')}
           style={styles.smileSad}
           resizeMode="contain"
         />
         <Text style={styles.textNoTask}>No momento você não possui tarefa</Text>
 
-        {/* Botão para Criar Tarefa */}
         <Button
           title="Criar Tarefa"
           backgroundColor="#5B3CC4"
@@ -66,7 +60,6 @@ const Home: React.FC = () => {
         />
       </View>
 
-      {/* Link para Voltar */}
       <View style={styles.containerNoTask}>
         <TouchableOpacity
           onPress={handleGoBack}
@@ -75,7 +68,6 @@ const Home: React.FC = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Modal de Criar Tarefa */}
       <CreateTaskModal
         visible={modalVisible}
         onClose={handleCloseModal}
