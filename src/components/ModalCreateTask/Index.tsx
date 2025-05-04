@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; // Importe useEffect
+import React, { useState, useEffect } from 'react';
 import {
   Modal,
   View,
@@ -42,40 +42,65 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
     setErrors({});
   };
 
-  // Use useEffect para resetar o formulário quando o modal for fechado
   useEffect(() => {
     if (!visible) {
       resetModalInputs();
     }
   }, [visible]);
 
-  const validateFields = () => {
-    const newErrors: typeof errors = {};
-
-    if (!title.trim()) {
-      newErrors.title = 'Título é obrigatório';
+  const validateTitle = (text: string) => {
+    if (!text.trim()) {
+      setErrors(prevErrors => ({ ...prevErrors, title: 'Título é obrigatório' }));
+    } else if (errors.title) {
+      setErrors(prevErrors => ({ ...prevErrors, title: undefined }));
     }
+    setTitle(text);
+  };
 
-    if (!description.trim()) {
-      newErrors.description = 'Descrição é obrigatória';
+  const validateDescription = (text: string) => {
+    if (!text.trim()) {
+      setErrors(prevErrors => ({ ...prevErrors, description: 'Descrição é obrigatória' }));
+    } else if (errors.description) {
+      setErrors(prevErrors => ({ ...prevErrors, description: undefined }));
     }
+    setDescription(text);
+  };
 
-    if (!deadline.trim()) {
-      newErrors.deadline = 'Prazo é obrigatório';
-    } else if (!/^\d{2}\/\d{2}\/\d{4}$/.test(deadline.trim())) {
-      newErrors.deadline = 'Formato inválido. Use dd/mm/aaaa';
-    } else if (!isValidDate(deadline.trim())) {
-      newErrors.deadline = 'Data inválida';
+  const validateDeadline = (text: string) => {
+    if (!text.trim()) {
+      setErrors(prevErrors => ({ ...prevErrors, deadline: 'Prazo é obrigatório' }));
+    } else if (!/^\d{2}\/\d{2}\/\d{4}$/.test(text.trim())) {
+      setErrors(prevErrors => ({ ...prevErrors, deadline: 'Formato inválido. Use dd/mm/aaaa' }));
+    } else if (!isValidDate(text.trim())) {
+      setErrors(prevErrors => ({ ...prevErrors, deadline: 'Data inválida' }));
+    } else if (errors.deadline) {
+      setErrors(prevErrors => ({ ...prevErrors, deadline: undefined }));
     }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setDeadline(text);
   };
 
   const handleCreate = () => {
-    if (validateFields()) {
+    const isTitleValid = !errors.title && title.trim();
+    const isDescriptionValid = !errors.description && description.trim();
+    const isDeadlineValid = !errors.deadline && deadline.trim() && /^\d{2}\/\d{2}\/\d{4}$/.test(deadline.trim()) && isValidDate(deadline.trim());
+
+    if (isTitleValid && isDescriptionValid && isDeadlineValid) {
       onCreate({ title, description, deadline });
       resetModalInputs();
+    } else {
+      if (!title.trim()) {
+        setErrors(prevErrors => ({ ...prevErrors, title: 'Título é obrigatório' }));
+      }
+      if (!description.trim()) {
+        setErrors(prevErrors => ({ ...prevErrors, description: 'Descrição é obrigatória' }));
+      }
+      if (!deadline.trim()) {
+        setErrors(prevErrors => ({ ...prevErrors, deadline: 'Prazo é obrigatório' }));
+      } else if (!/^\d{2}\/\d{2}\/\d{4}$/.test(deadline.trim())) {
+        setErrors(prevErrors => ({ ...prevErrors, deadline: 'Formato inválido. Use dd/mm/aaaa' }));
+      } else if (!isValidDate(deadline.trim())) {
+        setErrors(prevErrors => ({ ...prevErrors, deadline: 'Data inválida' }));
+      }
     }
   };
 
@@ -88,7 +113,6 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            
             <Text style={styles.modalTitle}>Criar tarefa</Text>
 
             <View style={styles.inputContainer}>
@@ -98,7 +122,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                 width={281}
                 placeholder="Ex: bater o ponto"
                 value={title}
-                onChangeText={setTitle}
+                onChangeText={validateTitle}
               />
 
               <View style={styles.textinputArea}>
@@ -109,7 +133,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                   multiline={true}
                   height={81}
                   value={description}
-                  onChangeText={setDescription}
+                  onChangeText={validateDescription}
                   textAlignVertical="top"
                 />
               </View>
@@ -120,7 +144,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                 width={281}
                 placeholder="04/28/2025"
                 value={deadline}
-                onChangeText={setDeadline}
+                onChangeText={validateDeadline}
               />
             </View>
 
@@ -135,7 +159,6 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                 <Text style={styles.createText}>CRIAR</Text>
               </TouchableOpacity>
             </View>
-
           </View>
         </View>
       </TouchableWithoutFeedback>
