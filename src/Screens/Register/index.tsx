@@ -3,6 +3,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Text, ScrollView, View, Alert} from 'react-native';
 import Button from '../../components/button';
 import Input from '../../components/input';
+import BackButton from '../../components/BackButton';
 
 import styles from './style';
 
@@ -95,11 +96,7 @@ export default function Register() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.form}>
-        <Button
-          title="VOLTAR"
-          width={120}
-          backgroundColor="#BDBDBD"
-          fontWeight="bold"
+        <BackButton 
           onPress={() => navigation.goBack()}
         />
         <Text style={styles.title}>CADASTRO</Text>
