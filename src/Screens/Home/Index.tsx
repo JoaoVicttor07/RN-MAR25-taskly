@@ -51,17 +51,17 @@ const Home: React.FC = () => {
         <Image
           source={require('../../Assets/Images/SmileySad.png')}
           style={styles.smileSad}
-          resizeMode="contain"
+          resizeMode='contain'
         />
         <Text style={styles.textNoTask}>No momento você não possui tarefa</Text>
 
         {/* Botão para Criar Tarefa */}
         <Button
-          title="Criar Tarefa"
-          backgroundColor="#5B3CC4"
-          borderColor="#5B3CC4"
+          title='Criar Tarefa'
+          backgroundColor='#5B3CC4'
+          borderColor='#5B3CC4'
           borderWidth={0}
-          textColor="#FFFFFF"
+          textColor='#FFFFFF'
           onPress={handleOpenModal}
         />
       </View>

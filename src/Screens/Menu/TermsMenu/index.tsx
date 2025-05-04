@@ -1,11 +1,7 @@
-//TermsMenu
-
 import React from 'react';
-import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
+import { SafeAreaView, View, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview'; 
 import BackButton from '../../../components/BackButton'; 
-import Fonts from '../../../Theme/fonts';
-
 
 type Props = {
   navigation: any;
@@ -14,11 +10,10 @@ type Props = {
 const TermosPage = ({ navigation }: Props) => {
   return (
     <SafeAreaView style={styles.container}>
-      {/* Cabeçalho com o botão Voltar e o título "Termos e Regulamentos" */}
+      {/* Cabeçalho com o botão Voltar e o título 'Termos e Regulamentos' */}
       <View style={styles.header}>
         {/* Utilizando o BackButton aqui */}
-        <BackButton onPress={() => navigation.goBack()} />
-        <Text style={styles.title}>Termos e regulamentos</Text>
+        <BackButton onPress={() => navigation.goBack()} rightText='Termos e regulamentos' />
       </View>
 
       {/* Barra de Separação */}
@@ -40,16 +35,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
   },
   header: {
-    flexDirection: 'row',
+    padding: 0,
+    margin: 0,
     alignItems: 'center',
-    justifyContent:'space-between',
-    marginTop:40,
-    marginHorizontal:32,
-
-  },
-  title: {
-    ...Fonts.Roboto40016,
-    color: '#000000',
+    justifyContent: 'center',
   },
   separator: {
     height: 1,
@@ -58,10 +47,10 @@ const styles = StyleSheet.create({
   },
   webview: {
     flex: 1,
-    marginTop:30,
-    marginHorizontal:8,
-    alignItems:'center',
-    justifyContent:'center',
+    marginTop: 30,
+    marginHorizontal: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
