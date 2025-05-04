@@ -1,14 +1,12 @@
 // PÁGINA INICIAL - HOME
 
 import React, {useState} from 'react';
-import {View, Text, Image, TouchableOpacity} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {View, Text, Image} from 'react-native';
 import styles from './style';
 import Button from '../../components/button';
 import CreateTaskModal from './Modal/Index';
 
 const Home: React.FC = () => {
-  const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleCreateTask = (task: {
@@ -26,10 +24,6 @@ const Home: React.FC = () => {
 
   const handleCloseModal = () => {
     setModalVisible(false);
-  };
-
-  const handleGoBack = () => {
-    navigation.goBack();
   };
 
   return (
@@ -58,14 +52,6 @@ const Home: React.FC = () => {
           textColor="#FFFFFF"
           onPress={handleOpenModal}
         />
-      </View>
-
-      <View style={styles.containerNoTask}>
-        <TouchableOpacity
-          onPress={handleGoBack}
-          style={styles.buttonNavigation}>
-          <Text style={styles.buttonTextNavigation}>Voltar</Text>
-        </TouchableOpacity>
       </View>
 
       <CreateTaskModal
