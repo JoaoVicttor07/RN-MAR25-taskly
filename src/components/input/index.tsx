@@ -24,6 +24,8 @@ interface InputProps extends TextInputProps {
   textColor?: string
   mask?: 'phone' | 'none'
   validateEmail?: boolean
+  multiline?: boolean
+  maxHeight?: DimensionValue
 }
 
 export default function Input({

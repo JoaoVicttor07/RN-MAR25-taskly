@@ -9,7 +9,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    marginHorizontal: 1,
     backgroundColor: '#ffffff',
     borderRadius: 12,
     padding: 24,
@@ -18,27 +17,7 @@ const styles = StyleSheet.create({
     ...Fonts.Roboto50018,
     textAlign: 'left',
   },
-  label: {
-    marginTop: 12,
-    ...Fonts.Roboto40012,
-    color: '#1E1E1E',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    marginTop: 5,
-  },
-  textArea: {
-    height: 100,
-    textAlignVertical: 'top',
-  },
-  error: {
-    color: '#E63946',
-    ...Fonts.Roboto40012,
-    marginTop: 7,
-  },
+
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -58,6 +37,7 @@ const styles = StyleSheet.create({
   cancelText: {
     color: '#5B3CC4',
     ...Fonts.Roboto50018,
+    textTransform: 'uppercase',
   },
   createButton: {
     backgroundColor: '#5B3CC4',
@@ -70,7 +50,17 @@ const styles = StyleSheet.create({
   createText: {
     color: '#fff',
     ...Fonts.Roboto50018,
+    textTransform: 'uppercase',
   },
+  inputContainer: {
+    gap: 24,
+    marginBottom: 12,
+    marginTop: 12,
+    width: '100%',
+  },
+  textinputArea:{
+    marginBottom: 35,
+  }
 });
 
 export default styles;

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react'; // Importe useEffect
 import {
   Modal,
   View,
@@ -8,7 +8,7 @@ import {
   Keyboard,
 } from 'react-native';
 import styles from './style';
-import {isValidDate} from '../../Utils/validateDate';
+import { isValidDate } from '../../Utils/validateDate';
 import Input from '../../components/input';
 
 interface CreateTaskModalProps {
@@ -35,6 +35,20 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
     deadline?: string;
   }>({});
 
+  const resetModalInputs = () => {
+    setTitle('');
+    setDescription('');
+    setDeadline('');
+    setErrors({});
+  };
+
+  // Use useEffect para resetar o formulário quando o modal for fechado
+  useEffect(() => {
+    if (!visible) {
+      resetModalInputs();
+    }
+  }, [visible]);
+
   const validateFields = () => {
     const newErrors: typeof errors = {};
 
@@ -60,16 +74,12 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
 
   const handleCreate = () => {
     if (validateFields()) {
-      onCreate({title, description, deadline});
-      setTitle('');
-      setDescription('');
-      setDeadline('');
-      setErrors({});
+      onCreate({ title, description, deadline });
+      resetModalInputs();
     }
   };
 
   return (
-    
     <Modal
       visible={visible}
       transparent
@@ -78,33 +88,54 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
+            
             <Text style={styles.modalTitle}>Criar tarefa</Text>
 
-            <Input 
-              label="Título"
-              error={errors.title}
-            />
+            <View style={styles.inputContainer}>
+              <Input
+                label="Título"
+                error={errors.title}
+                width={281}
+                placeholder="Ex: bater o ponto"
+                value={title}
+                onChangeText={setTitle}
+              />
 
-            <Input 
-              label="Título"
-              error={errors.title}
-            />
+              <View style={styles.textinputArea}>
+                <Input
+                  label="Descrição"
+                  error={errors.description}
+                  width={281}
+                  multiline={true}
+                  height={81}
+                  value={description}
+                  onChangeText={setDescription}
+                  textAlignVertical="top"
+                />
+              </View>
 
-            <Input 
-              label="Título"
-              error={errors.title}
-            />
+              <Input
+                label="Prazo"
+                error={errors.deadline}
+                width={281}
+                placeholder="04/28/2025"
+                value={deadline}
+                onChangeText={setDeadline}
+              />
+            </View>
 
             <View style={styles.modalButtons}>
               <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-                <Text style={styles.cancelText}>Cancelar</Text>
+                <Text style={styles.cancelText}>CANCELAR</Text>
               </TouchableOpacity>
+
               <TouchableOpacity
                 style={styles.createButton}
                 onPress={handleCreate}>
-                <Text style={styles.createText}>Criar</Text>
+                <Text style={styles.createText}>CRIAR</Text>
               </TouchableOpacity>
             </View>
+
           </View>
         </View>
       </TouchableWithoutFeedback>
