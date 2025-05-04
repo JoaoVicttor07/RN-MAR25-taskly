@@ -104,6 +104,7 @@ export default function AvatarSelector() {
       </View>
       <Button
         title="CONFIRMAR SELEÇÃO"
+        fontFamily='Roboto60020'
         backgroundColor="#6C4AE4"
         width={Dimensions.get('window').width * 0.9}
         style={styles.confirmButton}

@@ -1,18 +1,16 @@
-// MainMenu
-
 import React from 'react';
-import { SafeAreaView, View, Text, Image, TouchableOpacity} from 'react-native';
-import { CarouselActionList } from '../../../components/carouselActionList';
+import {SafeAreaView, View, Text, Image, TouchableOpacity} from 'react-native';
+import {CarouselActionList} from '../../../components/carouselActionList/index';
 import styles from './style';
 
 type Props = {
   navigation: any;
 };
 
-const MenuPrincipal = ({ navigation }: Props) => {
+const MenuPrincipal = ({navigation}: Props) => {
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* Perfil do usuário */}
+
       <View style={styles.profileSection}>
         <Image
           source={require('../../../Assets/Images/Ellipse1.png')}
@@ -27,18 +25,16 @@ const MenuPrincipal = ({ navigation }: Props) => {
         </View>
       </View>
 
-      {/* Carrossel de ações */}
       <View style={styles.carouselContainer}>
         <CarouselActionList />
       </View>
 
-      {/* Botões de navegação */}
       <View style={styles.containerButtons}>
-        {/* Preferências */}
+
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Preferencias')}
-        >
+          onPress={() => navigation.navigate('PreferencesMenu')}>
+          
           <Text style={styles.buttonText}>Preferências</Text>
           <Image
             source={require('../../../Assets/icons/VectorBack.png')}
@@ -46,7 +42,6 @@ const MenuPrincipal = ({ navigation }: Props) => {
           />
         </TouchableOpacity>
 
-        {/* Termos e Regulamentos */}
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('Regulamentos')}
