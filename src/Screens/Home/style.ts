@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 
 import Fonts from '../../Theme/fonts';
 
-const stylesHome = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
@@ -20,7 +20,6 @@ const stylesHome = StyleSheet.create({
   title: {
     ...Fonts.Roboto70024,
     color: '#000',
-    fontFamily: 'Arial',
   },
   avatar: {
     width: 50,
@@ -42,7 +41,7 @@ const stylesHome = StyleSheet.create({
 
   textNoTask: {
     color: '#AAAAAA',
-    ...Fonts.Roboto40016, //importa todos argumentos de fonts
+    ...Fonts.Roboto40016,
     marginBottom: 32,
   },
 
@@ -72,4 +71,4 @@ const stylesHome = StyleSheet.create({
   },
 });
 
-export default stylesHome;
+export default styles;
