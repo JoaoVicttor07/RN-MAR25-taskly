@@ -37,7 +37,7 @@ const Home: React.FC = () => {
       <View style={styles.header}>
         <Text style={styles.title}>TASKLY</Text>
         <Image
-          source={require('../../Assets/Images/Ellipse1.png')}
+          source={require('../../Assets/Images/Avatars/avatar-1.jpg')}
           style={styles.avatar}
         />
       </View>
