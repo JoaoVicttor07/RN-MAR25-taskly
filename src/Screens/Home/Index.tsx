@@ -4,10 +4,10 @@ import React, {useState} from 'react';
 import {View, Text, Image} from 'react-native';
 import styles from './style';
 import Button from '../../components/button';
-import CreateTaskModal from './Modal/Index';
+import CreateTaskModal from '../../components/ModalCreateTask/Index';
 
 const Home: React.FC = () => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(true);
 
   const handleCreateTask = (task: {
     title: string;
