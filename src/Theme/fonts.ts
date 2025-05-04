@@ -1,27 +1,33 @@
 const Fonts = {
   Roboto70048: {
-    fontFamily: 'Roboto-Bold',  //fontWeight:700
+    fontFamily: 'Roboto-Bold',
     fontSize: 48,
+    fontWeight: '700',
   },
   Roboto70024: {
-    fontFamily: 'Roboto-Bold',  //fontWeigh:700
+    fontFamily: 'Roboto-Bold',
     fontSize: 24,
+    fontWeight: '700',
   },
   Roboto60020: {
-    fontFamily: 'Roboto-SemiBold',  //fontWeigh:600
+    fontFamily: 'Roboto-SemiBold',
     fontSize: 20,
+    fontweight: '600',
   },
   Roboto50018: {
-    fontFamily: 'Roboto-Medium',   //fontWeigh:500
+    fontFamily: 'Roboto-Medium',
     fontSize: 18,
+    fontWeight: '500',
   },
   Roboto40016: {
-    fontFamily: 'Roboto-Regular',   //fontWeigh:400
+    fontFamily: 'Roboto-Regular',
     fontSize: 16,
+    fontWeight: '400',
   },
   Roboto40012: {
-    fontFamily: 'Roboto-Regular',   //fontWeigh:400
+    fontFamily: 'Roboto-Regular',
     fontSize: 12,
+    fontWeight: '400',
   },
 };
 
