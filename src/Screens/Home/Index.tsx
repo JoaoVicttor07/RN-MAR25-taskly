@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
-import { View, Text, Image } from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, Image} from 'react-native';
 import styles from './style';
 import Button from '../../components/button';
 import CreateTaskModal from '../../components/ModalCreateTask';
 import EmptyState from '../../components/EmptyState';
 import TaskList from '../../components/TaskItem/TaskList';
+import Filter from '../../components/Filter';
 
 const Home: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [tasks, setTasks] = useState<
-    { title: string; description: string; deadline: string; id: string; categories: string[]; isCompleted: boolean }[]
+    {
+      title: string;
+      description: string;
+      deadline: string;
+      id: string;
+      categories: string[];
+      isCompleted: boolean;
+    }[]
   >([]);
 
   const handleCreateTask = (task: {
@@ -54,7 +62,8 @@ const Home: React.FC = () => {
         </View>
       ) : (
         <View style={styles.taskListContainer}>
-          <TaskList tasks={tasks} setTasks={setTasks} /> 
+          <Filter />
+          <TaskList tasks={tasks} setTasks={setTasks} />
         </View>
       )}
 
