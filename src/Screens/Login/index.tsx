@@ -6,28 +6,11 @@ import {
     TouchableOpacity,
     Text,
     ImageSourcePropType,
-    TextStyle,
-    ViewStyle,
 } from 'react-native';
-import styles from './style'; // Assuming './style.ts' compiles to './style.js' or similar
+import styles from './style'; 
 import Input from '../../components/input';
 import Button from '../../components/button';
 
-interface Styles {
-    container: ViewStyle;
-    form: ViewStyle;
-    logo: ImageStyle;
-    inputSpacing: ViewStyle;
-    checkboxContainer: ViewStyle;
-    checkboxIcon: ImageStyle;
-    textCheckbox: TextStyle;
-    buttonEnter: ViewStyle;
-    buttonCreate: ViewStyle;
-}
-
-interface ImageStyle extends ViewStyle, TextStyle {
-    // Add specific image style properties if needed
-}
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState<string>('');
@@ -67,12 +50,12 @@ const Login: React.FC = () => {
     };
 
     return (
-        <ScrollView contentContainerStyle={(styles as Styles).container}>
-            <View style={(styles as Styles).form}>
-                {/* <Image
-                    source={require('../../Assets/images/Logo.png')}
-                    style={(styles as Styles).logo}
-                /> */}
+        <ScrollView contentContainerStyle={styles.container}>
+            <View style={styles.form}>
+                <Image
+                    source={require('../../Assets/Images/Logo.png')}
+                    style={styles.logo}
+                />
                 <Input
                     label="E-mail"
                     value={email}
@@ -84,7 +67,7 @@ const Login: React.FC = () => {
                     }}
                     onBlur={() => validateEmail(email)}
                     error={emailError}
-                    containerStyle={(styles as Styles).inputSpacing}
+                    containerStyle={styles.inputSpacing}
                 />
                 <Input
                     label="Senha"
@@ -98,15 +81,15 @@ const Login: React.FC = () => {
                     onBlur={() => validatePassword(password)}
                     error={passwordError}
                     secureTextEntry
-                    containerStyle={(styles as Styles).inputSpacing}
+                    containerStyle={styles.inputSpacing}
                 />
 
                 <TouchableOpacity
                     onPress={handleRememberMe}
-                    style={(styles as Styles).checkboxContainer}
+                    style={styles.checkboxContainer}
                 >
-                    <Image source={checkboxImage} style={(styles as Styles).checkboxIcon} />
-                    <Text style={(styles as Styles).textCheckbox}>Lembrar de mim</Text>
+                    <Image source={checkboxImage} style={styles.checkboxIcon} />
+                    <Text style={styles.textCheckbox}>Lembrar de mim</Text>
                 </TouchableOpacity>
             </View>
 
@@ -115,7 +98,7 @@ const Login: React.FC = () => {
                 backgroundColor="#5B3CC4"
                 width="100%"
                 fontWeight="bold"
-                style={(styles as Styles).buttonEnter}
+                style={styles.buttonEnter}
             />
             <Button
                 title="CRIAR CONTA"
@@ -123,7 +106,7 @@ const Login: React.FC = () => {
                 borderColor="#5B3CC4"
                 width="100%"
                 fontWeight="bold"
-                style={(styles as Styles).buttonCreate}
+                style={styles.buttonCreate}
             />
         </ScrollView>
     );
