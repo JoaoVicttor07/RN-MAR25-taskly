@@ -4,7 +4,7 @@ import Fonts from '../../Theme/fonts';
 
 interface BackButtonProps {
   onPress: () => void;
-  rightText?: string; // Texto opcional ao do botão
+  rightText?: string; // Texto opcional ao lado do botão
 }
 
 const BackButton: React.FC<BackButtonProps> = ({ onPress, rightText }) => {
