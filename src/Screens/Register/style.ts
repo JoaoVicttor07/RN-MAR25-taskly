@@ -2,8 +2,7 @@ import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
     container: {
-      flexGrow: 1,
-      padding: 30,
+      paddingHorizontal: 30,
       backgroundColor: '#F4F4F4',
       alignItems: 'stretch',
     },
@@ -25,4 +24,4 @@ const styles = StyleSheet.create({
     },
   });
 
-export default styles
+export default styles;
