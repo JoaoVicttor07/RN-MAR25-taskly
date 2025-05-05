@@ -3,7 +3,7 @@ import Fonts from "../../Theme/fonts";
 
 const styles = StyleSheet.create({
     container: {
-      paddingHorizontal: 30,
+      padding: 30,
       backgroundColor: '#F4F4F4',
       alignItems: 'stretch',
     },

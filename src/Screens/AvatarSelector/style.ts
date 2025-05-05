@@ -1,16 +1,21 @@
 import { StyleSheet } from "react-native";
-import Fonts from "../../Theme/fonts";
+import Fonts from '../../Theme/fonts';
 
 const AVATAR_SIZE = 90;
 const AVATAR_MARGIN = 12;
 
 export default StyleSheet.create({
+  headerContainer: {
+    width: '100%',
+    paddingHorizontal: 20,
+    marginBottom: 16,
+  },
   container: {
     flex: 1,
-    backgroundColor: "#F4F4F4",
-    alignItems: "center",
+    backgroundColor: '#F4F4F4',
+    alignItems: 'center',
     justifyContent: "flex-start",
-    paddingTop: 50,
+    paddingTop: 25,
   },
   content: {
     alignItems: "center",
