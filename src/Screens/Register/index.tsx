@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {Text, ScrollView, View, Alert} from 'react-native';
+import {Text, ScrollView, View, TouchableOpacity, Image } from 'react-native';
 import Button from '../../components/button';
 import Input from '../../components/input';
-import BackButton from '../../components/BackButton';
+import BiometryModal from './Modal';
 
 import styles from './style';
 
@@ -19,6 +19,7 @@ export default function Register() {
   const [passwordError, setPasswordError] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [showBiometryModal, setShowBiometryModal] = useState(false);
 
   const validateEmail = (value: string) => {
     if (!value) {
@@ -59,13 +60,15 @@ export default function Register() {
 
   const validatePassword = (value: string) => {
     if (!value) setPasswordError('Campo obrigatório');
-    else if (value.length < 8) setPasswordError('A senha deve ter no mínimo 8 caracteres');
+    else if (value.length < 8)
+      setPasswordError('A senha deve ter no mínimo 8 caracteres');
     else setPasswordError('');
   };
 
   const validateConfirmPassword = (value: string) => {
     if (!value) setConfirmPasswordError('Campo obrigatório');
-    else if (value !== password) setConfirmPasswordError('Senhas não coincidem');
+    else if (value !== password)
+      setConfirmPasswordError('Senhas não coincidem');
     else setConfirmPasswordError('');
   };
 
@@ -89,16 +92,17 @@ export default function Register() {
       confirmPassword &&
       password === confirmPassword
     ) {
-      Alert.alert('Tudo ok!');
+      setShowBiometryModal(true);
     }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.form}>
-        <BackButton 
-          onPress={() => navigation.goBack()}
-        />
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Image source={require('../../Assets/icons/VectorBack.png')} />
+          <Text style={styles.backText}>VOLTAR</Text>
+        </TouchableOpacity>
         <Text style={styles.title}>CADASTRO</Text>
         <Input
           label="Nome Completo"
@@ -131,8 +135,7 @@ export default function Register() {
           }}
           onBlur={() => validateNumber(number)}
           error={numberError}
-          mask='phone'
-          
+          mask="phone"
           containerStyle={styles.inputSpacing}
         />
         <Input
@@ -168,6 +171,11 @@ export default function Register() {
         fontWeight="bold"
         style={styles.buttonSpacing}
         onPress={handleRegister}
+      />
+      <BiometryModal
+        visible={showBiometryModal}
+        onClose={() => setShowBiometryModal(false)}
+        onActivate={() => setShowBiometryModal(false)}
       />
     </ScrollView>
   );
