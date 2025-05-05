@@ -5,7 +5,7 @@ import Fonts from '../../Theme/fonts';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 32,
     backgroundColor: '#ffffff',
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginTop: 8,
     width: 329,
   },
   title: {
@@ -26,29 +26,13 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
   },
-
   containerNoTask: {
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 32,
-    alignSelf: 'center',
   },
-
-  smileSad: {
-    width: 150,
-    height: 150,
-    marginBottom: 10,
-  },
-
-  textNoTask: {
-    color: '#AAAAAA',
-    ...Fonts.Roboto40016,
-    marginBottom: 32,
-  },
-
   button: {
     backgroundColor: '#5B3CC4',
-    paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',
     width: 329,
@@ -56,18 +40,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#FFF',
     fontSize: 16,
-    fontWeight: 'bold',
-  },
-  buttonNavigation: {
-    backgroundColor: '#dd8880',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    width: 100,
-  },
-  buttonTextNavigation: {
-    color: '#FFF',
-    fontSize: 20,
     fontWeight: 'bold',
   },
 });

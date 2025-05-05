@@ -10,6 +10,9 @@ import {
 import styles from './style';
 import { isValidDate } from '../../Utils/validateDate';
 import Input from '../../components/input';
+import DatePicker from 'react-native-date-picker'; // Importe o DatePicker
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 interface CreateTaskModalProps {
   visible: boolean;
@@ -34,6 +37,8 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
     description?: string;
     deadline?: string;
   }>({});
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [date, setDate] = useState<Date>(new Date());
 
   const resetModalInputs = () => {
     setTitle('');
@@ -45,6 +50,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   useEffect(() => {
     if (!visible) {
       resetModalInputs();
+      setDatePickerVisibility(false);
     }
   }, [visible]);
 
@@ -66,17 +72,12 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
     setDescription(text);
   };
 
-  const validateDeadline = (text: string) => {
-    if (!text.trim()) {
-      setErrors(prevErrors => ({ ...prevErrors, deadline: 'Prazo é obrigatório' }));
-    } else if (!/^\d{2}\/\d{2}\/\d{4}$/.test(text.trim())) {
-      setErrors(prevErrors => ({ ...prevErrors, deadline: 'Formato inválido. Use dd/mm/aaaa' }));
-    } else if (!isValidDate(text.trim())) {
-      setErrors(prevErrors => ({ ...prevErrors, deadline: 'Data inválida' }));
-    } else if (errors.deadline) {
+  const validateDeadline = (selectedDate: Date) => {
+    const formattedDate = format(selectedDate, 'dd/MM/yyyy', { locale: ptBR });
+    setDeadline(formattedDate);
+    if (errors.deadline) {
       setErrors(prevErrors => ({ ...prevErrors, deadline: undefined }));
     }
-    setDeadline(text);
   };
 
   const handleCreate = () => {
@@ -102,6 +103,20 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
         setErrors(prevErrors => ({ ...prevErrors, deadline: 'Data inválida' }));
       }
     }
+  };
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (selectedDate: Date) => {
+    hideDatePicker();
+    setDate(selectedDate);
+    validateDeadline(selectedDate);
   };
 
   return (
@@ -138,13 +153,26 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                 />
               </View>
 
-              <Input
-                label="Prazo"
-                error={errors.deadline}
-                width={281}
-                placeholder="04/28/2025"
-                value={deadline}
-                onChangeText={validateDeadline}
+              <TouchableOpacity onPress={showDatePicker}>
+                <Input
+                  label="Prazo"
+                  error={errors.deadline}
+                  width={281}
+                  placeholder="04/28/2025"
+                  value={deadline}
+                  editable={false}
+                  onFocus={showDatePicker}
+                />
+              </TouchableOpacity>
+
+              <DatePicker
+                modal
+                open={isDatePickerVisible}
+                date={date}
+                mode="date"
+                locale="pt-BR"
+                onConfirm={handleConfirm}
+                onCancel={hideDatePicker}
               />
             </View>
 

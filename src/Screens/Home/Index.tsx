@@ -1,10 +1,9 @@
-// PÁGINA INICIAL - HOME
-
 import React, {useState} from 'react';
 import {View, Text, Image} from 'react-native';
 import styles from './style';
 import Button from '../../components/button';
 import CreateTaskModal from '../../components/ModalCreateTask';
+import EmptyState from '../../components/EmptyState';
 
 const Home: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(true);
@@ -37,22 +36,16 @@ const Home: React.FC = () => {
       </View>
 
       <View style={styles.containerNoTask}>
-        <Image
-          source={require('../../Assets/Images/SmileSad.png')}
-          style={styles.smileSad}
-          resizeMode="contain"
-        />
-        <Text style={styles.textNoTask}>No momento você não possui tarefa</Text>
-
-        <Button
-          title="Criar Tarefa"
-          backgroundColor="#5B3CC4"
-          borderColor="#5B3CC4"
-          borderWidth={0}
-          textColor="#FFFFFF"
-          onPress={handleOpenModal}
-        />
+        <EmptyState />
       </View>
+
+      <Button
+        title="Criar Tarefa"
+        backgroundColor="#5B3CC4"
+        textColor="#FFFFFF"
+        onPress={handleOpenModal}
+        width={329}
+      />
 
       <CreateTaskModal
         visible={modalVisible}
