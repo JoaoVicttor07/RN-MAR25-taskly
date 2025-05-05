@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,17 +7,23 @@ import {
   Alert,
   Dimensions,
 } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RouteProp } from '@react-navigation/native';
+import type { RootStackParamList } from '../../navigation';
 import Button from '../../components/button';
+import ProfileHeader from '../../components/ProfileHeader';
+import ProgressBar from '../../components/ProgressBar';
 import styles from './style';
 
 import avatar1 from '../../Assets/Images/Avatars/avatar-1.jpg';
 
 const AVATARS = [
-  {id: '1', source: avatar1, borderColor: '#6C4AE4'},
-  {id: '2', source: avatar1, borderColor: '#E4B14A'},
-  {id: '3', source: avatar1, borderColor: '#4AE47B'},
-  {id: '4', source: avatar1, borderColor: '#E44A4A'},
-  {id: '5', source: avatar1, borderColor: '#B89B5B'},
+  { id: '1', source: avatar1, borderColor: '#6C4AE4' },
+  { id: '2', source: avatar1, borderColor: '#E4B14A' },
+  { id: '3', source: avatar1, borderColor: '#4AE47B' },
+  { id: '4', source: avatar1, borderColor: '#E44A4A' },
+  { id: '5', source: avatar1, borderColor: '#B89B5B' },
 ];
 
 const AVATAR_SIZE = 100;
@@ -26,13 +32,18 @@ const GRAY_BORDER = '#D1D5DB';
 
 export default function AvatarSelector() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const route = useRoute<RouteProp<RootStackParamList, 'AvatarSelector'>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'AvatarSelector'>>();
+  const { isEditing = false } = route.params || {};
 
   const handleConfirm = () => {
     if (!selectedId) {
-      Alert.alert('Selecione um avatar');
+      Alert.alert('Por favor, selecione um avatar antes de continuar.');
       return;
     }
-    Alert.alert('Avatar selecionado!', `ID: ${selectedId}`);
+
+    
+    navigation.navigate('Menu', { showConfirmationModal: true });
   };
 
   const handleAvatarPress = (id: string) => {
@@ -45,6 +56,15 @@ export default function AvatarSelector() {
 
   return (
     <View style={styles.container}>
+      {isEditing && (
+        <View style={styles.headerContainer}>
+          <ProfileHeader
+            title="EDIÇÃO DE PERFIL"
+            onBackPress={() => navigation.goBack()}
+          />
+          <ProgressBar progress={1} />
+        </View>
+      )}
       <View style={styles.content}>
         <Text style={styles.textAvatar}>SELECIONE SEU AVATAR</Text>
         <Text style={styles.textPick}>(Escolha somente um.)</Text>
@@ -103,8 +123,8 @@ export default function AvatarSelector() {
         })}
       </View>
       <Button
-        title="CONFIRMAR SELEÇÃO"
-        fontFamily='Roboto60020'
+        title={isEditing ? 'CONFIRMAR EDIÇÃO' : 'CONFIRMAR SELEÇÃO'}
+        fontFamily="Roboto60020"
         backgroundColor="#6C4AE4"
         width={Dimensions.get('window').width * 0.9}
         style={styles.confirmButton}

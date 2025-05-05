@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { FlatList, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../../navigation';
 import { CarouselActionItem } from '../carouselActionItem';
 import userIcon from '../../Assets/icons/User.png';
 import biometryIcon from '../../Assets/icons/FingerprintSimple.png';
@@ -37,15 +40,20 @@ const modalConfigs = {
 };
 
 export function CarouselActionList() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [modalVisible, setModalVisible] = useState(false);
   const [currentModal, setCurrentModal] = useState<null | keyof typeof modalConfigs>(null);
 
   const handleAction = (title: string) => {
+    if (title === 'Editar Informações Pessoais') {
+      navigation.navigate('EditPersonalInfo'); 
+      return;
+    }
+
     if (modalConfigs[title as keyof typeof modalConfigs]) {
       setCurrentModal(title as keyof typeof modalConfigs);
       setModalVisible(true);
     }
-    // Aqui será adicionado mais ações conforme for avançando
   };
 
   const handleCancel = () => {
