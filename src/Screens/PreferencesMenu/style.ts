@@ -3,7 +3,7 @@ import Fonts from "../../Theme/fonts";
 
 const styles = StyleSheet.create({
     container: {
-        padding: 30,
+        paddingHorizontal: 30,
     },
     header: {
         flexDirection: 'row',

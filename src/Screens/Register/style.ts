@@ -3,7 +3,7 @@ import Fonts from "../../Theme/fonts";
 
 const styles = StyleSheet.create({
     container: {
-      padding: 30,
+      paddingHorizontal: 30,
       backgroundColor: '#F4F4F4',
       alignItems: 'stretch',
     },
@@ -39,4 +39,4 @@ const styles = StyleSheet.create({
     },
   });
 
-export default styles
+export default styles;
