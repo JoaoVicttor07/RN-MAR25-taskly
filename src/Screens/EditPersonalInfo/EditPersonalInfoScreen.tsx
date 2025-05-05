@@ -14,11 +14,46 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'EditPersona
 function EditPersonalInfoScreen() {
   const navigation = useNavigation<NavigationProp>();
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [nameError, setNameError] = useState('');
   const [phone, setPhone] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const email = 'example@example.com';
+
+  const validateName = (value: string) => {
+    if (!value) {
+      setNameError('Campo obrigatório');
+    } else {
+      const parts = value.trim().split(' ').filter(Boolean);
+      if (parts.length < 2) {
+        setNameError('Digite o nome completo');
+      } else if (parts[1].length < 3) {
+        setNameError('Digite o nome completo');
+      } else {
+        setNameError('');
+      }
+    }
+  };
+
+  const validatePhone = (value: string) => {
+    if (!value) {
+      setPhoneError('Campo obrigatório');
+    } else {
+      const cleaned = value.replace(/\D/g, '');
+      if (cleaned.length === 11) {
+        setPhone('');
+      } else {
+        setPhoneError('Número inválido');
+      }
+    }
+  };
 
   const handleContinue = () => {
-    navigation.navigate('AvatarSelector', { isEditing: true });
+    validateName(name);
+    validatePhone(phone);
+
+    if (!nameError && !phoneError && name && phone) {
+      navigation.navigate('AvatarSelector', { isEditing: true });
+    }
   };
 
   return (
@@ -28,26 +63,35 @@ function EditPersonalInfoScreen() {
       <Input
         label="Nome Completo"
         value={name}
-        onChangeText={setName}
+        onChangeText={text => {
+          setName(text);
+          if (nameError) validateName(text);
+        }}
+        onBlur={() => validateName(name)}
+        error={nameError}
         placeholder="Digite seu nome"
         containerStyle={styles.inputSpacing}
       />
       <Input
         label="E-mail"
         value={email}
-        onChangeText={setEmail}
         placeholder="Digite seu e-mail"
         keyboardType="email-address"
         containerStyle={styles.inputSpacing}
+        editable={false} // Campo desabilitado
       />
       <Input
-        label="Número"
-        value={phone}
-        onChangeText={setPhone}
-        placeholder="(DDD) 9 NNNN-NNNN"
-        keyboardType="phone-pad"
-        containerStyle={styles.inputSpacing}
-      />
+          label="Número"
+          value={phone}
+          onChangeText={text => {
+            setPhone(text);
+            if (phoneError) validatePhone(text);
+          }}
+          onBlur={() => validatePhone(phone)}
+          error={phoneError}
+          mask="phone"
+          containerStyle={styles.inputSpacing}
+        />
       <Button
         title="CONTINUAR"
         onPress={handleContinue}

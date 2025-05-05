@@ -48,12 +48,6 @@ const InitialScreen = ({navigation}: any) => (
         onPress={() => navigation.navigate('AvatarSelector')}>
         <Text style={styles.buttonText}>Avatar</Text>
       </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.containerButton}
-        onPress={() => navigation.navigate('EditPersonalInfo')}>
-        <Text style={styles.buttonText}>Editar Informações</Text>
-      </TouchableOpacity>
       
     </View>
   </SafeAreaView>
