@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, Modal, TouchableOpacity, StyleSheet } from 'react-native'; // Importe Modal, TouchableOpacity e StyleSheet
+import { View, Text, Image, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 import styles from './style';
 import Button from '../../components/button';
 import CreateTaskModal from '../../components/ModalCreateTask';
@@ -9,7 +9,7 @@ import Filter from '../../components/Filter';
 
 const Home: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [filterModalVisible, setFilterModalVisible] = useState(false); // Novo estado para o modal de filtro
+  const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [tasks, setTasks] = useState<
     {
       title: string;
@@ -48,11 +48,11 @@ const Home: React.FC = () => {
   };
 
   const handleOpenFilterModal = () => {
-    setFilterModalVisible(true); // Função para abrir o modal de filtro
+    setFilterModalVisible(true); 
   };
 
   const handleCloseFilterModal = () => {
-    setFilterModalVisible(false); // Função para fechar o modal de filtro
+    setFilterModalVisible(false); 
   };
 
   return (
