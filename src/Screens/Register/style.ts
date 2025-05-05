@@ -1,14 +1,28 @@
 import { StyleSheet } from "react-native";
+import Fonts from "../../Theme/fonts";
 
 const styles = StyleSheet.create({
     container: {
-      flexGrow: 1,
-      padding: 30,
+      paddingHorizontal: 30,
       backgroundColor: '#F4F4F4',
       alignItems: 'stretch',
     },
     form: {
       flex: 1,
+    },
+    backButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 13,
+      backgroundColor: '#AAAAAA',
+      height: 50,
+      width: 110,
+      borderRadius: 10,
+    },
+    backText: {
+      color: '#fff',
+      ...Fonts.Roboto50018,
     },
     inputSpacing: {
       marginBottom: 40,
@@ -17,7 +31,7 @@ const styles = StyleSheet.create({
       marginTop: 16,
     },
     title: {
-      fontSize: 28,
+      ...Fonts.Roboto70024,
       fontWeight: 'bold',
       alignSelf: 'center',
       marginVertical: 20,
@@ -25,4 +39,4 @@ const styles = StyleSheet.create({
     },
   });
 
-export default styles
+export default styles;

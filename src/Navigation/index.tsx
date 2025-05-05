@@ -4,7 +4,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from '../Screens/Home/Index';
 import Register from '../Screens/Register';
-import Menu from '../Screens/Menu/MainMenu';
+import Menu from '../Screens/Menu/MainMenu'; 
+import TermosPage from '../Screens/Menu/TermsMenu';
 import AvatarSelector from '../Screens/AvatarSelector';
 import PreferencesMenu from '../Screens/PreferencesMenu';
 
@@ -18,33 +19,32 @@ const InitialScreen = ({ navigation }: any) => (
       <Text style={styles.cluster}>Cluster-2</Text>
     </View>
     <View style={styles.buttonsRow}>
-      {/* 🔹 Botão para navegar para a tela "Home" (Página Inicial) */}
+
       <TouchableOpacity
         style={styles.containerButton}
         onPress={() => navigation.navigate('Home')}>
         <Text style={styles.buttonText}>Pág. Inicial</Text>
       </TouchableOpacity>
 
-      {/* 🔹 Botão para navegar para a tela "Register" (Cadastro) */}
       <TouchableOpacity
         style={styles.containerButton}
         onPress={() => navigation.navigate('Register')}>
         <Text style={styles.buttonText}>Cadastro</Text>
       </TouchableOpacity>
 
-      {/* 🔹 Botão para navegar para a nova tela "Menu" */}
       <TouchableOpacity
         style={styles.containerButton}
         onPress={() => navigation.navigate('Menu')}>
         <Text style={styles.buttonText}>Menu</Text>
       </TouchableOpacity>
 
-      {/* 🔹 Botão para navegar para a nova tela "seleção de avatar" */}
+      
       <TouchableOpacity
         style={styles.containerButton}
         onPress={() => navigation.navigate('AvatarSelector')}>
         <Text style={styles.buttonText}>Avatar</Text>
       </TouchableOpacity>
+
 
     </View>
   </SafeAreaView>
@@ -54,26 +54,31 @@ export default function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="InitialScreen"
+        initialRouteName='InitialScreen'
         screenOptions={{ headerShown: false }}>
 
         {/* 📌 Tela inicial com botões de navegação */}
-        <Stack.Screen name="InitialScreen" component={InitialScreen} />
+        <Stack.Screen name='InitialScreen' component={InitialScreen} />
 
         {/* 📌 Tela de tarefas (Home) */}
-        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name='Home' component={Home} />
 
         {/* 📌 Tela de cadastro */}
-        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name='Register' component={Register} />
 
-        {/* 📌 Tela de menu (recém adicionada) */}
-        <Stack.Screen name="Menu" component={Menu} />
+        {/* 📌 Tela de menu */}
+        <Stack.Screen name='Menu' component={Menu} />
+
+        {/* 📌 Tela de Termos e Regulamentos */}
+
+        <Stack.Screen name="Regulamentos" component={TermosPage} /> 
 
         {/* 📌 Tela de seleção de avatar */}
         <Stack.Screen name="AvatarSelector" component={AvatarSelector} />
 
         {/* 📌 Tela de seleção de preferencia de tema */}
         <Stack.Screen name="PreferencesMenu" component={PreferencesMenu} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -91,16 +96,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   buttonsRow: {
-    flex:0.4,
+    flex: 0.4,
     flexDirection: 'column',
     gap: 12,
-    alignItems: 'center', 
-    justifyContent:'flex-start', 
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   containerButton: {
-    marginVertical: 6,   
+    marginVertical: 6,
   },
   buttonText: {
     backgroundColor: '#0f7892',
@@ -122,4 +126,3 @@ const styles = StyleSheet.create({
     color: '#007219',
   },
 });
-

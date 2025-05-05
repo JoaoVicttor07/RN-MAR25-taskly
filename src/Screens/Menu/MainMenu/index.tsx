@@ -10,6 +10,7 @@ type Props = {
 const MenuPrincipal = ({navigation}: Props) => {
   return (
     <SafeAreaView style={styles.safeArea}>
+
       <View style={styles.profileSection}>
         <Image
           source={require('../../../Assets/Images/Ellipse1.png')}
@@ -29,9 +30,11 @@ const MenuPrincipal = ({navigation}: Props) => {
       </View>
 
       <View style={styles.containerButtons}>
+
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('PreferencesMenu')}>
+          
           <Text style={styles.buttonText}>Preferências</Text>
           <Image
             source={require('../../../Assets/icons/VectorBack.png')}
@@ -41,7 +44,8 @@ const MenuPrincipal = ({navigation}: Props) => {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Regulamentos')}>
+          onPress={() => navigation.navigate('Regulamentos')}
+        >
           <Text style={styles.buttonText}>Termos e regulamentos</Text>
           <Image
             source={require('../../../Assets/icons/VectorBack.png')}

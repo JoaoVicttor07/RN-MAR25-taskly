@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import {Modal, View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard,
-} from 'react-native';
+import {Modal, View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import styles from './style';
 import { isValidDate } from '../../../Utils/validateDate';
 import { TextInputMask } from 'react-native-masked-text';
@@ -63,7 +62,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
     <Modal
       visible={visible}
       transparent
-      animationType="slide"
+      animationType='slide'
       onRequestClose={onClose}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -74,7 +73,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
             <Text style={styles.label}>Título</Text>
             <TextInput
               style={styles.input}
-              placeholder="Ex. bater o ponto"
+              placeholder='Ex. bater o ponto'
               value={title}
               onChangeText={setTitle}
             />
@@ -83,7 +82,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
             <Text style={styles.label}>Descrição</Text>
             <TextInput
               style={[styles.input, styles.textArea]}
-              placeholder="Digite a descrição"
+              placeholder='Digite a descrição'
               value={description}
               onChangeText={setDescription}
               multiline
@@ -91,16 +90,16 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
             {errors.description && <Text style={styles.error}>{errors.description}</Text>}
 
             <Text style={styles.label}>Prazo</Text>
-                <TextInputMask
-                  type={'datetime'}
-                  options={{
-                    format: 'DD/MM/YYYY',
-                  }}
-                  style={styles.input}
-                  placeholder="DD/MM/AAAA"
-                  value={deadline}
-                  onChangeText={setDeadline}
-                />
+            <TextInputMask
+              type={'datetime'}
+              options={{
+                format: 'DD/MM/YYYY',
+              }}
+              style={styles.input}
+              placeholder='DD/MM/AAAA'
+              value={deadline}
+              onChangeText={setDeadline}
+            />
             {errors.deadline && <Text style={styles.error}>{errors.deadline}</Text>}
 
 
