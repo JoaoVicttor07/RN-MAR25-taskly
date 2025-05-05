@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {View, Text, Image} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, Modal, TouchableOpacity, StyleSheet } from 'react-native'; // Importe Modal, TouchableOpacity e StyleSheet
 import styles from './style';
 import Button from '../../components/button';
 import CreateTaskModal from '../../components/ModalCreateTask';
@@ -9,6 +9,7 @@ import Filter from '../../components/Filter';
 
 const Home: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [filterModalVisible, setFilterModalVisible] = useState(false); // Novo estado para o modal de filtro
   const [tasks, setTasks] = useState<
     {
       title: string;
@@ -38,12 +39,20 @@ const Home: React.FC = () => {
     setModalVisible(false);
   };
 
-  const handleOpenModal = () => {
+  const handleOpenCreateTaskModal = () => {
     setModalVisible(true);
   };
 
-  const handleCloseModal = () => {
+  const handleCloseCreateTaskModal = () => {
     setModalVisible(false);
+  };
+
+  const handleOpenFilterModal = () => {
+    setFilterModalVisible(true); // Função para abrir o modal de filtro
+  };
+
+  const handleCloseFilterModal = () => {
+    setFilterModalVisible(false); // Função para fechar o modal de filtro
   };
 
   return (
@@ -62,7 +71,7 @@ const Home: React.FC = () => {
         </View>
       ) : (
         <View style={styles.taskListContainer}>
-          <Filter />
+          <Filter onPress={handleOpenFilterModal} />
           <TaskList tasks={tasks} setTasks={setTasks} />
         </View>
       )}
@@ -71,17 +80,64 @@ const Home: React.FC = () => {
         title="Criar Tarefa"
         backgroundColor="#5B3CC4"
         textColor="#FFFFFF"
-        onPress={handleOpenModal}
+        onPress={handleOpenCreateTaskModal}
         width={329}
       />
 
       <CreateTaskModal
         visible={modalVisible}
-        onClose={handleCloseModal}
+        onClose={handleCloseCreateTaskModal}
         onCreate={handleCreateTask}
       />
+
+
+      <Modal
+        visible={filterModalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={handleCloseFilterModal}
+      >
+        <View style={filterModalStyles.modalOverlay}>
+          <View style={filterModalStyles.modalContent}>
+            <Text style={filterModalStyles.modalTitle}>Filtros</Text>
+            <TouchableOpacity style={filterModalStyles.closeButton} onPress={handleCloseFilterModal}>
+              <Text style={filterModalStyles.closeButtonText}>Fechar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
+
+const filterModalStyles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 20,
+    minHeight: 200,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  closeButton: {
+    backgroundColor: '#ddd',
+    padding: 10,
+    borderRadius: 5,
+    alignSelf: 'flex-end',
+    marginTop: 15,
+  },
+  closeButtonText: {
+    fontSize: 16,
+  },
+});
 
 export default Home;
