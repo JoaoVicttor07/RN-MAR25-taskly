@@ -4,7 +4,7 @@ import Fonts from '../../Theme/fonts';
 
 interface BackButtonProps {
   onPress: () => void;
-  rightText?: string; // Texto opcional abaixo do botão
+  rightText?: string; // Texto opcional ao do botão
 }
 
 const BackButton: React.FC<BackButtonProps> = ({ onPress, rightText }) => {
@@ -21,7 +21,7 @@ const BackButton: React.FC<BackButtonProps> = ({ onPress, rightText }) => {
         </View>
       </TouchableOpacity>
 
-      {/* Texto abaixo do botão, como 'Termos e regulamentos' */}
+      {/* Texto ao lado do botão, exemplo: 'Termos e regulamentos' */}
       {rightText && <Text style={styles.textRight}>{rightText}</Text>}
     </View>
   );
