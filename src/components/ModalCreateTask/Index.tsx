@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 import styles from './style';
 import { isValidDate } from '../../Utils/validateDate';
-import Input from '../../components/input';
-import DatePicker from 'react-native-date-picker'; // Importe o DatePicker
+import Input from '../input';
+import DatePicker from 'react-native-date-picker';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -106,10 +106,12 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   };
 
   const showDatePicker = () => {
+    console.log('showDatePicker chamado');
     setDatePickerVisibility(true);
   };
 
   const hideDatePicker = () => {
+    console.log('hideDatePicker chamado');
     setDatePickerVisibility(false);
   };
 

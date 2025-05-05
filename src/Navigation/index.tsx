@@ -2,7 +2,7 @@ import React from 'react';
 import { View, TouchableOpacity, SafeAreaView, StyleSheet, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Home from '../Screens/Home/Index';
+import Home from '../Screens/Home';
 import Register from '../Screens/Register';
 import Menu from '../Screens/Menu/MainMenu';
 import AvatarSelector from '../Screens/AvatarSelector';
