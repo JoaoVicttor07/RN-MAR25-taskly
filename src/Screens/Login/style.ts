@@ -3,23 +3,26 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
     container: {
       flexGrow: 1,
-      padding: 20,
+      padding: 32,
       backgroundColor: '#F4F4F4',
       justifyContent: 'center',
     },
     form: {
-      flex: 1,
+      
     },
     logo: {
         width: 329,
         height:56,
         alignContent: 'center',
+        marginBottom: 24,
     },
     inputSpacing: {
       marginBottom: 40,
     },
     checkboxContainer: {
-      
+      flexDirection: 'row',
+      gap: 2.5,
+      marginTop: 24,
     },
     checkboxIcon: {
       width: 24,

@@ -7,10 +7,10 @@ import {
     Text,
     ImageSourcePropType,
 } from 'react-native';
-import styles from './style'; 
+import styles from './style';
 import Input from '../../components/input';
 import Button from '../../components/button';
-
+import Fonts from '../../Theme/fonts';
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState<string>('');
@@ -21,32 +21,46 @@ const Login: React.FC = () => {
     const [checkboxImage, setCheckboxImage] = useState<ImageSourcePropType>(
         require('../../Assets/icons/CheckSquare-1.png'),
     );
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-    const checkedIcon: ImageSourcePropType = require('../../Assets/icons/CheckSquare-1.png');
-    const uncheckedIcon: ImageSourcePropType = require('../../Assets/icons/CheckSquare-2.png');
+    const checkedIcon: ImageSourcePropType = require('../../Assets/icons/CheckSquare-2.png');
+    const uncheckedIcon: ImageSourcePropType = require('../../Assets/icons/CheckSquare-1.png');
 
-    const validateEmail = (value: string): void => {
+    const validateEmail = (value: string): string => {
         if (!value) {
-            setEmailError('Campo obrigatório');
-        } else {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            setEmailError(emailRegex.test(value) ? '' : 'e-mail inválido');
+            return 'Campo obrigatório';
         }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(value) ? '' : 'e-mail inválido';
     };
 
-    const validatePassword = (value: string): void => {
+    const validatePassword = (value: string): string => {
         if (!value) {
-            setPasswordError('Campo obrigatório');
+            return 'Campo obrigatório';
         } else if (value.length < 8) {
-            setPasswordError('A senha deve ter no mínimo 8 caracteres');
-        } else {
-            setPasswordError('');
+            return 'A senha deve ter no mínimo 8 caracteres';
         }
+        return '';
     };
 
     const handleRememberMe = (): void => {
-        setRememberMe(!rememberMe);
-        setCheckboxImage(!rememberMe ? checkedIcon : uncheckedIcon);
+        const newState = !rememberMe;
+        setRememberMe(newState);
+        setCheckboxImage(newState ? checkedIcon : uncheckedIcon);
+    };
+
+    const handleLogin = (): void => {
+        setIsSubmitting(true);
+        const newEmailError = validateEmail(email);
+        const newPasswordError = validatePassword(password);
+
+        setEmailError(newEmailError);
+        setPasswordError(newPasswordError);
+
+        if (!newEmailError && !newPasswordError && email && password) {
+            console.log('Realizando login com:', { email, password, rememberMe });
+        }
+        setIsSubmitting(false);
     };
 
     return (
@@ -62,10 +76,10 @@ const Login: React.FC = () => {
                     onChangeText={(text: string) => {
                         setEmail(text);
                         if (emailError) {
-                            validateEmail(text);
+                            setEmailError(validateEmail(text));
                         }
                     }}
-                    onBlur={() => validateEmail(email)}
+                    onBlur={() => setEmailError(validateEmail(email))}
                     error={emailError}
                     containerStyle={styles.inputSpacing}
                 />
@@ -75,37 +89,45 @@ const Login: React.FC = () => {
                     onChangeText={(text: string) => {
                         setPassword(text);
                         if (passwordError) {
-                            validatePassword(text);
+                            setPasswordError(validatePassword(text));
                         }
                     }}
-                    onBlur={() => validatePassword(password)}
+                    onBlur={() => setPasswordError(validatePassword(password))}
                     error={passwordError}
                     secureTextEntry
                     containerStyle={styles.inputSpacing}
                 />
 
-                <TouchableOpacity
-                    onPress={handleRememberMe}
-                    style={styles.checkboxContainer}
-                >
-                    <Image source={checkboxImage} style={styles.checkboxIcon} />
+                <View style={styles.checkboxContainer}>
+                    <TouchableOpacity onPress={handleRememberMe}>
+                        <Image source={checkboxImage} style={styles.checkboxIcon} />
+                    </TouchableOpacity>
                     <Text style={styles.textCheckbox}>Lembrar de mim</Text>
-                </TouchableOpacity>
+                </View>
             </View>
 
             <Button
                 title="ENTRAR"
+                fontFamily={Fonts.Roboto60020.fontFamily}
+                fontWeight={600}
+                fontSize={Fonts.Roboto60020.fontSize}
+                textColor="#FFFFFF"
                 backgroundColor="#5B3CC4"
                 width="100%"
-                fontWeight="bold"
                 style={styles.buttonEnter}
+                onPress={handleLogin}
+                loading={isSubmitting}
             />
             <Button
                 title="CRIAR CONTA"
+                fontFamily={Fonts.Roboto60020.fontFamily}
+                fontWeight={600}
+                fontSize={Fonts.Roboto60020.fontSize}
                 textColor="#5B3CC4"
+                borderWidth={2}
                 borderColor="#5B3CC4"
+                backgroundColor='transparent'
                 width="100%"
-                fontWeight="bold"
                 style={styles.buttonCreate}
             />
         </ScrollView>
