@@ -31,6 +31,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 32,
   },
+  taskListContainer: {
+    flex: 1,
+    marginTop: 20,
+    marginBottom: 20,
+    alignItems: 'center',
+  },
   button: {
     backgroundColor: '#5B3CC4',
     borderRadius: 8,
