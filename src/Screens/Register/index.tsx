@@ -51,12 +51,13 @@ export default function Register() {
       if (response.status === 200 && response.data.idToken) {
         console.log('✅ Cadastro concluído com sucesso!');
         await storeToken(response.data.idToken);
-  
-        Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
+      
+        setShowBiometryModal(true);
+        console.log('[REGISTER] setShowBiometryModal(true) executado');
+      
         setTimeout(() => {
-          setShowBiometryModal(true);
-          console.log('🔒 Modal de biometria ativado');
-        }, 500);
+          Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
+        }, 300);
       }
     } catch (error: any) {
       if (error.response) {
