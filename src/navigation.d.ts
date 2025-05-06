@@ -3,7 +3,7 @@ export type RootStackParamList = {
   AvatarSelector: { isEditing: boolean };
   Home: undefined;
   Register: undefined;
- // Menu: undefined;
+  Menu: undefined;
   PreferencesMenu: undefined;
-  Menu: { showConfirmationModal?: boolean };
+  Menu?: { showConfirmationModal?: boolean };
 };

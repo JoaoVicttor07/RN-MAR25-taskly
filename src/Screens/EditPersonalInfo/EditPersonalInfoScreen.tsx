@@ -1,14 +1,10 @@
-import React, { useState } from 'react';
-import {
-  View,
-  KeyboardAvoidingView,
-  ScrollView,
-} from 'react-native';
+import React, {useState} from 'react';
+import {View, KeyboardAvoidingView, ScrollView} from 'react-native';
 import Input from '../../components/input';
 import Button from '../../components/button';
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../../navigation';
+import {useNavigation} from '@react-navigation/native';
+import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import type {RootStackParamList} from '../../navigation';
 import ProfileHeader from '../../components/ProfileHeader';
 import ProgressBar from '../../components/ProgressBar';
 import styles from './style';
@@ -55,16 +51,13 @@ function EditPersonalInfoScreen() {
     setPhoneError(localPhoneError || '');
 
     if (!localNameError && !localPhoneError && name && phone) {
-      navigation.navigate('AvatarSelector', { isEditing: true });
+      navigation.navigate('AvatarSelector', {isEditing: true});
     }
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior="height"
-    >
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <KeyboardAvoidingView style={{flex: 1}} behavior="height">
+      <ScrollView contentContainerStyle={{flexGrow: 1}}>
         <View style={styles.container}>
           <ProfileHeader
             title="EDIÇÃO DE PERFIL"

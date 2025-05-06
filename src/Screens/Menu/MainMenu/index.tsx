@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import {SafeAreaView, View, Text, Image, TouchableOpacity} from 'react-native';
-import {CarouselActionList} from '../../../components/carouselActionList/index';
-import Modal from '../../AvatarSelector/Modal'
+import { SafeAreaView, View, Text, Image, TouchableOpacity } from 'react-native';
+import { CarouselActionList } from '../../../components/carouselActionList/index';
+import Modal from '../../AvatarSelector/Modal';
 import styles from './style';
 
 type Props = {
@@ -11,12 +11,14 @@ type Props = {
 
 const MenuPrincipal = ({ navigation, route }: Props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [hasShownModal, setHasShownModal] = useState(false); // Controle para evitar exibição duplicada
 
   useEffect(() => {
-    if (route.params?.showConfirmationModal) {
+    if (route.params?.showConfirmationModal && !hasShownModal) {
       setIsModalVisible(true);
+      setHasShownModal(true); // Marca o modal como exibido
     }
-  }, [route.params]);
+  }, [route.params, hasShownModal]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
