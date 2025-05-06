@@ -15,6 +15,7 @@ import TermosPage from '../Screens/Menu/TermsMenu';
 import AvatarSelector from '../Screens/AvatarSelector';
 import PreferencesMenu from '../Screens/PreferencesMenu';
 import EditPersonalInfoScreen from '../Screens/EditPersonalInfo/EditPersonalInfoScreen';
+import Login from '../Screens/Login/index';
 
 const Stack = createNativeStackNavigator();
 
@@ -48,7 +49,13 @@ const InitialScreen = ({navigation}: any) => (
         onPress={() => navigation.navigate('AvatarSelector')}>
         <Text style={styles.buttonText}>Avatar</Text>
       </TouchableOpacity>
-      
+
+      <TouchableOpacity
+        style={styles.containerButton}
+        onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
+
     </View>
   </SafeAreaView>
 );
@@ -81,10 +88,16 @@ export default function AppNavigator() {
         {/* 📌 Tela de seleção de preferencia de tema */}
         <Stack.Screen name="PreferencesMenu" component={PreferencesMenu} />
 
+
+        {/* 📌 Tela de Login */}
+        <Stack.Screen name="Login" component={Login} />
+
+
         <Stack.Screen
           name="EditPersonalInfo"
           component={EditPersonalInfoScreen}
         />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -103,11 +116,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonsRow: {
-    flex: 0.4,
+    flex: 0.8,
     flexDirection: 'column',
     gap: 12,
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
   },
   containerButton: {
     marginVertical: 6,
