@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -7,23 +7,24 @@ import {
   Alert,
   Dimensions,
 } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RouteProp } from '@react-navigation/native';
-import type { RootStackParamList } from '../../navigation';
+import {useRoute, useNavigation} from '@react-navigation/native';
+import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import type {RouteProp} from '@react-navigation/native';
+import type {RootStackParamList} from '../../navigation';
 import Button from '../../components/button';
 import ProfileHeader from '../../components/ProfileHeader';
 import ProgressBar from '../../components/ProgressBar';
+import Modal from './Modal';
 import styles from './style';
 
 import avatar1 from '../../Assets/Images/Avatars/avatar-1.jpg';
 
 const AVATARS = [
-  { id: '1', source: avatar1, borderColor: '#6C4AE4' },
-  { id: '2', source: avatar1, borderColor: '#E4B14A' },
-  { id: '3', source: avatar1, borderColor: '#4AE47B' },
-  { id: '4', source: avatar1, borderColor: '#E44A4A' },
-  { id: '5', source: avatar1, borderColor: '#B89B5B' },
+  {id: '1', source: avatar1, borderColor: '#6C4AE4'},
+  {id: '2', source: avatar1, borderColor: '#E4B14A'},
+  {id: '3', source: avatar1, borderColor: '#4AE47B'},
+  {id: '4', source: avatar1, borderColor: '#E44A4A'},
+  {id: '5', source: avatar1, borderColor: '#B89B5B'},
 ];
 
 const AVATAR_SIZE = 100;
@@ -32,9 +33,13 @@ const GRAY_BORDER = '#D1D5DB';
 
 export default function AvatarSelector() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const route = useRoute<RouteProp<RootStackParamList, 'AvatarSelector'>>();
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'AvatarSelector'>>();
-  const { isEditing = false } = route.params || {};
+  const navigation =
+    useNavigation<
+      NativeStackNavigationProp<RootStackParamList, 'AvatarSelector'>
+    >();
+  const {isEditing = false} = route.params || {};
 
   const handleConfirm = () => {
     if (!selectedId) {
@@ -42,8 +47,24 @@ export default function AvatarSelector() {
       return;
     }
 
-    
-    navigation.navigate('Menu', { showConfirmationModal: true });
+    if (!isModalVisible) {
+      // Exibe o modal após a seleção do avatar
+      setIsModalVisible(true);
+    }
+  };
+
+  const handleModalClose = () => {
+    if (!isModalVisible) return; // Evita chamadas repetidas
+  
+    setIsModalVisible(false);
+  
+    if (isEditing) {
+      // Redireciona para o Menu sem passar parâmetros
+      navigation.navigate('Menu');
+    } else {
+      // Redireciona para a Home
+      navigation.navigate('Home');
+    }
   };
 
   const handleAvatarPress = (id: string) => {
@@ -129,6 +150,22 @@ export default function AvatarSelector() {
         width={Dimensions.get('window').width * 0.9}
         style={styles.confirmButton}
         onPress={handleConfirm}
+      />
+
+      {/* Modal de Confirmação */}
+      <Modal
+        visible={isModalVisible}
+        title={
+          isEditing ? 'Perfil atualizado' : 'Cadastro realizado com sucesso!'
+        }
+        description={
+          isEditing
+            ? 'Suas informações foram salvas com sucesso.'
+            : 'Você será direcionado para a tela principal.'
+        }
+        confirmText="OK"
+        confirmColor="#32C25B"
+        onClose={handleModalClose}
       />
     </View>
   );
