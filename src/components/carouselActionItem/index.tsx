@@ -4,11 +4,12 @@ import style from './style';
 type Props = {
     title: string;
     icon: ImageSourcePropType;
+    onPress?: () => void
   };
 
-  export function CarouselActionItem({ title, icon }: Props) {
+  export function CarouselActionItem({ title, icon, onPress }: Props) {
     return (
-      <TouchableOpacity style={style.container} >
+      <TouchableOpacity style={style.container} onPress={onPress} >
         <Text style={style.title}>{title}</Text>
         <Image source={icon} style={style.icon} />
       </TouchableOpacity>

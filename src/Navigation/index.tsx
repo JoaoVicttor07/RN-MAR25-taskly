@@ -5,33 +5,34 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from '../Screens/Home';
 import Register from '../Screens/Register';
 import Menu from '../Screens/Menu/MainMenu';
+import TermosPage from '../Screens/Menu/TermsMenu';
 import AvatarSelector from '../Screens/AvatarSelector';
+import PreferencesMenu from '../Screens/PreferencesMenu';
+import EditPersonalInfoScreen from '../Screens/EditPersonalInfo/EditPersonalInfoScreen';
+import Login from '../Screens/Login/index';
+import { RootStackParamList } from './types';
 
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const Stack = createNativeStackNavigator();
-
-const InitialScreen = ({ navigation }: any) => (
+const InitialScreen = ({navigation}: any) => (
   <SafeAreaView style={styles.container}>
     <View style={styles.containerTaskly}>
       <Text style={styles.taskly}>TASKLY</Text>
       <Text style={styles.cluster}>Cluster-2</Text>
     </View>
     <View style={styles.buttonsRow}>
-      {/* 🔹 Botão para navegar para a tela "Home" (Página Inicial) */}
       <TouchableOpacity
         style={styles.containerButton}
         onPress={() => navigation.navigate('Home')}>
         <Text style={styles.buttonText}>Pág. Inicial</Text>
       </TouchableOpacity>
 
-      {/* 🔹 Botão para navegar para a tela "Register" (Cadastro) */}
       <TouchableOpacity
         style={styles.containerButton}
         onPress={() => navigation.navigate('Register')}>
         <Text style={styles.buttonText}>Cadastro</Text>
       </TouchableOpacity>
 
-      {/* 🔹 Botão para navegar para a nova tela "Menu" */}
       <TouchableOpacity
         style={styles.containerButton}
         onPress={() => navigation.navigate('Menu')}>
@@ -43,6 +44,13 @@ const InitialScreen = ({ navigation }: any) => (
         onPress={() => navigation.navigate('AvatarSelector')}>
         <Text style={styles.buttonText}>Avatar</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.containerButton}
+        onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
+
     </View>
   </SafeAreaView>
 );
@@ -52,8 +60,7 @@ export default function AppNavigator() {
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="InitialScreen"
-        screenOptions={{ headerShown: false }}>
-
+        screenOptions={{headerShown: false}}>
         {/* 📌 Tela inicial com botões de navegação */}
         <Stack.Screen name="InitialScreen" component={InitialScreen} />
 
@@ -63,10 +70,29 @@ export default function AppNavigator() {
         {/* 📌 Tela de cadastro */}
         <Stack.Screen name="Register" component={Register} />
 
-        {/* 📌 Tela de menu (recém adicionada) */}
+        {/* 📌 Tela de menu */}
         <Stack.Screen name="Menu" component={Menu} />
 
+        {/* 📌 Tela de Termos e Regulamentos */}
+
+        <Stack.Screen name="Regulamentos" component={TermosPage} />
+
+        {/* 📌 Tela de seleção de avatar */}
         <Stack.Screen name="AvatarSelector" component={AvatarSelector} />
+
+        {/* 📌 Tela de seleção de preferencia de tema */}
+        <Stack.Screen name="PreferencesMenu" component={PreferencesMenu} />
+
+
+        {/* 📌 Tela de Login */}
+        <Stack.Screen name="Login" component={Login} />
+
+
+        <Stack.Screen
+          name="EditPersonalInfo"
+          component={EditPersonalInfoScreen}
+        />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -84,16 +110,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   buttonsRow: {
-    flex:0.4,
+    flex: 0.8,
     flexDirection: 'column',
     gap: 12,
-    alignItems: 'center', 
-    justifyContent:'flex-start', 
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   containerButton: {
-    marginVertical: 6,   
+    marginVertical: 6,
   },
   buttonText: {
     backgroundColor: '#0f7892',
@@ -115,4 +140,3 @@ const styles = StyleSheet.create({
     color: '#007219',
   },
 });
-

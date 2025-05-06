@@ -24,6 +24,7 @@ interface InputProps extends TextInputProps {
   textColor?: string
   mask?: 'phone' | 'none'
   validateEmail?: boolean
+  editable?: boolean
   multiline?: boolean
   maxHeight?: DimensionValue
 }
@@ -42,6 +43,7 @@ export default function Input({
   textColor = '#000000',
   mask = 'none',
   validateEmail = false,
+  editable = true,
   ...textInputProps
 }: InputProps) {
   const [internalValue, setInternalValue] = useState('')
@@ -86,11 +88,12 @@ export default function Input({
         {...textInputProps}
         value={displayValue}
         onChangeText={handleChange}
+        editable={editable}
         style={[
           styles.input,
           inputStyle,
           (error || emailError) && styles.inputError,
-          { width, height, fontFamily, fontWeight, color: textColor },
+          { width, height, fontFamily, fontWeight, color: textColor, backgroundColor: editable ? '#FFFFFF' : '#F0F0F0' },
         ]}
         keyboardType={
           validateEmail ? 'email-address' : textInputProps.keyboardType ?? 'default'
