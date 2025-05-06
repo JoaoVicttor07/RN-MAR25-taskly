@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, Image, Modal, TouchableOpacity, StyleSheet } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  Image,
+} from 'react-native';
 import styles from './style';
 import Button from '../../components/button';
 import CreateTaskModal from '../../components/ModalCreateTask';
 import EmptyState from '../../components/EmptyState';
 import TaskList from '../../components/TaskItem/TaskList';
 import Filter from '../../components/Filter';
+import FilterModal from '../../components/ModalFilter';
 import Fonts from '../../Theme/fonts';
 
 const Home: React.FC = () => {
@@ -49,11 +54,11 @@ const Home: React.FC = () => {
   };
 
   const handleOpenFilterModal = () => {
-    setFilterModalVisible(true); 
+    setFilterModalVisible(true);
   };
 
   const handleCloseFilterModal = () => {
-    setFilterModalVisible(false); 
+    setFilterModalVisible(false);
   };
 
   return (
@@ -94,54 +99,12 @@ const Home: React.FC = () => {
         onCreate={handleCreateTask}
       />
 
-
-      <Modal
+      <FilterModal
         visible={filterModalVisible}
-        transparent
-        animationType="slide"
-        onRequestClose={handleCloseFilterModal}
-      >
-        <View style={filterModalStyles.modalOverlay}>
-          <View style={filterModalStyles.modalContent}>
-            <Text style={filterModalStyles.modalTitle}>Filtros</Text>
-            <TouchableOpacity style={filterModalStyles.closeButton} onPress={handleCloseFilterModal}>
-              <Text style={filterModalStyles.closeButtonText}>Fechar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+        onClose={handleCloseFilterModal}
+      />
     </View>
   );
 };
-
-const filterModalStyles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 20,
-    minHeight: 200,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 15,
-  },
-  closeButton: {
-    backgroundColor: '#ddd',
-    padding: 10,
-    borderRadius: 5,
-    alignSelf: 'flex-end',
-    marginTop: 15,
-  },
-  closeButtonText: {
-    fontSize: 16,
-  },
-});
 
 export default Home;
