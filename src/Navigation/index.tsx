@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
 } from 'react-native';
+
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Home from '../Screens/Home/Index';
@@ -16,8 +17,9 @@ import AvatarSelector from '../Screens/AvatarSelector';
 import PreferencesMenu from '../Screens/PreferencesMenu';
 import EditPersonalInfoScreen from '../Screens/EditPersonalInfo/EditPersonalInfoScreen';
 import Login from '../Screens/Login/index';
+import { RootStackParamList } from './types';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const InitialScreen = ({navigation}: any) => (
   <SafeAreaView style={styles.container}>

@@ -1,7 +1,9 @@
+import React from 'react';
 import {
   TouchableOpacity,
   Text,
   View,
+  ActivityIndicator,
   TextStyle,
   DimensionValue,
   ViewStyle,
@@ -22,7 +24,10 @@ interface ButtonProps {
   fontSize?: number;
   style?: ViewStyle;
   onPress?: () => void;
+  loading?: boolean;
+  disabled?: boolean;
 }
+
 
 export default function Button({
   title,
@@ -37,6 +42,8 @@ export default function Button({
   fontSize,
   style,
   onPress,
+  loading = false,
+  
 }: ButtonProps) {
   return (
     <View>
@@ -46,18 +53,25 @@ export default function Button({
           {backgroundColor, borderColor, borderWidth, width, height},
           style,
         ]}
-        onPress={onPress}>
-        <Text
-          style={[
-            styles.text,
-            {color: textColor, fontWeight, fontSize},
-            fontFamily ? {fontFamily} : {},
-            fontFamily && fontFamily in Fonts
-              ? Fonts[fontFamily as keyof typeof Fonts]
-              : {},
-          ]}>
-          {title}
-        </Text>
+        onPress={onPress}
+        disabled={loading}  // Desabilitando o botão enquanto está carregando
+      >
+        {loading ? (
+          <ActivityIndicator size="small" color={textColor || '#FFFFFF'} />
+        ) : (
+          <Text
+            style={[
+              styles.text,
+              {color: textColor, fontWeight, fontSize},
+              fontFamily ? {fontFamily} : {},
+              fontFamily && fontFamily in Fonts
+                ? Fonts[fontFamily as keyof typeof Fonts]
+                : {},
+            ]}
+          >
+            {title}
+          </Text>
+        )}
       </TouchableOpacity>
     </View>
   );
