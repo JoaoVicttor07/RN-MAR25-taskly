@@ -1,16 +1,27 @@
-import React from 'react';
-import {SafeAreaView, View, Text, Image, TouchableOpacity} from 'react-native';
-import {CarouselActionList} from '../../../components/carouselActionList/index';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, View, Text, Image, TouchableOpacity } from 'react-native';
+import { CarouselActionList } from '../../../components/carouselActionList/index';
+import Modal from '../../AvatarSelector/Modal';
 import styles from './style';
 
 type Props = {
   navigation: any;
+  route: any;
 };
 
-const MenuPrincipal = ({navigation}: Props) => {
+const MenuPrincipal = ({ navigation, route }: Props) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [hasShownModal, setHasShownModal] = useState(false); // Controle para evitar exibição duplicada
+
+  useEffect(() => {
+    if (route.params?.showConfirmationModal && !hasShownModal) {
+      setIsModalVisible(true);
+      setHasShownModal(true); // Marca o modal como exibido
+    }
+  }, [route.params, hasShownModal]);
+
   return (
     <SafeAreaView style={styles.safeArea}>
-
       <View style={styles.profileSection}>
         <Image
           source={require('../../../Assets/Images/Ellipse1.png')}
@@ -30,11 +41,9 @@ const MenuPrincipal = ({navigation}: Props) => {
       </View>
 
       <View style={styles.containerButtons}>
-
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('PreferencesMenu')}>
-          
           <Text style={styles.buttonText}>Preferências</Text>
           <Image
             source={require('../../../Assets/icons/VectorBack.png')}
@@ -44,8 +53,7 @@ const MenuPrincipal = ({navigation}: Props) => {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Regulamentos')}
-        >
+          onPress={() => navigation.navigate('Regulamentos')}>
           <Text style={styles.buttonText}>Termos e regulamentos</Text>
           <Image
             source={require('../../../Assets/icons/VectorBack.png')}
@@ -53,6 +61,15 @@ const MenuPrincipal = ({navigation}: Props) => {
           />
         </TouchableOpacity>
       </View>
+
+      <Modal
+        visible={isModalVisible}
+        title="Perfil atualizado"
+        description="Suas informações foram salvas com sucesso."
+        confirmText="FECHAR"
+        confirmColor="#4CAF50"
+        onClose={() => setIsModalVisible(false)}
+      />
     </SafeAreaView>
   );
 };

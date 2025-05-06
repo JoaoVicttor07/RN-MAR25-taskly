@@ -7,7 +7,14 @@ import {
   Alert,
   Dimensions,
 } from 'react-native';
+import {useRoute, useNavigation} from '@react-navigation/native';
+import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import type {RouteProp} from '@react-navigation/native';
+import type {RootStackParamList} from '../../navigation';
 import Button from '../../components/button';
+import ProfileHeader from '../../components/ProfileHeader';
+import ProgressBar from '../../components/ProgressBar';
+import Modal from './Modal';
 import styles from './style';
 
 import avatar1 from '../../Assets/Images/Avatars/avatar-1.jpg';
@@ -26,13 +33,38 @@ const GRAY_BORDER = '#D1D5DB';
 
 export default function AvatarSelector() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const route = useRoute<RouteProp<RootStackParamList, 'AvatarSelector'>>();
+  const navigation =
+    useNavigation<
+      NativeStackNavigationProp<RootStackParamList, 'AvatarSelector'>
+    >();
+  const {isEditing = false} = route.params || {};
 
   const handleConfirm = () => {
     if (!selectedId) {
-      Alert.alert('Selecione um avatar');
+      Alert.alert('Por favor, selecione um avatar antes de continuar.');
       return;
     }
-    Alert.alert('Avatar selecionado!', `ID: ${selectedId}`);
+
+    if (!isModalVisible) {
+      // Exibe o modal após a seleção do avatar
+      setIsModalVisible(true);
+    }
+  };
+
+  const handleModalClose = () => {
+    if (!isModalVisible) return; // Evita chamadas repetidas
+  
+    setIsModalVisible(false);
+  
+    if (isEditing) {
+      // Redireciona para o Menu sem passar parâmetros
+      navigation.navigate('Menu');
+    } else {
+      // Redireciona para a Home
+      navigation.navigate('Home');
+    }
   };
 
   const handleAvatarPress = (id: string) => {
@@ -45,6 +77,15 @@ export default function AvatarSelector() {
 
   return (
     <View style={styles.container}>
+      {isEditing && (
+        <View style={styles.headerContainer}>
+          <ProfileHeader
+            title="EDIÇÃO DE PERFIL"
+            onBackPress={() => navigation.goBack()}
+          />
+          <ProgressBar progress={1} />
+        </View>
+      )}
       <View style={styles.content}>
         <Text style={styles.textAvatar}>SELECIONE SEU AVATAR</Text>
         <Text style={styles.textPick}>(Escolha somente um.)</Text>
@@ -103,12 +144,28 @@ export default function AvatarSelector() {
         })}
       </View>
       <Button
-        title="CONFIRMAR SELEÇÃO"
-        fontFamily='Roboto60020'
+        title={isEditing ? 'CONFIRMAR EDIÇÃO' : 'CONFIRMAR SELEÇÃO'}
+        fontFamily="Roboto60020"
         backgroundColor="#6C4AE4"
         width={Dimensions.get('window').width * 0.9}
         style={styles.confirmButton}
         onPress={handleConfirm}
+      />
+
+      {/* Modal de Confirmação */}
+      <Modal
+        visible={isModalVisible}
+        title={
+          isEditing ? 'Perfil atualizado' : 'Cadastro realizado com sucesso!'
+        }
+        description={
+          isEditing
+            ? 'Suas informações foram salvas com sucesso.'
+            : 'Você será direcionado para a tela principal.'
+        }
+        confirmText="OK"
+        confirmColor="#32C25B"
+        onClose={handleModalClose}
       />
     </View>
   );
