@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F4F4F4',
     padding: 24,
     borderRadius: 8,
-    height: 382,
+    minHeight: 382,
     width: 329,
     justifyContent: 'space-between',
   },
@@ -30,9 +30,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    paddingVertical: 13.5,
   },
   accordionContent: {
     paddingVertical: 10,
@@ -41,6 +39,18 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     gap: 12,
   },
+  accordionTitle: {
+    ...Fonts.Roboto50018,
+    color: '#000000',
+  },
+  accordionArea: {
+    marginBottom: 32,
+  },
+  mainAcordionHeader: {
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#D3D3D3',
+  }
 });
 
 export default styles

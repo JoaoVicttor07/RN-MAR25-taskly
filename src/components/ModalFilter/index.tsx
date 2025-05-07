@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { Modal, View, Text, TouchableOpacity } from 'react-native';
+import React, {useState} from 'react';
+import {Modal, View, Text, TouchableOpacity, Image} from 'react-native';
 import styles from './style';
-import { Image } from 'react-native';
 import Button from '../../components/button';
 import Fonts from '../../Theme/fonts';
 import Collapsible from 'react-native-collapsible';
@@ -11,7 +10,7 @@ interface FilterModalProps {
   onClose: () => void;
 }
 
-const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose }) => {
+const FilterModal: React.FC<FilterModalProps> = ({visible, onClose}) => {
   const [isOrdenarOpen, setIsOrdenarOpen] = useState(false);
   const [isTagsOpen, setIsTagsOpen] = useState(false);
   const [isDataOpen, setIsDataOpen] = useState(false);
@@ -43,44 +42,64 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose }) => {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.accordionHeader} onPress={toggleOrdenar}>
-            <Text>Ordenar por</Text>
-            {/* Adicione um indicador visual (seta) para expandir/recolher */}
-            <Text>{isOrdenarOpen ? '-' : '+'}</Text>
-          </TouchableOpacity>
-          <Collapsible collapsed={!isOrdenarOpen}>
-            <View style={styles.accordionContent}>
-              <Text>Opção de ordenação 1</Text>
-              <Text>Opção de ordenação 2</Text>
-              {/* Adicione aqui as opções de ordenação */}
-            </View>
-          </Collapsible>
+          <View style={styles.accordionArea}>
+            <TouchableOpacity
+              style={styles.accordionHeader}
+              onPress={toggleOrdenar}>
+              <Text style={styles.accordionTitle}>Ordenar por</Text>
+              <Image
+                source={
+                  isOrdenarOpen
+                    ? require('../../Assets/icons/arrowUp.png')
+                    : require('../../Assets/icons/arrowDown.png')
+                }
+              />
+            </TouchableOpacity>
+            <Collapsible collapsed={!isOrdenarOpen}>
+              <View style={styles.accordionContent}>
+                <Text>Opção de ordenação 1</Text>
+                <Text>Opção de ordenação 2</Text>
+              </View>
+            </Collapsible>
 
-          <TouchableOpacity style={styles.accordionHeader} onPress={toggleTags}>
-            <Text>Tags</Text>
-            {/* Adicione um indicador visual (seta) para expandir/recolher */}
-            <Text>{isTagsOpen ? '-' : '+'}</Text>
-          </TouchableOpacity>
-          <Collapsible collapsed={!isTagsOpen}>
-            <View style={styles.accordionContent}>
-              <Text>Tag 1</Text>
-              <Text>Tag 2</Text>
-              {/* Adicione aqui as opções de tags */}
-            </View>
-          </Collapsible>
+            <TouchableOpacity
+              style={[styles.accordionHeader, styles.mainAcordionHeader]}
+              onPress={toggleTags}>
+              <Text style={styles.accordionTitle}>Tags</Text>
+              <Image
+                source={
+                  isTagsOpen
+                    ? require('../../Assets/icons/arrowUp.png')
+                    : require('../../Assets/icons/arrowDown.png')
+                }
+              />
+            </TouchableOpacity>
+            <Collapsible collapsed={!isTagsOpen}>
+              <View style={styles.accordionContent}>
+                <Text>Tag 1</Text>
+                <Text>Tag 2</Text>
+              </View>
+            </Collapsible>
 
-          <TouchableOpacity style={styles.accordionHeader} onPress={toggleData}>
-            <Text>Data</Text>
-            {/* Adicione um indicador visual (seta) para expandir/recolher */}
-            <Text>{isDataOpen ? '-' : '+'}</Text>
-          </TouchableOpacity>
-          <Collapsible collapsed={!isDataOpen}>
-            <View style={styles.accordionContent}>
-              <Text>Opção de data 1</Text>
-              <Text>Opção de data 2</Text>
-              {/* Adicione aqui as opções de data */}
-            </View>
-          </Collapsible>
+            <TouchableOpacity
+              style={styles.accordionHeader}
+              onPress={toggleData}>
+              <Text style={styles.accordionTitle}>Data</Text>
+              <Image
+                source={
+                  isDataOpen
+                    ? require('../../Assets/icons/arrowUp.png')
+                    : require('../../Assets/icons/arrowDown.png')
+                }
+              />
+            </TouchableOpacity>
+            <Collapsible collapsed={!isDataOpen}>
+              <View style={styles.accordionContent}>
+                <Text>Opção de data 1</Text>
+                <Text>Opção de data 2</Text>
+              </View>
+            </Collapsible>
+          </View>
 
           <View style={styles.buttonsContainer}>
             <Button
