@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native';
-import Fonts from '../../Theme/fonts';
+import { StyleSheet } from "react-native";
+import Fonts from "../../Theme/fonts";
 
 const styles = StyleSheet.create({
     container: {
@@ -12,8 +12,8 @@ const styles = StyleSheet.create({
         paddingBottom: 30,
     },
     textPreferences: {
-        ...Fonts.Roboto40016,
-    },
-});
+        ...Fonts.Roboto40016
+    }
+})
 
-export default styles;
+export default styles

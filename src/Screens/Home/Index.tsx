@@ -1,15 +1,31 @@
-// PÁGINA INICIAL - HOME
-
 import React, {useState} from 'react';
-import {View, Text, Image, TouchableOpacity} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {
+  View,
+  Text,
+  Image,
+} from 'react-native';
 import styles from './style';
 import Button from '../../components/button';
-import CreateTaskModal from './Modal/Index';
+import CreateTaskModal from '../../components/ModalCreateTask';
+import EmptyState from '../../components/EmptyState';
+import TaskList from '../../components/TaskItem/TaskList';
+import Filter from '../../components/Filter';
+import FilterModal from '../../components/ModalFilter';
+import Fonts from '../../Theme/fonts';
 
 const Home: React.FC = () => {
-  const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
+  const [filterModalVisible, setFilterModalVisible] = useState(false);
+  const [tasks, setTasks] = useState<
+    {
+      title: string;
+      description: string;
+      deadline: string;
+      id: string;
+      categories: string[];
+      isCompleted: boolean;
+    }[]
+  >([]);
 
   const handleCreateTask = (task: {
     title: string;
@@ -17,69 +33,75 @@ const Home: React.FC = () => {
     deadline: string;
   }) => {
     console.log('handleCreateTask chamada com:', task);
+    setTasks(prevTasks => [
+      ...prevTasks,
+      {
+        ...task,
+        id: String(Date.now()),
+        categories: [],
+        isCompleted: false,
+      },
+    ]);
     setModalVisible(false);
   };
 
-  const handleOpenModal = () => {
-    console.log('Abrindo modal de criação de tarefa');
+  const handleOpenCreateTaskModal = () => {
     setModalVisible(true);
   };
 
-  const handleCloseModal = () => {
-    console.log('Fechando modal de criação de tarefa');
+  const handleCloseCreateTaskModal = () => {
     setModalVisible(false);
   };
 
-  const handleGoBack = () => {
-    console.log('Navegando para a tela anterior');
-    navigation.goBack();
+  const handleOpenFilterModal = () => {
+    setFilterModalVisible(true);
+  };
+
+  const handleCloseFilterModal = () => {
+    setFilterModalVisible(false);
   };
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>TASKLY</Text>
         <Image
-          source={require('../../Assets/Images/Ellipse1.png')}
+          source={require('../../Assets/Images/Avatars/avatar-1.jpg')}
           style={styles.avatar}
         />
       </View>
 
-      {/* Smiles Sad */}
-      <View style={styles.containerNoTask}>
-        <Image
-          source={require('../../Assets/Images/SmileySad.png')}
-          style={styles.smileSad}
-          resizeMode="contain"
-        />
-        <Text style={styles.textNoTask}>No momento você não possui tarefa</Text>
+      {tasks.length === 0 ? (
+        <View style={styles.containerNoTask}>
+          <EmptyState />
+        </View>
+      ) : (
+        <View style={styles.taskListContainer}>
+          <Filter onPress={handleOpenFilterModal} />
+          <TaskList tasks={tasks} setTasks={setTasks} />
+        </View>
+      )}
 
-        {/* Botão para Criar Tarefa */}
-        <Button
-          title="Criar Tarefa"
-          backgroundColor="#5B3CC4"
-          borderColor="#5B3CC4"
-          borderWidth={0}
-          textColor="#FFFFFF"
-          onPress={handleOpenModal}
-        />
-      </View>
+      <Button
+        title="CRIAR TAREFA"
+        fontFamily={Fonts.Roboto60020.fontFamily}
+        fontWeight={600}
+        fontSize={Fonts.Roboto60020.fontSize}
+        backgroundColor="#5B3CC4"
+        textColor="#FFFFFF"
+        onPress={handleOpenCreateTaskModal}
+        width={329}
+      />
 
-      {/* Link para Voltar */}
-      <View style={styles.containerNoTask}>
-        <TouchableOpacity
-          onPress={handleGoBack}
-          style={styles.buttonNavigation}>
-          <Text style={styles.buttonTextNavigation}>Voltar</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Modal de Criar Tarefa */}
       <CreateTaskModal
         visible={modalVisible}
-        onClose={handleCloseModal}
+        onClose={handleCloseCreateTaskModal}
         onCreate={handleCreateTask}
+      />
+
+      <FilterModal
+        visible={filterModalVisible}
+        onClose={handleCloseFilterModal}
       />
     </View>
   );
