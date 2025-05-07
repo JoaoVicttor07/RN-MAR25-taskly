@@ -32,10 +32,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 13.5,
   },
-  accordionContent: {
-    paddingVertical: 10,
-    paddingLeft: 15,
-  },
   buttonsContainer: {
     gap: 12,
   },
@@ -46,10 +42,27 @@ const styles = StyleSheet.create({
   accordionArea: {
     marginBottom: 32,
   },
-  mainAcordionHeader: {
+  line: {
     borderTopWidth: 1,
     borderBottomWidth: 1,
     borderColor: '#D3D3D3',
+  },
+  itemAccordion: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 14.5,
+    paddingHorizontal: 8,
+    backgroundColor: '#E6E0F7',
+  },
+  optionText: {
+    ...Fonts.Roboto40016,
+    color: '#1E1E1E',
+    marginLeft: 8,
+  },
+  selectionAreaItemAccordion:{
+    flexDirection: 'row',
+    alignItems: 'center',
   }
 });
 

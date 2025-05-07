@@ -1,6 +1,7 @@
 import React, { useRef, useCallback } from 'react';
-import { Text, View, TouchableOpacity, Image, FlatList, Animated } from 'react-native';
+import { Text, View, TouchableOpacity, FlatList, Animated } from 'react-native';
 import { styles } from './style';
+import AnimatedCheck from '../AnimatedCheck';
 
 interface TaskItemProps {
   title: string;
@@ -11,7 +12,7 @@ interface TaskItemProps {
 }
 
 const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isCompleted, onToggleComplete }) => {
-  const iconScaleValue = useRef(new Animated.Value(1)).current;
+
   const buttonScaleValue = useRef(new Animated.Value(1)).current;
 
   const animateScale = useCallback(
@@ -25,21 +26,10 @@ const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isC
     []
   );
 
-  const handleCheckPress = () => {
-    animateScale(iconScaleValue, 0.8, 50, () => {
-      animateScale(iconScaleValue, 1, 100);
-      onToggleComplete();
-    });
-  };
-
   const handleButtonPress = () => {
     animateScale(buttonScaleValue, 0.9, 50, () => {
       animateScale(buttonScaleValue, 1, 100);
     });
-  };
-
-  const animatedIconStyle = {
-    transform: [{ scale: iconScaleValue }],
   };
 
   const animatedButtonStyle = {
@@ -56,15 +46,10 @@ const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isC
     <View style={styles.itemArea}>
       <View style={styles.headerTask}>
         <Text style={styles.title}>{title}</Text>
-        <TouchableOpacity onPress={handleCheckPress} style={animatedIconStyle}>
-          <Image
-            source={
-              isCompleted
-                ? require('../../Assets/icons/checked-input.png')
-                : require('../../Assets/icons/uncheck-input.png')
-            }
-          />
-        </TouchableOpacity>
+        <AnimatedCheck
+          isCompleted={isCompleted}
+          onToggle={onToggleComplete}
+        />
       </View>
       <Text style={styles.description}>{description}</Text>
       <View style={styles.categoriesContainer}>

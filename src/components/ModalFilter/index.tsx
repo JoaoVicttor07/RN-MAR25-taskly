@@ -4,16 +4,19 @@ import styles from './style';
 import Button from '../../components/button';
 import Fonts from '../../Theme/fonts';
 import Collapsible from 'react-native-collapsible';
+import AnimatedCheck from '../AnimatedCheck';
 
 interface FilterModalProps {
   visible: boolean;
   onClose: () => void;
+  onPrioritySelect: (priority: 'lowToHigh' | 'highToLow' | null) => void;
 }
 
-const FilterModal: React.FC<FilterModalProps> = ({visible, onClose}) => {
+const FilterModal: React.FC<FilterModalProps> = ({visible, onClose, onPrioritySelect}) => {
   const [isOrdenarOpen, setIsOrdenarOpen] = useState(false);
   const [isTagsOpen, setIsTagsOpen] = useState(false);
   const [isDataOpen, setIsDataOpen] = useState(false);
+  const [selectedPriority, setSelectedPriority] = useState<'lowToHigh' | 'highToLow' | null>(null);
 
   const toggleOrdenar = () => {
     setIsOrdenarOpen(!isOrdenarOpen);
@@ -25,6 +28,21 @@ const FilterModal: React.FC<FilterModalProps> = ({visible, onClose}) => {
 
   const toggleData = () => {
     setIsDataOpen(!isDataOpen);
+  };
+
+  const handlePrioritySelect = (priority: 'lowToHigh' | 'highToLow') => {
+    setSelectedPriority(prevPriority => (prevPriority === priority ? null : priority));
+  };
+
+  const handleApplyFilter = () => {
+    onPrioritySelect(selectedPriority);
+    onClose();
+  };
+
+  const handleClearFilter = () => {
+    setSelectedPriority(null);
+    onPrioritySelect(null);
+    onClose();
   };
 
   return (
@@ -53,17 +71,33 @@ const FilterModal: React.FC<FilterModalProps> = ({visible, onClose}) => {
                     ? require('../../Assets/icons/arrowUp.png')
                     : require('../../Assets/icons/arrowDown.png')
                 }
-              />
+              /> 
             </TouchableOpacity>
             <Collapsible collapsed={!isOrdenarOpen}>
-              <View style={styles.accordionContent}>
-                <Text>Opção de ordenação 1</Text>
-                <Text>Opção de ordenação 2</Text>
+              <View>
+                <View style={[styles.itemAccordion, styles.line]}>
+                  <TouchableOpacity style={styles.selectionAreaItemAccordion} onPress={() => handlePrioritySelect('lowToHigh')}>
+                    <AnimatedCheck
+                      isCompleted={selectedPriority === 'lowToHigh'}
+                      onToggle={() => handlePrioritySelect('lowToHigh')}
+                    />
+                    <Text style={styles.optionText}>Prioridade (de baixa para alta)</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.itemAccordion}>
+                  <TouchableOpacity style={styles.selectionAreaItemAccordion} onPress={() => handlePrioritySelect('highToLow')}>
+                    <AnimatedCheck
+                      isCompleted={selectedPriority === 'highToLow'}
+                      onToggle={() => handlePrioritySelect('highToLow')}
+                    />
+                    <Text style={styles.optionText}>Prioridade (de alta para baixa)</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </Collapsible>
 
             <TouchableOpacity
-              style={[styles.accordionHeader, styles.mainAcordionHeader]}
+              style={[styles.accordionHeader, styles.line]}
               onPress={toggleTags}>
               <Text style={styles.accordionTitle}>Tags</Text>
               <Image
@@ -75,7 +109,7 @@ const FilterModal: React.FC<FilterModalProps> = ({visible, onClose}) => {
               />
             </TouchableOpacity>
             <Collapsible collapsed={!isTagsOpen}>
-              <View style={styles.accordionContent}>
+              <View>
                 <Text>Tag 1</Text>
                 <Text>Tag 2</Text>
               </View>
@@ -94,7 +128,7 @@ const FilterModal: React.FC<FilterModalProps> = ({visible, onClose}) => {
               />
             </TouchableOpacity>
             <Collapsible collapsed={!isDataOpen}>
-              <View style={styles.accordionContent}>
+              <View>
                 <Text>Opção de data 1</Text>
                 <Text>Opção de data 2</Text>
               </View>
@@ -111,6 +145,7 @@ const FilterModal: React.FC<FilterModalProps> = ({visible, onClose}) => {
               fontSize={Fonts.Roboto50018.fontSize}
               width="100%"
               height={37}
+              onPress={handleApplyFilter}
             />
             <Button
               title="LIMPAR FILTRO"
@@ -121,6 +156,7 @@ const FilterModal: React.FC<FilterModalProps> = ({visible, onClose}) => {
               fontSize={Fonts.Roboto50018.fontSize}
               width="100%"
               height={37}
+              onPress={handleClearFilter}
             />
           </View>
         </View>
