@@ -1,25 +1,31 @@
 import React, {useState} from 'react';
 import {Modal, View, Text, TouchableOpacity, Image} from 'react-native';
 import styles from './style';
-import Button from '../../components/button';
+import Button from '../button';
 import Fonts from '../../Theme/fonts';
 import Collapsible from 'react-native-collapsible';
 import AnimatedCheck from '../AnimatedCheck';
+import DatePicker from 'react-native-date-picker';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 interface FilterModalProps {
   visible: boolean;
   onClose: () => void;
   onPrioritySelect: (priority: 'lowToHigh' | 'highToLow' | null) => void;
-  onTagSelect: (tags: string[]) => void; // Adicione uma prop para comunicar as tags selecionadas
+  onTagSelect: (tags: string[]) => void;
+  onDateSelect: (date: Date | null) => void;
 }
 
-const FilterModal: React.FC<FilterModalProps> = ({visible, onClose, onPrioritySelect, onTagSelect}) => {
+const FilterModal: React.FC<FilterModalProps> = ({visible, onClose, onPrioritySelect, onTagSelect, onDateSelect}) => {
   const [isOrdenarOpen, setIsOrdenarOpen] = useState(false);
   const [isTagsOpen, setIsTagsOpen] = useState(false);
   const [isDataOpen, setIsDataOpen] = useState(false);
   const [selectedPriority, setSelectedPriority] = useState<'lowToHigh' | 'highToLow' | null>(null);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]); // Novo estado para as tags selecionadas
-  const availableTags = ['TRABALHO', 'CASA', 'ACADEMIA']; // Exemplo de tags disponíveis
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const availableTags = ['TRABALHO', 'CASA', 'ACADEMIA'];
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [filterDate, setFilterDate] = useState<Date | null>(null);
 
   const toggleOrdenar = () => {
     setIsOrdenarOpen(!isOrdenarOpen);
@@ -45,17 +51,33 @@ const FilterModal: React.FC<FilterModalProps> = ({visible, onClose, onPrioritySe
     }
   };
 
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (selectedDate: Date) => {
+    hideDatePicker();
+    setFilterDate(selectedDate);
+  };
+
   const handleApplyFilter = () => {
     onPrioritySelect(selectedPriority);
-    onTagSelect(selectedTags); // Comunica as tags selecionadas
+    onTagSelect(selectedTags);
+    onDateSelect(filterDate);
     onClose();
   };
 
   const handleClearFilter = () => {
     setSelectedPriority(null);
-    setSelectedTags([]); // Limpa as tags selecionadas
+    setSelectedTags([]);
+    setFilterDate(null);
     onPrioritySelect(null);
     onTagSelect([]);
+    onDateSelect(null);
     onClose();
   };
 
@@ -89,7 +111,7 @@ const FilterModal: React.FC<FilterModalProps> = ({visible, onClose, onPrioritySe
             </TouchableOpacity>
             <Collapsible collapsed={!isOrdenarOpen}>
               <View>
-                <View style={styles.itemAccordion}>
+                <View style={[styles.itemAccordion, styles.lineDown]}>
                   <TouchableOpacity style={styles.selectionAreaItemAccordion} onPress={() => handlePrioritySelect('lowToHigh')}>
                     <AnimatedCheck
                       isCompleted={selectedPriority === 'lowToHigh'}
@@ -157,9 +179,24 @@ const FilterModal: React.FC<FilterModalProps> = ({visible, onClose, onPrioritySe
               />
             </TouchableOpacity>
             <Collapsible collapsed={!isDataOpen}>
-              <View>
-                <Text>Opção de data 1</Text>
-                <Text>Opção de data 2</Text>
+              <View style={styles.dateFilterContainer}>
+                <TouchableOpacity onPress={showDatePicker}>
+                  <View style={styles.dateInput}>
+                    <Text style={styles.dateText}>
+                      {filterDate ? format(filterDate, 'dd/MM/yyyy', { locale: ptBR }) : 'Selecionar data'}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+
+                <DatePicker
+                  modal
+                  open={isDatePickerVisible}
+                  date={filterDate || new Date()}
+                  mode="date"
+                  locale="pt-BR"
+                  onConfirm={handleConfirm}
+                  onCancel={hideDatePicker}
+                />
               </View>
             </Collapsible>
           </View>

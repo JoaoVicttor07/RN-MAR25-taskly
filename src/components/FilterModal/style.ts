@@ -72,7 +72,20 @@ const styles = StyleSheet.create({
   },
   tagItem: {
     width: 140.5,
-  }
+  },
+  dateFilterContainer: {
+    paddingVertical: 10,
+  },
+  dateInput: {
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
+  dateText: {
+    ...Fonts.Roboto40016,
+    color: '#1E1E1E',
+  },
 });
 
 export default styles

@@ -10,7 +10,7 @@ import CreateTaskModal from '../../components/ModalCreateTask';
 import EmptyState from '../../components/EmptyState';
 import TaskList from '../../components/TaskItem/TaskList';
 import Filter from '../../components/Filter';
-import FilterModal from '../../components/ModalFilter';
+import FilterModal from '../../components/FilterModal';
 import Fonts from '../../Theme/fonts';
 
 const Home: React.FC = () => {
