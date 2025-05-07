@@ -33,7 +33,7 @@ const ConfirmationModal = ({
             backgroundColor={confirmColor}
             onPress={() => {
               if (onClose) {
-                onClose(); // Garante que o método seja chamado apenas uma vez
+                onClose();
               }
             }}
           />
