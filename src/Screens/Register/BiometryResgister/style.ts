@@ -1,67 +1,66 @@
 // src/Screens/Register/BiometryModal/style.ts
 import { StyleSheet } from 'react-native';
+import Fonts from '../../../Theme/fonts';
 
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: '#111827B2',
   },
   modalContent: {
-    width: '80%',
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
+    width: 329,
+    height:225,
+    backgroundColor: '#F4F4F4',
+    padding: 24,
+    borderRadius: 12,
     alignItems: 'center',
+    gap:12,
   },
+  
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    ...Fonts.Roboto50018,
+    color:'#1E1E1E',
   },
   description: {
-    fontSize: 16,
-    marginBottom: 20,
-    textAlign: 'center',
+    ...Fonts.Roboto40016,
+    textAlign: 'justify',
   },
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
+
   },
   leftButton: {
-    backgroundColor: '#B0B0B0',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+    backgroundColor: '#fff',
+    alignItems:'center',
+    justifyContent:'center',
+    width:134.5,
+    height:37,
+    borderWidth:2,
+    borderRadius:8,
+    borderColor:'#5B3CC4',
   },
   rightButton: {
     backgroundColor: '#5B3CC4',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+    alignItems:'center',
+    justifyContent:'center',
+    width:134.5,
+    height:37,
+    borderRadius:8,
   },
   leftButtonText: {
-    color: 'white',
-    fontSize: 16,
+    color: '#5B3CC4',
+    ...Fonts.Roboto50018,
     textAlign: 'center',
   },
   rightButtonText: {
-    color: 'white',
-    fontSize: 16,
+    color: '#fff',
+    ...Fonts.Roboto50018,
     textAlign: 'center',
-  },
-  openModalButton: {
-    marginTop: 20,
-    backgroundColor: '#5B3CC4',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    color: 'white',
-    fontSize: 16,
-    borderRadius: 5,
-    textAlign: 'center',
-  },
+  }
 });
 
 export default styles;
