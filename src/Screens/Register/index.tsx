@@ -1,6 +1,8 @@
-import React, {useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import {Text, ScrollView, View, TouchableOpacity, Image } from 'react-native';
+import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../navigation/types';
+import { Text, ScrollView, View, TouchableOpacity, Image } from 'react-native';
 import Button from '../../components/button';
 import Input from '../../components/input';
 import BiometryModal from './Modal';
@@ -8,7 +10,7 @@ import BiometryModal from './Modal';
 import styles from './style';
 
 export default function Register() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [name, setName] = useState('');
@@ -92,14 +94,27 @@ export default function Register() {
       confirmPassword &&
       password === confirmPassword
     ) {
+      // 📌 Comentário: Aqui será implementada a chamada para a API de cadastro no futuro.
+      console.log('Cadastro validado!');
+
+      // Exibe o modal de biometria
       setShowBiometryModal(true);
     }
+  };
+
+  const handleBiometryClose = () => {
+    setShowBiometryModal(false);
+
+    // Redireciona para a tela de seleção de avatar
+    navigation.navigate('AvatarSelector', { isEditing: false });
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.form}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}>
           <Image source={require('../../Assets/icons/VectorBack.png')} />
           <Text style={styles.backText}>VOLTAR</Text>
         </TouchableOpacity>
@@ -174,8 +189,8 @@ export default function Register() {
       />
       <BiometryModal
         visible={showBiometryModal}
-        onClose={() => setShowBiometryModal(false)}
-        onActivate={() => setShowBiometryModal(false)}
+        onClose={handleBiometryClose} // Fecha o modal e redireciona
+        onActivate={handleBiometryClose} // Fecha o modal e redireciona
       />
     </ScrollView>
   );
