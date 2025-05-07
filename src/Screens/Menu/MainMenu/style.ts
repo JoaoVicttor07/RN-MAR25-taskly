@@ -24,8 +24,8 @@ const styles = StyleSheet.create({
   },
 
   containerInfo: {
-    width: '100%',     
-    alignItems: 'center', 
+    width: '100%',
+    alignItems: 'center',
     gap:8,
   },
 
@@ -56,11 +56,11 @@ const styles = StyleSheet.create({
     width:329,
     height:72,
     borderRadius: 12,
-    shadowColor: '#000',         
-    shadowOffset: { width: 3, height: 3 }, 
-    shadowOpacity: 0.2,       
-    shadowRadius: 4,          
-    elevation: 3, 
+    shadowColor: '#000',
+    shadowOffset: { width: 3, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
 
   buttonText: {

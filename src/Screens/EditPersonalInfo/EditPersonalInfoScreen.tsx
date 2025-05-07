@@ -69,7 +69,7 @@ function EditPersonalInfoScreen() {
             value={name}
             onChangeText={text => {
               setName(text);
-              if (nameError) validateName(text);
+              if (nameError) {validateName(text);}
             }}
             onBlur={() => validateName(name)}
             error={nameError}
@@ -89,7 +89,7 @@ function EditPersonalInfoScreen() {
             value={phone}
             onChangeText={text => {
               setPhone(text);
-              if (phoneError) validatePhone(text);
+              if (phoneError) {validatePhone(text);}
             }}
             onBlur={() => validatePhone(phone)}
             error={phoneError}

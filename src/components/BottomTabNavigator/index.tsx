@@ -1,9 +1,9 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import Home from '../../Screens/Home';
+import Home from '../../Screens/Home/Index';
 import Notifications from '../../Screens/Notifications';
-import Menu from '../../Screens/Menu/MainMenu';
+import Menu from '../../Screens/Menu/MainMenu/index';
 import TabIcon from './TabIcon';
 import bottomTabNavigatorStyles from './style';
 

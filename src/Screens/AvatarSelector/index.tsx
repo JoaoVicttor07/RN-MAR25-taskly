@@ -11,7 +11,7 @@ import {
 import { useRoute, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
-import type { RootStackParamList } from '../../navigation';
+import type { RootStackParamList } from '../../Navigation';
 import Button from '../../components/button';
 import ProfileHeader from '../../components/ProfileHeader';
 import ProgressBar from '../../components/ProgressBar';
@@ -78,13 +78,13 @@ export default function AvatarSelector() {
     if (isEditing) {
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Home' }], // Redireciona para a tela principal
+        routes: [{ name: 'Home' }], 
       });
     } else {
       navigation.reset({
         index: 0,
-        routes: [{ name: 'MainApp' }], // Certifique-se de que 'MainApp' é a rota do Bottom Navigator
-      });
+        routes: [{ name: 'MainApp' }],
+      });      
     }
   };
 
