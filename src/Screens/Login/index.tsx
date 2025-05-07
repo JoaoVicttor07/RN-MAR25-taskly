@@ -156,20 +156,8 @@ const Login: React.FC = () => {
         <Image
           source={require('../../Assets/Images/Logo.png')}
           style={styles.logo}
-        />
+        />        
         <Input
-          label="E-mail"
-          value={email}
-          onChangeText={handleEmailChange}
-          error={errors.email}
-        />
-        <Input
-          label="Senha"
-          value={password}
-          onChangeText={handlePasswordChange}
-          error={errors.password}
-          secureTextEntry
-        /><Input
         label="E-mail"
         value={email}
         onChangeText={handleEmailChange}
