@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
 import {
   View,
@@ -8,7 +9,8 @@ import {
   Dimensions,
 } from 'react-native';
 import Button from '../../components/button';
-import styles from './style';
+import getStyles, { avatarStyles } from './style'; // Importe getStyles e avatarStyles
+import { useTheme } from '../../Theme/ThemeContext';
 
 import avatar1 from '../../Assets/Images/Avatars/avatar-1.jpg';
 
@@ -26,6 +28,8 @@ const GRAY_BORDER = '#D1D5DB';
 
 export default function AvatarSelector() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const { theme } = useTheme();
+  const styles = getStyles(theme); // Obtém os estilos com base no tema
 
   const handleConfirm = () => {
     if (!selectedId) {
@@ -57,7 +61,8 @@ export default function AvatarSelector() {
             <TouchableOpacity
               key={avatar.id}
               style={[
-                styles.avatarTouchable,
+                avatarStyles.avatarTouchable, // Aplica os estilos fixos dos avatares
+
                 {
                   borderColor: selectedId
                     ? isSelected
@@ -66,8 +71,8 @@ export default function AvatarSelector() {
                     : avatar.borderColor,
                   borderWidth: 3,
                   borderRadius: AVATAR_SIZE / 2,
-                  margin: AVATAR_MARGIN / 2,
                   overflow: 'hidden',
+                  margin: AVATAR_MARGIN / 2,
                   padding: 0,
                 },
               ]}
@@ -76,10 +81,7 @@ export default function AvatarSelector() {
               <Image
                 source={avatar.source}
                 style={{
-                  position: 'absolute',
-                  left: -(AVATAR_SIZE * 0.1),
-                  top: 0,
-                  width: AVATAR_SIZE * 1.2,
+                  width: AVATAR_SIZE,
                   height: AVATAR_SIZE,
                   borderRadius: AVATAR_SIZE / 2,
                 }}
@@ -91,7 +93,7 @@ export default function AvatarSelector() {
                     position: 'absolute',
                     left: 0,
                     top: 0,
-                    width: AVATAR_SIZE * 1.2,
+                    width: AVATAR_SIZE,
                     height: AVATAR_SIZE,
                     borderRadius: AVATAR_SIZE / 2,
                     backgroundColor: 'rgba(0,0,0,0.4)',
@@ -104,10 +106,10 @@ export default function AvatarSelector() {
       </View>
       <Button
         title="CONFIRMAR SELEÇÃO"
-        fontFamily='Roboto60020'
-        backgroundColor="#6C4AE4"
+        fontFamily="Roboto60020"
         width={Dimensions.get('window').width * 0.9}
         style={styles.confirmButton}
+        backgroundColor={theme.primaryButton} // Garanta que essa propriedade esteja no seu tema
         onPress={handleConfirm}
       />
     </View>

@@ -1,10 +1,11 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
+
+const styles = (theme: any) => StyleSheet.create({
     container: {
       flexGrow: 1,
       padding: 30,
-      backgroundColor: '#F4F4F4',
+      backgroundColor: theme.background,
       alignItems: 'stretch',
     },
     form: {
@@ -12,6 +13,8 @@ const styles = StyleSheet.create({
     },
     inputSpacing: {
       marginBottom: 40,
+      borderColor: '#000080',
+      
     },
     buttonSpacing: {
       marginTop: 16,
@@ -21,8 +24,8 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       alignSelf: 'center',
       marginVertical: 20,
-      color: '#222',
+      color: theme.text,
     },
   });
 
-export default styles
+export default styles;

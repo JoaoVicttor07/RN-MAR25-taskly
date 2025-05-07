@@ -1,13 +1,18 @@
 import React from 'react';
 import {SafeAreaView, View, Text, Image, TouchableOpacity} from 'react-native';
 import {CarouselActionList} from '../../../components/carouselActionList/index';
-import styles from './style';
+import getStyles from './style'; // Renomeei a importação para getStyles
+import { useTheme } from '../../../Theme/ThemeContext';
 
 type Props = {
   navigation: any;
 };
 
 const MenuPrincipal = ({navigation}: Props) => {
+
+  const { theme } = useTheme();
+  const styles = getStyles(theme); // Chama a função getStyles com o tema
+
   return (
     <SafeAreaView style={styles.safeArea}>
 
@@ -34,7 +39,7 @@ const MenuPrincipal = ({navigation}: Props) => {
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('PreferencesMenu')}>
-          
+
           <Text style={styles.buttonText}>Preferências</Text>
           <Image
             source={require('../../../Assets/icons/VectorBack.png')}

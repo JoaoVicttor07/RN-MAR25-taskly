@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,9 +6,11 @@ import {
   TextInputProps,
   TextStyle,
   ViewStyle,
-  DimensionValue
-} from 'react-native'
-import styles from './style'
+  DimensionValue,
+} from 'react-native';
+import getStyles from './style';
+import { useTheme } from '../../Theme/ThemeContext';
+
 
 interface InputProps extends TextInputProps {
   label?: string
@@ -37,43 +39,45 @@ export default function Input({
   height,
   fontFamily,
   fontWeight = 'normal',
-  textColor = '#000000',
   mask = 'none',
   validateEmail = false,
   ...textInputProps
 }: InputProps) {
-  const [internalValue, setInternalValue] = useState('')
-  const [emailError, setEmailError] = useState<string | null>(null)
+  const [internalValue, setInternalValue] = useState('');
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const { theme } = useTheme(); // Obtenha o tema
+  const styles = getStyles(theme); // Aplique o tema aos estilos
 
   const formatPhone = (text: string) => {
-    const cleaned = text.replace(/\D/g, '')
-    const match = cleaned.match(/^(\d{0,2})(\d{0,1})(\d{0,4})(\d{0,4})$/)
-    if (!match) return text
+    const cleaned = text.replace(/\D/g, '');
+    const match = cleaned.match(/^(\d{0,2})(\d{0,1})(\d{0,4})(\d{0,4})$/);
+    if (!match) {return text;}
 
-    let result = ''
-    if (match[1]) result += `(${match[1]}`
-    if (match[1]?.length === 2) result += ') '
-    if (match[2]) result += match[2]
-    if (match[3]) result += ` ${match[3]}`
-    if (match[4]) result += `-${match[4]}`
-    return result
-  }
+    let result = '';
+    if (match[1]) {result += `(${match[1]}`;}
+    if (match[1]?.length === 2) {result += ') ';}
+    if (match[2]) {result += match[2];}
+    if (match[3]) {result += ` ${match[3]}`;}
+    if (match[4]) {result += `-${match[4]}`;}
+    return result;
+  };
 
   const handleChange = (text: string) => {
-    const newValue = mask === 'phone' ? formatPhone(text) : text
-    setInternalValue(newValue)
+    const newValue = mask === 'phone' ? formatPhone(text) : text;
+    setInternalValue(newValue);
 
     if (validateEmail) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      setEmailError(emailRegex.test(newValue) ? null : 'E-mail inválido')
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      setEmailError(emailRegex.test(newValue) ? null : 'E-mail inválido');
     }
 
-    textInputProps.onChangeText?.(newValue)
-  }
+    textInputProps.onChangeText?.(newValue);
+  };
 
-  const displayValue = textInputProps.value ?? internalValue
+  const displayValue = textInputProps.value ?? internalValue;
 
   return (
+    // eslint-disable-next-line react-native/no-inline-styles
     <View style={[styles.container, { width: '100%' }, containerStyle]}>
       {label != null && (
         <Text style={[styles.label, labelStyle, { fontFamily, fontWeight }]}>
@@ -88,7 +92,7 @@ export default function Input({
           styles.input,
           inputStyle,
           (error || emailError) && styles.inputError,
-          { width, height, fontFamily, fontWeight, color: textColor },
+          { width, height, fontFamily, fontWeight},
         ]}
         keyboardType={
           validateEmail ? 'email-address' : textInputProps.keyboardType ?? 'default'
@@ -111,5 +115,5 @@ export default function Input({
         </Text>
       )}
     </View>
-  )
+  );
 }

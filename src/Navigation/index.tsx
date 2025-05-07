@@ -4,74 +4,81 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from '../Screens/Home/Index';
 import Register from '../Screens/Register';
-import Menu from '../Screens/Menu/MainMenu'; 
+import Menu from '../Screens/Menu/MainMenu';
 import TermosPage from '../Screens/Menu/TermsMenu';
 import AvatarSelector from '../Screens/AvatarSelector';
 import PreferencesMenu from '../Screens/PreferencesMenu';
+import { useTheme } from '../Theme/ThemeContext'; // Importa o provedor de tema
 
 
 const Stack = createNativeStackNavigator();
 
-const InitialScreen = ({ navigation }: any) => (
-  <SafeAreaView style={styles.container}>
+const InitialScreen = ({ navigation }: any) => {
+
+  const { theme } = useTheme();
+
+  return (
+  <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
     <View style={styles.containerTaskly}>
-      <Text style={styles.taskly}>TASKLY</Text>
-      <Text style={styles.cluster}>Cluster-2</Text>
+      <Text style={[styles.taskly, { color: theme.text }]}>TASKLY</Text>
+      <Text style={[styles.cluster, { color: theme.text }]}>Cluster-2</Text>
     </View>
     <View style={styles.buttonsRow}>
 
       <TouchableOpacity
-        style={styles.containerButton}
+        style={[styles.containerButton, { backgroundColor: theme.buttonBackground }]}
         onPress={() => navigation.navigate('Home')}>
-        <Text style={styles.buttonText}>Pág. Inicial</Text>
+        <Text style={[styles.buttonText, { color: theme.buttonText }]}>Pág. Inicial</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={styles.containerButton}
+         style={[styles.containerButton, { backgroundColor: theme.buttonBackground }]}
         onPress={() => navigation.navigate('Register')}>
-        <Text style={styles.buttonText}>Cadastro</Text>
+        <Text style={[styles.buttonText, { color: theme.buttonText }]}>Cadastro</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={styles.containerButton}
+       style={[styles.containerButton, { backgroundColor: theme.buttonBackground }]}
         onPress={() => navigation.navigate('Menu')}>
-        <Text style={styles.buttonText}>Menu</Text>
+        <Text style={[styles.buttonText, { color: theme.buttonText }]}>Menu</Text>
       </TouchableOpacity>
 
-      
+
       <TouchableOpacity
-        style={styles.containerButton}
+        style={[styles.containerButton, { backgroundColor: theme.buttonBackground }]}
         onPress={() => navigation.navigate('AvatarSelector')}>
-        <Text style={styles.buttonText}>Avatar</Text>
+        <Text style={[styles.buttonText, { color: theme.buttonText }]}>Avatar</Text>
       </TouchableOpacity>
 
 
     </View>
   </SafeAreaView>
-);
+  );
+};
 
 export default function AppNavigator() {
+
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName='InitialScreen'
+        initialRouteName="InitialScreen"
         screenOptions={{ headerShown: false }}>
 
         {/* 📌 Tela inicial com botões de navegação */}
-        <Stack.Screen name='InitialScreen' component={InitialScreen} />
+        <Stack.Screen name="InitialScreen" component={InitialScreen} />
 
         {/* 📌 Tela de tarefas (Home) */}
-        <Stack.Screen name='Home' component={Home} />
+        <Stack.Screen name="Home" component={Home} />
 
         {/* 📌 Tela de cadastro */}
-        <Stack.Screen name='Register' component={Register} />
+        <Stack.Screen name="Register" component={Register} />
 
         {/* 📌 Tela de menu */}
-        <Stack.Screen name='Menu' component={Menu} />
+        <Stack.Screen name="Menu" component={Menu} />
 
         {/* 📌 Tela de Termos e Regulamentos */}
 
-        <Stack.Screen name="Regulamentos" component={TermosPage} /> 
+        <Stack.Screen name="Regulamentos" component={TermosPage} />
 
         {/* 📌 Tela de seleção de avatar */}
         <Stack.Screen name="AvatarSelector" component={AvatarSelector} />

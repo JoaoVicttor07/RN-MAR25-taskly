@@ -3,7 +3,7 @@ import Fonts from '../../../Theme/fonts';
 
 const CARD_SIZE = 140;
 
-const styles = StyleSheet.create({
+const styles = (theme: any) => StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.4)',
@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: '#F4F4F4',
+    backgroundColor: theme.modalBackground,
     borderRadius: 16,
     padding: 18,
     alignItems: 'center',
@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginLeft: 8,
     textDecorationLine: 'underline',
+    color: theme.text,
   },
   row: {
     flexDirection: 'row',
@@ -34,17 +35,17 @@ const styles = StyleSheet.create({
   card: {
     width: CARD_SIZE,
     height: CARD_SIZE,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.card,
     borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 6,
     borderWidth: 2,
-    borderColor: '#fff',
+    borderColor: theme.cardBorder,
   },
   selectedCard: {
-    borderColor: '#7B4AE4',
-    backgroundColor: '#fff',
+    borderColor: theme.primaryButton, // Cor de seleção themable
+    backgroundColor: theme.card, // Mantém a cor do card
   },
   icon: {
     width: 80,

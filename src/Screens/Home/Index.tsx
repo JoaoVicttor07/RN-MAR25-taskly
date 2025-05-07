@@ -3,13 +3,16 @@
 import React, {useState} from 'react';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import styles from './style';
 import Button from '../../components/button';
 import CreateTaskModal from './Modal/Index';
+import { useTheme } from '../../Theme/ThemeContext';
+import stylesHome from './style';
 
 const Home: React.FC = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
+  const { theme } = useTheme();
+  const styles = stylesHome(theme);
 
   const handleCreateTask = (task: {
     title: string;
@@ -51,17 +54,17 @@ const Home: React.FC = () => {
         <Image
           source={require('../../Assets/Images/SmileySad.png')}
           style={styles.smileSad}
-          resizeMode='contain'
+          resizeMode="contain"
         />
         <Text style={styles.textNoTask}>No momento você não possui tarefa</Text>
 
         {/* Botão para Criar Tarefa */}
         <Button
-          title='Criar Tarefa'
-          backgroundColor='#5B3CC4'
-          borderColor='#5B3CC4'
+          title="Criar Tarefa"
+          backgroundColor={theme.primaryButton}
+          borderColor={theme.primaryButton}
           borderWidth={0}
-          textColor='#FFFFFF'
+          textColor={theme.buttonText}
           onPress={handleOpenModal}
         />
       </View>

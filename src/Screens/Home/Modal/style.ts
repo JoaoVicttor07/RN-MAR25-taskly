@@ -1,27 +1,29 @@
 import { StyleSheet } from 'react-native';
 import Fonts from '../../../Theme/fonts';
 
-const styles = StyleSheet.create({
+
+const styles = (theme: any) => StyleSheet.create({ // <--- Remova o espaço extra antes dos parênteses
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(17, 24, 39, 0.7)', 
+    backgroundColor: 'rgba(17, 24, 39, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalContent: {
     marginHorizontal: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.background,
     borderRadius: 12,
     padding: 24,
   },
   modalTitle: {
     ...Fonts.Roboto50018,
     textAlign: 'left',
+    color: theme.text,
   },
   label: {
     marginTop: 12,
     ...Fonts.Roboto40012,
-    color: '#1E1E1E',
+    color: theme.text,
   },
   input: {
     borderWidth: 1,
@@ -29,10 +31,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginTop: 5,
+    color: theme.text,
+    backgroundColor: theme.inputBackground || theme.background,
   },
   textArea: {
     height: 100,
     textAlignVertical: 'top',
+    color: theme.text,
   },
   error: {
     color: '#E63946',
@@ -45,29 +50,29 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   cancelButton: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.background,
     borderRadius: 8,
-    borderWidth: 2,   
-    borderColor: '#5B3CC4', 
+    borderWidth: 2,
+    borderColor: theme.primaryButton,
     width: 134.5,
     height: 37,
     alignItems: 'center',
-    justifyContent:'center'
+    justifyContent:'center',
   },
   cancelText: {
-    color: '#5B3CC4',
+    color: theme.primaryButton,
     ...Fonts.Roboto50018,
   },
   createButton: {
-    backgroundColor: '#5B3CC4',
+    backgroundColor: theme.primaryButton,
     borderRadius: 8,
     width: 134.5,
     height: 37,
     alignItems: 'center',
-    justifyContent:'center'
+    justifyContent:'center',
   },
   createText: {
-    color: '#fff',
+    color: theme.buttonText,
     ...Fonts.Roboto50018,
   },
 });

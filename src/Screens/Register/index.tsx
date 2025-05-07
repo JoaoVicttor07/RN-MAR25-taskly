@@ -4,8 +4,8 @@ import {Text, ScrollView, View, Alert} from 'react-native';
 import Button from '../../components/button';
 import Input from '../../components/input';
 import BackButton from '../../components/BackButton';
-
-import styles from './style';
+import getStyles from './style'; // Importe a função de estilos
+import { useTheme } from '../../Theme/ThemeContext'; // Importe o useTheme
 
 export default function Register() {
   const navigation = useNavigation();
@@ -19,6 +19,8 @@ export default function Register() {
   const [passwordError, setPasswordError] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const { theme } = useTheme(); // Obtenha o tema
+  const themedStyles = getStyles(theme); // Aplique o tema aos estilos
 
   const validateEmail = (value: string) => {
     if (!value) {
@@ -58,15 +60,15 @@ export default function Register() {
   };
 
   const validatePassword = (value: string) => {
-    if (!value) setPasswordError('Campo obrigatório');
-    else if (value.length < 8) setPasswordError('A senha deve ter no mínimo 8 caracteres');
-    else setPasswordError('');
+    if (!value) {setPasswordError('Campo obrigatório');}
+    else if (value.length < 8) {setPasswordError('A senha deve ter no mínimo 8 caracteres');}
+    else {setPasswordError('');}
   };
 
   const validateConfirmPassword = (value: string) => {
-    if (!value) setConfirmPasswordError('Campo obrigatório');
-    else if (value !== password) setConfirmPasswordError('Senhas não coincidem');
-    else setConfirmPasswordError('');
+    if (!value) {setConfirmPasswordError('Campo obrigatório');}
+    else if (value !== password) {setConfirmPasswordError('Senhas não coincidem');}
+    else {setConfirmPasswordError('');}
   };
 
   const handleRegister = () => {
@@ -94,79 +96,80 @@ export default function Register() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.form}>
-        <BackButton 
+    <ScrollView contentContainerStyle={themedStyles.container}>
+      <View style={themedStyles.form}>
+        <BackButton
           onPress={() => navigation.goBack()}
         />
-        <Text style={styles.title}>CADASTRO</Text>
+        <Text style={themedStyles.title}>CADASTRO</Text>
         <Input
           label="Nome Completo"
           value={name}
           onChangeText={text => {
             setName(text);
-            if (nameError) validateName(text);
+            if (nameError) {validateName(text);}
           }}
           onBlur={() => validateName(name)}
           error={nameError}
-          containerStyle={styles.inputSpacing}
+          containerStyle={themedStyles.inputSpacing}
         />
         <Input
           label="E-mail"
           value={email}
           onChangeText={text => {
             setEmail(text);
-            if (emailError) validateEmail(text);
+            if (emailError) {validateEmail(text);}
           }}
           onBlur={() => validateEmail(email)}
           error={emailError}
-          containerStyle={styles.inputSpacing}
+          containerStyle={themedStyles.inputSpacing}
         />
         <Input
           label="Número"
           value={number}
           onChangeText={text => {
             setNumber(text);
-            if (numberError) validateNumber(text);
+            if (numberError) {validateNumber(text);}
           }}
           onBlur={() => validateNumber(number)}
           error={numberError}
-          mask='phone'
-          
-          containerStyle={styles.inputSpacing}
+          mask="phone"
+
+          containerStyle={themedStyles.inputSpacing}
         />
         <Input
           label="Senha"
           value={password}
           onChangeText={text => {
             setPassword(text);
-            if (passwordError) validatePassword(text);
+            if (passwordError) {validatePassword(text);}
           }}
           onBlur={() => validatePassword(password)}
           error={passwordError}
           secureTextEntry
-          containerStyle={styles.inputSpacing}
+          containerStyle={themedStyles.inputSpacing}
         />
         <Input
           label="Confirmar senha"
           value={confirmPassword}
           onChangeText={text => {
             setConfirmPassword(text);
-            if (confirmPasswordError) validateConfirmPassword(text);
+            if (confirmPasswordError) {validateConfirmPassword(text);}
           }}
           onBlur={() => validateConfirmPassword(confirmPassword)}
           error={confirmPasswordError}
           secureTextEntry
-          containerStyle={styles.inputSpacing}
+          containerStyle={themedStyles.inputSpacing}
         />
       </View>
 
       <Button
         title="CRIAR CONTA"
-        backgroundColor="#5B3CC4"
+        backgroundColor={theme.primaryButton}
+        textColor={theme.buttonText}
         width="100%"
         fontWeight="bold"
-        style={styles.buttonSpacing}
+        style={themedStyles.buttonSpacing}
         onPress={handleRegister}
       />
     </ScrollView>

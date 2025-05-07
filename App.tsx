@@ -1,8 +1,8 @@
 import React from 'react';
-import AppNavigator from './src/Navigation'; // Importa a navegação principal
+import AppNavigator from './src/Navigation/index'; // Importa a navegação principal
 import { useEffect } from 'react';
 import BootSplash from 'react-native-bootsplash';
-
+import { ThemeProvider } from './src/Theme/ThemeContext'; // Importa o provedor de tema
 
 const App: React.FC = () => {
 
@@ -17,14 +17,12 @@ const App: React.FC = () => {
     });
   }, []);
 
-  return <AppNavigator />;
+  return (
+    <ThemeProvider> {/* Envolve o aplicativo com o provedor de tema */}
+      <AppNavigator />
+    </ThemeProvider>
+  );
 };
 
 export default App;
 
-//Neiva
-//Coloquei uma página de acesso para a partir dela acessar as outras páginas
-//  Poderá ser acrescetado outros botões para as páginas login, cadastro, etc...
-// Assim todos poderão ver o andamento do projeto acessando as páginas uns dos outros pelo botão de link.
-// Isso pode ser feito na página navigation
-// na página que você criar, coloca um botão de retorno à página navegação, se quiser

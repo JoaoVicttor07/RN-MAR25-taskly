@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import {Modal, View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard} from 'react-native';
-import styles from './style';
+import getStyles from './style';
+import { useTheme } from '../../../Theme/ThemeContext';
 import { isValidDate } from '../../../Utils/validateDate';
 import { TextInputMask } from 'react-native-masked-text';
+
 
 interface CreateTaskModalProps {
   visible: boolean;
@@ -23,18 +25,20 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   const [description, setDescription] = useState('');
   const [deadline, setDeadline] = useState('');
   const [errors, setErrors] = useState<{ title?: string; description?: string; deadline?: string }>({});
+  const { theme } = useTheme();
+  const styles = getStyles(theme);
 
   const validateFields = () => {
     const newErrors: typeof errors = {};
-  
+
     if (!title.trim()) {
       newErrors.title = 'Título é obrigatório';
     }
-  
+
     if (!description.trim()) {
       newErrors.description = 'Descrição é obrigatória';
     }
-  
+
     if (!deadline.trim()) {
       newErrors.deadline = 'Prazo é obrigatório';
     } else if (!/^\d{2}\/\d{2}\/\d{4}$/.test(deadline.trim())) {
@@ -42,11 +46,11 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
     } else if (!isValidDate(deadline.trim())) {
       newErrors.deadline = 'Data inválida';
     }
-  
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  
+
 
   const handleCreate = () => {
     if (validateFields()) {
@@ -62,7 +66,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
     <Modal
       visible={visible}
       transparent
-      animationType='slide'
+      animationType="slide"
       onRequestClose={onClose}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -73,7 +77,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
             <Text style={styles.label}>Título</Text>
             <TextInput
               style={styles.input}
-              placeholder='Ex. bater o ponto'
+              placeholder="Ex. bater o ponto"
               value={title}
               onChangeText={setTitle}
             />
@@ -82,7 +86,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
             <Text style={styles.label}>Descrição</Text>
             <TextInput
               style={[styles.input, styles.textArea]}
-              placeholder='Digite a descrição'
+              placeholder="Digite a descrição"
               value={description}
               onChangeText={setDescription}
               multiline
@@ -96,7 +100,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                 format: 'DD/MM/YYYY',
               }}
               style={styles.input}
-              placeholder='DD/MM/AAAA'
+              placeholder="DD/MM/AAAA"
               value={deadline}
               onChangeText={setDeadline}
             />
