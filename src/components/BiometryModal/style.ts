@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import Fonts from '../../../Theme/fonts';
+import Fonts from '../../Theme/fonts';
 
 const styles = StyleSheet.create({
   overlay: {
@@ -36,4 +36,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default styles
+export default styles;

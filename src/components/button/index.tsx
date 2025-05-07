@@ -43,7 +43,7 @@ export default function Button({
   style,
   onPress,
   loading = false,
-  
+
 }: ButtonProps) {
   return (
     <View>

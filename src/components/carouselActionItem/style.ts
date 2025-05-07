@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-    container: { 
+    container: {
         padding: 15,
         width: 120,
         height: 120,
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 6,
       },
-      icon: { 
+      icon: {
        position: 'absolute',
        bottom: '22%',
        left: '15%',
@@ -22,6 +22,6 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: 'bold',
       },
-})
+});
 
-export default styles
+export default styles;

@@ -35,6 +35,7 @@ local.properties
 !debug.keystore
 .kotlin/
 rascunho.txt
+env.ts
 
 # node.js
 #

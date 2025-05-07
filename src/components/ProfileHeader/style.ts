@@ -1,11 +1,11 @@
-import { StyleSheet } from "react-native";
-import Fonts from "../../Theme/fonts";
+import { StyleSheet } from 'react-native';
+import Fonts from '../../Theme/fonts';
 
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
     },
     backButton: {
         flexDirection: 'row',
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
       },
       editText: {
         ...Fonts.Roboto40016,
-      }
-})
+      },
+});
 
-export default styles
+export default styles;

@@ -5,5 +5,4 @@ export type RootStackParamList = {
   Register: undefined;
   Menu: undefined;
   PreferencesMenu: undefined;
-  Menu?: { showConfirmationModal?: boolean };
 };

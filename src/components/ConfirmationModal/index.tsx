@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, View, Text } from 'react-native';
-import Button from '../button'
+import Button from '../button';
 import styles from './style';
 
 
@@ -34,7 +34,7 @@ export default function ConfirmationModal({
           <View style={styles.buttonRow}>
             <Button
               title={cancelText}
-              fontFamily='Roboto50018'
+              fontFamily="Roboto50018"
               backgroundColor="#fff"
               textColor="#7b4ae4"
               borderColor="#7b4ae4"
@@ -45,7 +45,7 @@ export default function ConfirmationModal({
             />
             <Button
               title={confirmText}
-              fontFamily='Roboto50018'
+              fontFamily="Roboto50018"
               backgroundColor={confirmColor}
               textColor="#fff"
               width={150}
@@ -56,5 +56,5 @@ export default function ConfirmationModal({
         </View>
       </View>
     </Modal>
-    )
+    );
 }

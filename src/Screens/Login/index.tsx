@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   View,
   ScrollView,
@@ -6,26 +6,29 @@ import {
   TouchableOpacity,
   Text,
   ImageSourcePropType,
-  Alert
+  Alert,
 } from 'react-native';
 import axios from 'axios';
-import { API_BASE_URL } from '../../env';
-import { storeToken } from '../../Utils/authUtils';
+import {API_BASE_URL} from '../../../env';
+import {storeToken} from '../../Utils/authUtils';
 import styles from './style';
 import Input from '../../components/input';
 import Button from '../../components/button';
 import Fonts from '../../Theme/fonts';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../navigation/types'; 
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../navigation/types';
 
-type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+type LoginScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'Login'
+>;
 
 const Login: React.FC = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{email?: string; password?: string}>({});
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const [checkboxImage, setCheckboxImage] = useState<ImageSourcePropType>(
     require('../../Assets/icons/CheckSquare-1.png'),
@@ -34,17 +37,23 @@ const Login: React.FC = () => {
   const checkedIcon: ImageSourcePropType = require('../../Assets/icons/CheckSquare-2.png');
   const uncheckedIcon: ImageSourcePropType = require('../../Assets/icons/CheckSquare-1.png');
 
-  const handleEmailChange = useCallback((text: string) => {
-    console.log('Email changed:', text);
-    setEmail(text);
-    setErrors(prevErrors => ({ ...prevErrors, email: undefined }));
-  }, [setEmail, setErrors]);
+  const handleEmailChange = useCallback(
+    (text: string) => {
+      console.log('Email changed:', text);
+      setEmail(text);
+      setErrors(prevErrors => ({...prevErrors, email: undefined}));
+    },
+    [setEmail, setErrors],
+  );
 
-  const handlePasswordChange = useCallback((text: string) => {
-    console.log('Password changed:', text);
-    setPassword(text);
-    setErrors(prevErrors => ({ ...prevErrors, password: undefined }));
-  }, [setPassword, setErrors]);
+  const handlePasswordChange = useCallback(
+    (text: string) => {
+      console.log('Password changed:', text);
+      setPassword(text);
+      setErrors(prevErrors => ({...prevErrors, password: undefined}));
+    },
+    [setPassword, setErrors],
+  );
 
   const handleRememberMe = (): void => {
     const newState = !rememberMe;
@@ -60,22 +69,25 @@ const Login: React.FC = () => {
     // Valida o campo de email
     if (!email) {
       console.log('Email is required');
-      setErrors(prevErrors => ({ ...prevErrors, email: 'Campo obrigatório' }));
+      setErrors(prevErrors => ({...prevErrors, email: 'Campo obrigatório'}));
       isValid = false;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       console.log('Invalid email format');
-      setErrors(prevErrors => ({ ...prevErrors, email: 'E-mail inválido' }));
+      setErrors(prevErrors => ({...prevErrors, email: 'E-mail inválido'}));
       isValid = false;
     }
 
     // Valida o campo de senha
     if (!password) {
       console.log('Password is required');
-      setErrors(prevErrors => ({ ...prevErrors, password: 'Campo obrigatório' }));
+      setErrors(prevErrors => ({...prevErrors, password: 'Campo obrigatório'}));
       isValid = false;
     } else if (password.length < 8) {
       console.log('Password is too short');
-      setErrors(prevErrors => ({ ...prevErrors, password: 'A senha deve ter no mínimo 8 caracteres' }));
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        password: 'A senha deve ter no mínimo 8 caracteres',
+      }));
       isValid = false;
     }
 
@@ -92,7 +104,10 @@ const Login: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, { email, password });
+      const response = await axios.post(`${API_BASE_URL}/auth/login`, {
+        email,
+        password,
+      });
 
       if (response.status === 200) {
         console.log('Login successful:', response.data);
@@ -173,7 +188,13 @@ const Login: React.FC = () => {
         style={styles.buttonEnter}
         onPress={handleLogin}
         loading={isSubmitting}
-        disabled={isSubmitting || !!errors.email || !!errors.password || !email || !password}
+        disabled={
+          isSubmitting ||
+          !!errors.email ||
+          !!errors.password ||
+          !email ||
+          !password
+        }
       />
       <Button
         title="CRIAR CONTA"
