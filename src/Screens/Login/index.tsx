@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   View,
   ScrollView,
@@ -11,17 +11,20 @@ import styles from './style';
 import Input from '../../components/input';
 import Button from '../../components/button';
 import Fonts from '../../Theme/fonts';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../navigation/types'; 
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../navigation/types';
 
-type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+type LoginScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'Login'
+>;
 
 const Login: React.FC = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{email?: string; password?: string}>({});
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const [checkboxImage, setCheckboxImage] = useState<ImageSourcePropType>(
     require('../../Assets/icons/CheckSquare-1.png'),
@@ -30,24 +33,38 @@ const Login: React.FC = () => {
   const checkedIcon: ImageSourcePropType = require('../../Assets/icons/CheckSquare-2.png');
   const uncheckedIcon: ImageSourcePropType = require('../../Assets/icons/CheckSquare-1.png');
 
-  const handleEmailChange = useCallback((text: string) => {
-    setEmail(text);
-    setErrors(prevErrors => ({ ...prevErrors, email: undefined }));
-  }, [setEmail, setErrors]);
+  const handleEmailChange = useCallback(
+    (text: string) => {
+      setEmail(text);
+      setErrors(prevErrors => ({...prevErrors, email: undefined}));
+    },
+    [setEmail, setErrors],
+  );
 
-  const handlePasswordChange = useCallback((text: string) => {
-    setPassword(text);
-    setErrors(prevErrors => ({ ...prevErrors, password: undefined }));
-  }, [setPassword, setErrors]);
+  const handlePasswordChange = useCallback(
+    (text: string) => {
+      setPassword(text);
+      setErrors(prevErrors => ({...prevErrors, password: undefined}));
+    },
+    [setPassword, setErrors],
+  );
 
   const handleEmailBlur = useCallback(() => {
-    const emailError = !email ? 'Campo obrigatório' : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? undefined : 'e-mail inválido';
-    setErrors(prevErrors => ({ ...prevErrors, email: emailError }));
+    const emailError = !email
+      ? 'Campo obrigatório'
+      : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+      ? undefined
+      : 'e-mail inválido';
+    setErrors(prevErrors => ({...prevErrors, email: emailError}));
   }, [email, setErrors]);
 
   const handlePasswordBlur = useCallback(() => {
-    const passwordError = !password ? 'Campo obrigatório' : password.length < 8 ? 'A senha deve ter no mínimo 8 caracteres' : undefined;
-    setErrors(prevErrors => ({ ...prevErrors, password: passwordError }));
+    const passwordError = !password
+      ? 'Campo obrigatório'
+      : password.length < 8
+      ? 'A senha deve ter no mínimo 8 caracteres'
+      : undefined;
+    setErrors(prevErrors => ({...prevErrors, password: passwordError}));
   }, [password, setErrors]);
 
   const handleRememberMe = (): void => {
@@ -60,11 +77,28 @@ const Login: React.FC = () => {
     setIsSubmitting(true);
     handleEmailBlur();
     handlePasswordBlur();
-
+  
+    // Credenciais predefinidas
+    const predefinedEmail = 'Usuario@exemplo.com';
+    const predefinedPassword = 'Senha123';
+  
     if (!errors.email && !errors.password && email && password) {
-      console.log('Realizando login com:', { email, password, rememberMe });
+      if (email === predefinedEmail && password === predefinedPassword) {
+        console.log('Login bem-sucedido!');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'MainApp' }], // Redireciona para o BottomTabNavigator
+        });
+      } else {
+        console.log('Credenciais inválidas!');
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          email: 'E-mail ou senha inválidos',
+          password: 'E-mail ou senha inválidos',
+        }));
+      }
     }
-
+  
     setIsSubmitting(false);
   };
 
@@ -114,7 +148,13 @@ const Login: React.FC = () => {
         style={styles.buttonEnter}
         onPress={handleLogin}
         loading={isSubmitting}
-        disabled={isSubmitting || !!errors.email || !!errors.password || !email || !password}
+        disabled={
+          isSubmitting ||
+          !!errors.email ||
+          !!errors.password ||
+          !email ||
+          !password
+        }
       />
       <Button
         title="CRIAR CONTA"

@@ -6,7 +6,7 @@ import Fonts from '../../../Theme/fonts';
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F4F4F4',
     paddingHorizontal: 32,
   },
 
