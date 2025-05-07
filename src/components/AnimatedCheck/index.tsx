@@ -1,12 +1,19 @@
 import React, { useRef, useCallback } from 'react';
-import { TouchableOpacity, Image, Animated } from 'react-native';
+import { TouchableOpacity, Image, Animated, ImageSourcePropType } from 'react-native';
 
 interface AnimatedCheckProps {
   isCompleted: boolean;
   onToggle: () => void;
+  checkedImageSource: ImageSourcePropType; // Nova prop para a imagem marcada
+  uncheckedImageSource: ImageSourcePropType; // Nova prop para a imagem desmarcada
 }
 
-const AnimatedCheck: React.FC<AnimatedCheckProps> = ({ isCompleted, onToggle }) => {
+const AnimatedCheck: React.FC<AnimatedCheckProps> = ({
+  isCompleted,
+  onToggle,
+  checkedImageSource,
+  uncheckedImageSource,
+}) => {
   const iconScaleValue = useRef(new Animated.Value(1)).current;
 
   const animateScale = useCallback(
@@ -34,11 +41,7 @@ const AnimatedCheck: React.FC<AnimatedCheckProps> = ({ isCompleted, onToggle }) 
   return (
     <TouchableOpacity onPress={handleCheckPress} style={animatedIconStyle}>
       <Image
-        source={
-          isCompleted
-            ? require('../../Assets/icons/checked-input.png')
-            : require('../../Assets/icons/uncheck-input.png')
-        }
+        source={isCompleted ? checkedImageSource : uncheckedImageSource}
       />
     </TouchableOpacity>
   );

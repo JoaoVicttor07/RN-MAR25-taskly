@@ -10,13 +10,16 @@ interface FilterModalProps {
   visible: boolean;
   onClose: () => void;
   onPrioritySelect: (priority: 'lowToHigh' | 'highToLow' | null) => void;
+  onTagSelect: (tags: string[]) => void; // Adicione uma prop para comunicar as tags selecionadas
 }
 
-const FilterModal: React.FC<FilterModalProps> = ({visible, onClose, onPrioritySelect}) => {
+const FilterModal: React.FC<FilterModalProps> = ({visible, onClose, onPrioritySelect, onTagSelect}) => {
   const [isOrdenarOpen, setIsOrdenarOpen] = useState(false);
   const [isTagsOpen, setIsTagsOpen] = useState(false);
   const [isDataOpen, setIsDataOpen] = useState(false);
   const [selectedPriority, setSelectedPriority] = useState<'lowToHigh' | 'highToLow' | null>(null);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]); // Novo estado para as tags selecionadas
+  const availableTags = ['TRABALHO', 'CASA', 'ACADEMIA']; // Exemplo de tags disponíveis
 
   const toggleOrdenar = () => {
     setIsOrdenarOpen(!isOrdenarOpen);
@@ -34,14 +37,25 @@ const FilterModal: React.FC<FilterModalProps> = ({visible, onClose, onPrioritySe
     setSelectedPriority(prevPriority => (prevPriority === priority ? null : priority));
   };
 
+  const handleTagSelect = (tag: string) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(prevTags => prevTags.filter(t => t !== tag));
+    } else {
+      setSelectedTags(prevTags => [...prevTags, tag]);
+    }
+  };
+
   const handleApplyFilter = () => {
     onPrioritySelect(selectedPriority);
+    onTagSelect(selectedTags); // Comunica as tags selecionadas
     onClose();
   };
 
   const handleClearFilter = () => {
     setSelectedPriority(null);
+    setSelectedTags([]); // Limpa as tags selecionadas
     onPrioritySelect(null);
+    onTagSelect([]);
     onClose();
   };
 
@@ -71,15 +85,17 @@ const FilterModal: React.FC<FilterModalProps> = ({visible, onClose, onPrioritySe
                     ? require('../../Assets/icons/arrowUp.png')
                     : require('../../Assets/icons/arrowDown.png')
                 }
-              /> 
+              />
             </TouchableOpacity>
             <Collapsible collapsed={!isOrdenarOpen}>
               <View>
-                <View style={[styles.itemAccordion, styles.line]}>
+                <View style={styles.itemAccordion}>
                   <TouchableOpacity style={styles.selectionAreaItemAccordion} onPress={() => handlePrioritySelect('lowToHigh')}>
                     <AnimatedCheck
                       isCompleted={selectedPriority === 'lowToHigh'}
                       onToggle={() => handlePrioritySelect('lowToHigh')}
+                      checkedImageSource={require('../../Assets/icons/checked-input.png')}
+                      uncheckedImageSource={require('../../Assets/icons/uncheck-input.png')}
                     />
                     <Text style={styles.optionText}>Prioridade (de baixa para alta)</Text>
                   </TouchableOpacity>
@@ -89,6 +105,8 @@ const FilterModal: React.FC<FilterModalProps> = ({visible, onClose, onPrioritySe
                     <AnimatedCheck
                       isCompleted={selectedPriority === 'highToLow'}
                       onToggle={() => handlePrioritySelect('highToLow')}
+                      checkedImageSource={require('../../Assets/icons/checked-input.png')}
+                      uncheckedImageSource={require('../../Assets/icons/uncheck-input.png')}
                     />
                     <Text style={styles.optionText}>Prioridade (de alta para baixa)</Text>
                   </TouchableOpacity>
@@ -97,7 +115,7 @@ const FilterModal: React.FC<FilterModalProps> = ({visible, onClose, onPrioritySe
             </Collapsible>
 
             <TouchableOpacity
-              style={[styles.accordionHeader, styles.line]}
+              style={[styles.accordionHeader, styles.lineTop]}
               onPress={toggleTags}>
               <Text style={styles.accordionTitle}>Tags</Text>
               <Image
@@ -109,14 +127,25 @@ const FilterModal: React.FC<FilterModalProps> = ({visible, onClose, onPrioritySe
               />
             </TouchableOpacity>
             <Collapsible collapsed={!isTagsOpen}>
-              <View>
-                <Text>Tag 1</Text>
-                <Text>Tag 2</Text>
+              <View style={styles.tagsContainer}>
+                {availableTags.map(tag => (
+                  <View key={tag} style={[styles.itemAccordion, styles.tagItem]}>
+                    <TouchableOpacity style={styles.selectionAreaItemAccordion} onPress={() => handleTagSelect(tag)}>
+                      <AnimatedCheck
+                        isCompleted={selectedTags.includes(tag)}
+                        onToggle={() => handleTagSelect(tag)}
+                        checkedImageSource={require('../../Assets/icons/CheckSquare-2.png')}
+                        uncheckedImageSource={require('../../Assets/icons/CheckSquare-1.png')}
+                      />
+                      <Text style={styles.optionText}>{tag}</Text>
+                    </TouchableOpacity>
+                  </View>
+                ))}
               </View>
             </Collapsible>
 
             <TouchableOpacity
-              style={styles.accordionHeader}
+              style={[styles.accordionHeader, styles.lineTop]}
               onPress={toggleData}>
               <Text style={styles.accordionTitle}>Data</Text>
               <Image

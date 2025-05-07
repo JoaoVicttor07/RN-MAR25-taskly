@@ -37,19 +37,21 @@ const styles = StyleSheet.create({
   },
   accordionTitle: {
     ...Fonts.Roboto50018,
-    color: '#000000',
+    color: '#1E1E1E',
   },
   accordionArea: {
     marginBottom: 32,
   },
-  line: {
+  lineTop: {
     borderTopWidth: 1,
+    borderColor: '#D3D3D3',
+  },
+  lineDown: {
     borderBottomWidth: 1,
     borderColor: '#D3D3D3',
   },
   itemAccordion: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 14.5,
     paddingHorizontal: 8,
@@ -63,6 +65,13 @@ const styles = StyleSheet.create({
   selectionAreaItemAccordion:{
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  tagsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  tagItem: {
+    width: 140.5,
   }
 });
 
