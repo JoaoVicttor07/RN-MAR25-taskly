@@ -19,18 +19,20 @@ export interface ThemeType {
   separator: string; // Exemplo: cor para separador
   modalBackground: string; // Exemplo: cor para fundo de modal
   cardBorder: string; // Exemplo: cor para borda de card
+  AvatarButton: string;
+  ModalButtonMenu: string, // Exemplo: cor para botão de avatar
 }
 
 export const LightTheme: ThemeType = {
-  background: '#FFFFFF',
+  background: '#F4F4F4',
   text: '#000000',
-  primaryButton: '#6200EE',
+  primaryButton: '#5B3CC4',
   settingButtonBackground: '#F5F5F5',
   confirmButton: '#03DAC6',
-  backButton: '#BB86FC',
+  backButton: '#AAAAAA',
   secondaryText: '#757575',
   buttonBackground: '#E0E0E0',
-  buttonText: '#000000',
+  buttonText: '#F4F4F4',
   modal1: '#F0F0F0',
   primary: '#6200EE',
   ModalTitlecolor: '#F0F0F0', // Exemplo: cor clara para título em tema claro
@@ -38,20 +40,23 @@ export const LightTheme: ThemeType = {
   shadow: 'none',           // Exemplo: sem sombra em tema claro
   primaryText: '#000000',    // Exemplo: preto para texto primário em tema claro
   separator: '#E0E0E0',      // Exemplo: cinza claro para separador em tema claro
-  modalBackground: '#F0F0F0', // Exemplo: cinza claro para fundo de modal em tema claro
-  cardBorder: '#D3D3D3',     // Exemplo: cinza claro para borda de card em tema claro
+  modalBackground: '#F4F4F4', // Exemplo: cinza claro para fundo de modal em tema claro
+  cardBorder: '#D3D3D3',
+  AvatarButton: '#5B3CC4',
+  ModalButtonMenu: '#E63946',
+
 };
 
 export const DarkTheme: ThemeType = {
-  background: '#121212',
+  background: '#282828',
   text: '#FFFFFF',
   primaryButton: '#BB86FC',
   settingButtonBackground: '#1F1F1F',
   confirmButton: '#03DAC6',
-  backButton: '#6200EE',
+  backButton: '#D9D9D9',
   secondaryText: '#B3B3B3',
   buttonBackground: '#333333',
-  buttonText: '#FFFFFF',
+  buttonText: '#1E1E1E',
   modal1: '#1E1E1E',
   primary: '#BB86FC',
   ModalTitlecolor: '#FFFFFF', // Exemplo: cor escura para título em tema escuro
@@ -59,6 +64,9 @@ export const DarkTheme: ThemeType = {
   shadow: 'none',           // Exemplo: sem sombra em tema escuro
   primaryText: '#FFFFFF',    // Exemplo: branco para texto primário em tema escuro
   separator: '#333333',      // Exemplo: cinza escuro para separador em tema escuro
-  modalBackground: '#1E1E1E', // Exemplo: cinza escuro para fundo de modal em tema escuro
-  cardBorder: '#2C2C2C',     // Exemplo: cinza mais claro para borda de card em tema escuro
+  modalBackground: '#282828', // Exemplo: cinza escuro para fundo de modal em tema escuro
+  cardBorder: '#2C2C2C',
+  AvatarButton: '#552DDC',
+  ModalButtonMenu: '#E63946',
+  // Exemplo: cinza mais claro para borda de card em tema escuro
 };

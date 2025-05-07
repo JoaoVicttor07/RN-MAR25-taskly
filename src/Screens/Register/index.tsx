@@ -165,7 +165,7 @@ export default function Register() {
 
       <Button
         title="CRIAR CONTA"
-        backgroundColor={theme.primaryButton}
+        backgroundColor={theme.AvatarButton}
         textColor={theme.buttonText}
         width="100%"
         fontWeight="bold"

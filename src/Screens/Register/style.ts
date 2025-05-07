@@ -13,11 +13,12 @@ const styles = (theme: any) => StyleSheet.create({
     },
     inputSpacing: {
       marginBottom: 40,
-      borderColor: '#000080',
-      
+      borderColor: 'theme.background',
+
     },
     buttonSpacing: {
       marginTop: 16,
+
     },
     title: {
       fontSize: 28,

@@ -11,8 +11,7 @@ import {
 import Button from '../../components/button';
 import getStyles, { avatarStyles } from './style'; // Importe getStyles e avatarStyles
 import { useTheme } from '../../Theme/ThemeContext';
-
-import avatar1 from '../../Assets/Images/Avatars/avatar-1.jpg';
+import avatar1 from '../../Assets/Images/Avatars/avatar1.jpg'; // Importe a imagem do avatar
 
 const AVATARS = [
   {id: '1', source: avatar1, borderColor: '#6C4AE4'},
@@ -109,7 +108,7 @@ export default function AvatarSelector() {
         fontFamily="Roboto60020"
         width={Dimensions.get('window').width * 0.9}
         style={styles.confirmButton}
-        backgroundColor={theme.primaryButton} // Garanta que essa propriedade esteja no seu tema
+        backgroundColor={theme.confirmButton} // Garanta que essa propriedade esteja no seu tema
         onPress={handleConfirm}
       />
     </View>

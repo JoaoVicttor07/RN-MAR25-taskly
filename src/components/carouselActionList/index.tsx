@@ -6,7 +6,10 @@ import biometryIcon from '../../Assets/icons/FingerprintSimple.png';
 import deleteIcon from '../../Assets/icons/Trash.png';
 import logoutIcon from '../../Assets/icons/SignOut.png';
 import ConfirmationModal from '../ConfirmationModal';
-import styles from './style';
+import getStyles from './style'; // Importe a função getStyles
+import React from 'react';
+import { useTheme } from '../../Theme/ThemeContext'; // Importe o hook
+
 
 const actions = [
   { id: '1', title: 'Editar Informações Pessoais', icon: userIcon },
@@ -39,6 +42,8 @@ const modalConfigs = {
 export function CarouselActionList() {
   const [modalVisible, setModalVisible] = useState(false);
   const [currentModal, setCurrentModal] = useState<null | keyof typeof modalConfigs>(null);
+  const { theme } = useTheme();
+  const styles = getStyles(theme); // Chama a função getStyles com o tema
 
   const handleAction = (title: string) => {
     if (modalConfigs[title as keyof typeof modalConfigs]) {
@@ -60,12 +65,13 @@ export function CarouselActionList() {
   };
 
   return (
-    <View style={styles.wrapper}>
+    <View style={[styles.wrapper, { backgroundColor: theme.background }]}>
       <FlatList
         data={actions}
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={item => item.id}
+        // eslint-disable-next-line react-native/no-inline-styles
         contentContainerStyle={{ paddingBottom: 12 }}
         renderItem={({ item }) => (
           <CarouselActionItem

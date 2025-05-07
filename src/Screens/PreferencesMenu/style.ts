@@ -12,14 +12,14 @@ const styles = (theme: any) => StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingBottom: 30,
-        
-        
+
+
     },
     textPreferences: {
         ...Fonts.Roboto40016,
         color: theme.text,
-        
-        
+
+
     },
 });
 

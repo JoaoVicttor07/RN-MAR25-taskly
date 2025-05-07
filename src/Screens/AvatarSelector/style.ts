@@ -23,7 +23,7 @@ const styles = (theme: any) => StyleSheet.create({
     ...Fonts.Roboto70024,
   },
   textPick: {
-    color: theme.secondary, // Cor do texto secundário (dependente do tema)
+    color: theme.text, // Cor do texto secundário (dependente do tema)
     marginBottom: 12,
     textAlign: 'center',
     ...Fonts.Roboto40016,
@@ -39,7 +39,7 @@ const styles = (theme: any) => StyleSheet.create({
     alignSelf: 'center',
     marginTop: 16,
     height: 48,
-    backgroundColor: theme.primaryButton, // Cor de fundo do botão (dependente do tema)
+    backgroundColor: theme.AvatarButton, // Cor de fundo do botão (dependente do tema)
   },
 });
 

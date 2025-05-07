@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import styles from './style';
 import Fonts from '../../Theme/fonts';
+import React from 'react';
 
 interface ButtonProps {
   title?: string;
@@ -21,6 +22,7 @@ interface ButtonProps {
   fontWeight?: TextStyle['fontWeight'];
   fontSize?: number;
   style?: ViewStyle;
+  textStyle?: TextStyle;
   onPress?: () => void;
 }
 
@@ -37,6 +39,7 @@ export default function Button({
   fontSize,
   style,
   onPress,
+  textStyle,
 }: ButtonProps) {
   return (
     <View>
@@ -55,6 +58,7 @@ export default function Button({
             fontFamily && fontFamily in Fonts
               ? Fonts[fontFamily as keyof typeof Fonts]
               : {},
+              textStyle, // Aplique os estilos passados via prop 'textStyle'
           ]}>
           {title}
         </Text>

@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 import Fonts from '../../../Theme/fonts';
 
 
-const styles = (theme: any) => StyleSheet.create({ // <--- Remova o espaço extra antes dos parênteses
+const styles = (theme: any) => StyleSheet.create({
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(17, 24, 39, 0.7)',
@@ -64,7 +64,7 @@ const styles = (theme: any) => StyleSheet.create({ // <--- Remova o espaço extr
     ...Fonts.Roboto50018,
   },
   createButton: {
-    backgroundColor: theme.primaryButton,
+    backgroundColor: theme.background,
     borderRadius: 8,
     width: 134.5,
     height: 37,
