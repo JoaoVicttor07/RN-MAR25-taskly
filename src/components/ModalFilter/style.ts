@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import Fonts from '../../Theme/fonts';
 
 const styles = StyleSheet.create({
   modalOverlay: {
@@ -6,28 +7,27 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 32,
   },
   modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 20,
-    minHeight: 200,
-    width: '80%',
+    backgroundColor: '#F4F4F4',
+    padding: 24,
+    borderRadius: 8,
+    height: 382,
+    width: 329,
+    justifyContent: 'space-between',
   },
   modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 15,
+    ...Fonts.Roboto70024,
   },
-  closeButton: {
-    backgroundColor: '#ddd',
-    padding: 10,
-    borderRadius: 5,
-    alignSelf: 'flex-end',
-    marginTop: 15,
+  modalHeader:{
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
   },
-  closeButtonText: {
-    fontSize: 16,
+  buttonsContainer: {
+    gap: 12,
   },
 });
 
