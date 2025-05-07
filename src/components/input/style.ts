@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
   container: {
@@ -20,11 +20,11 @@ export default StyleSheet.create({
     fontSize: 16,
   },
   inputError: {
-
+    
   },
   error: {
     marginTop: 4,
     color: '#E74C3C',
     fontSize: 12,
   },
-});
+})

@@ -4,7 +4,7 @@ export type RootStackParamList = {
   Register: undefined;
   Menu: undefined;
   Regulamentos: undefined;
-  AvatarSelector: { isEditing: boolean };
+  AvatarSelector: { isEditing: boolean } | undefined;
   PreferencesMenu: undefined;
   EditPersonalInfo: undefined;
   Login: undefined; 

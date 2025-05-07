@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.7)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 25,
+    padding: 25
   },
   modalContent: {
     backgroundColor: '#fff',

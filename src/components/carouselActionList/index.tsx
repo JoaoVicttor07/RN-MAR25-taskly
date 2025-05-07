@@ -46,7 +46,7 @@ export function CarouselActionList() {
 
   const handleAction = (title: string) => {
     if (title === 'Editar Informações Pessoais') {
-      navigation.navigate('EditPersonalInfo');
+      navigation.navigate('EditPersonalInfo'); 
       return;
     }
 
