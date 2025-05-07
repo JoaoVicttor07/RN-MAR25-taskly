@@ -169,7 +169,38 @@ const Login: React.FC = () => {
           onChangeText={handlePasswordChange}
           error={errors.password}
           secureTextEntry
-        />
+        /><Input
+        label="E-mail"
+        value={email}
+        onChangeText={handleEmailChange}
+        onBlur={() => {
+          const emailError = !email
+            ? 'Campo obrigatório'
+            : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+            ? undefined
+            : 'E-mail inválido';
+          setErrors(prev => ({ ...prev, email: emailError }));
+        }}
+        error={errors.email}
+        containerStyle={styles.inputSpacing}
+      />
+      <Input
+        label="Senha"
+        value={password}
+        onChangeText={handlePasswordChange}
+        onBlur={() => {
+          const passwordError = !password
+            ? 'Campo obrigatório'
+            : password.length < 8
+            ? 'A senha deve ter no mínimo 8 caracteres'
+            : undefined;
+          setErrors(prev => ({ ...prev, password: passwordError }));
+        }}
+        error={errors.password}
+        secureTextEntry
+        containerStyle={styles.inputSpacing}
+      />
+      
         <View style={styles.checkboxContainer}>
           <TouchableOpacity onPress={handleRememberMe}>
             <Image source={checkboxImage} style={styles.checkboxIcon} />

@@ -26,6 +26,7 @@ interface ButtonProps {
   onPress?: () => void;
   loading?: boolean;
   disabled?: boolean;
+  children?: React.ReactNode;
 }
 
 

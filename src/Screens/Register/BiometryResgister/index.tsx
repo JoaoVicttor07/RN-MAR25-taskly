@@ -1,7 +1,12 @@
-// src/Screens/Register/BiometryModal/index.tsx
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity } from 'react-native';
-import styles from './style'; // Importando os estilos
+import {
+  Modal,
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+import styles from './style';
 
 interface BiometryModalProps {
   visible: boolean;
@@ -11,9 +16,7 @@ interface BiometryModalProps {
   buttonRightText: string;
   onPressLeft: () => void;
   onPressRight: () => void;
-  buttonLeftStyle?: object; // Estilo opcional para o botão esquerdo
-  buttonRightStyle?: object; // Estilo opcional para o botão direito
-  modalStyle?: object; // Estilo opcional para o modal
+  loading?: boolean;
 }
 
 const BiometryModal: React.FC<BiometryModalProps> = ({
@@ -24,37 +27,43 @@ const BiometryModal: React.FC<BiometryModalProps> = ({
   buttonRightText,
   onPressLeft,
   onPressRight,
-  buttonLeftStyle,
-  buttonRightStyle,
-  modalStyle,
+  loading = false,
 }) => {
   return (
     <Modal
       visible={visible}
       transparent
       animationType="fade"
-      onRequestClose={onPressLeft} // Fecha o modal quando o botão de voltar é pressionado
-    >
-      <View style={[styles.overlay, modalStyle]}> {/* Estilo do fundo semitransparente */}
+      onRequestClose={() => {
+        if (!loading) onPressLeft();
+      }}>
+      <View style={styles.overlay}>
         <View style={styles.modalContent}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.description}>{description}</Text>
 
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={[styles.leftButton, buttonLeftStyle]} // Usando o estilo do botão esquerdo
-              onPress={onPressLeft}
-            >
-              <Text style={styles.leftButtonText}>{buttonLeftText}</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.rightButton, buttonRightStyle]} // Usando o estilo do botão direito
-              onPress={onPressRight}
-            >
-              <Text style={styles.rightButtonText}>{buttonRightText}</Text>
-            </TouchableOpacity>
-          </View>
+          {loading ? (
+            <ActivityIndicator
+              size="large"
+              color="#5B3CC4"
+              style={{ marginVertical: 20 }}
+            />
+          ) : (
+            <View style={styles.buttonRow}>
+              <TouchableOpacity
+                style={styles.leftButton}
+                onPress={onPressLeft}
+                disabled={loading}>
+                <Text style={styles.leftButtonText}>{buttonLeftText}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.rightButton}
+                onPress={onPressRight}
+                disabled={loading}>
+                <Text style={styles.rightButtonText}>{buttonRightText}</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </View>
     </Modal>
