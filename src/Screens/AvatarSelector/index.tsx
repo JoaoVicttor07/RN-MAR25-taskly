@@ -54,10 +54,10 @@ export default function AvatarSelector() {
   };
 
   const handleModalClose = () => {
-    if (!isModalVisible) return; // Evita chamadas repetidas
-  
+    if (!isModalVisible) {return;} // Evita chamadas repetidas
+
     setIsModalVisible(false);
-  
+
     if (isEditing) {
       // Redireciona para o Menu sem passar parâmetros
       navigation.navigate('Menu');

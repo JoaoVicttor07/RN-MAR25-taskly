@@ -1,7 +1,7 @@
 import React from 'react';
 import { SafeAreaView, View, StyleSheet } from 'react-native';
-import { WebView } from 'react-native-webview'; 
-import BackButton from '../../../components/BackButton'; 
+import { WebView } from 'react-native-webview';
+import BackButton from '../../../components/BackButton';
 
 type Props = {
   navigation: any;
@@ -13,7 +13,7 @@ const TermosPage = ({ navigation }: Props) => {
       {/* Cabeçalho com o botão Voltar e o título 'Termos e Regulamentos' */}
       <View style={styles.header}>
         {/* Utilizando o BackButton aqui */}
-        <BackButton onPress={() => navigation.goBack()} rightText='Termos e regulamentos' />
+        <BackButton onPress={() => navigation.goBack()} rightText="Termos e regulamentos" />
       </View>
 
       {/* Barra de Separação */}
@@ -22,7 +22,7 @@ const TermosPage = ({ navigation }: Props) => {
       {/* Carregar conteúdo da URL diretamente no WebView */}
       <WebView
         originWhitelist={['*']} // Permite carregar qualquer conteúdo
-        source={{ uri: 'https://sobreuol.noticias.uol.com.br/normas-de-seguranca-e-privacidade/en/' }} 
+        source={{ uri: 'https://sobreuol.noticias.uol.com.br/normas-de-seguranca-e-privacidade/en/' }}
         style={styles.webview}
       />
     </SafeAreaView>

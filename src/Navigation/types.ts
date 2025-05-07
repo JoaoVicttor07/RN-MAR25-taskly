@@ -9,4 +9,3 @@ export type RootStackParamList = {
    EditPersonalInfo: undefined;
    Login: undefined;
  };
- 

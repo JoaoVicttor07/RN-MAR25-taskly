@@ -9,7 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import axios from 'axios';
-import {API_BASE_URL} from '../../../env';
+import {API_BASE_URL} from '../../env';
 import {storeToken} from '../../Utils/authUtils';
 import styles from './style';
 import Input from '../../components/input';

@@ -63,7 +63,7 @@ const TaskList: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    maxWidth: 329
+    maxWidth: 329,
   },
 });
 

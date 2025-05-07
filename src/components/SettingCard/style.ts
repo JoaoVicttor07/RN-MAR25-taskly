@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   text: {
-    ...Fonts.Roboto50018
+    ...Fonts.Roboto50018,
   },
   icon: {
     tintColor: '#000',
@@ -25,4 +25,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default styles
+export default styles;

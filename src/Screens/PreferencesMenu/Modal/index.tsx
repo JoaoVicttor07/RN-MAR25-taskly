@@ -16,7 +16,7 @@ interface ThemeModalProps {
 }
 
 export default function ThemeModal({visible, onClose}: ThemeModalProps) {
-    const [selectedTheme, setSelectedTheme] = useState<'dark' | 'light' | null>(null)
+  const [selectedTheme, setSelectedTheme] = useState<'dark' | 'light' | null>(null);
   return (
     <Modal
       visible={visible}
@@ -56,22 +56,22 @@ export default function ThemeModal({visible, onClose}: ThemeModalProps) {
 
             <Button
             title="Agora não"
-            fontFamily='Roboto50018'
+            fontFamily="Roboto50018"
             width={140}
             height={40}
-            backgroundColor='#F4F4F4'
-            textColor='#7b4ae4'
-            borderColor='#7b4ae4'
+            backgroundColor="#F4F4F4"
+            textColor="#7b4ae4"
+            borderColor="#7b4ae4"
             borderWidth={2}
             onPress={onClose}
             />
 
             <Button
             title="Confirmar"
-            fontFamily='Roboto50018'
-            width={140} 
-            height={40} 
-            backgroundColor='#32C25B'
+            fontFamily="Roboto50018"
+            width={140}
+            height={40}
+            backgroundColor="#32C25B"
             />
 
           </View>

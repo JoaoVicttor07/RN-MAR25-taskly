@@ -4,7 +4,7 @@ import Fonts from '../../../Theme/fonts';
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(17, 24, 39, 0.7)', 
+    backgroundColor: 'rgba(17, 24, 39, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -47,12 +47,12 @@ const styles = StyleSheet.create({
   cancelButton: {
     backgroundColor: '#fff',
     borderRadius: 8,
-    borderWidth: 2,   
-    borderColor: '#5B3CC4', 
+    borderWidth: 2,
+    borderColor: '#5B3CC4',
     width: 134.5,
     height: 37,
     alignItems: 'center',
-    justifyContent:'center'
+    justifyContent:'center',
   },
   cancelText: {
     color: '#5B3CC4',
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     width: 134.5,
     height: 37,
     alignItems: 'center',
-    justifyContent:'center'
+    justifyContent:'center',
   },
   createText: {
     color: '#fff',
