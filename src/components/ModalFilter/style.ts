@@ -26,6 +26,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
   },
+  accordionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  accordionContent: {
+    paddingVertical: 10,
+    paddingLeft: 15,
+  },
   buttonsContainer: {
     gap: 12,
   },
