@@ -1,13 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Modal, View, Text, TouchableOpacity, Image} from 'react-native';
 import styles from './style';
 import Button from '../button';
 import Fonts from '../../Theme/fonts';
 import Collapsible from 'react-native-collapsible';
 import AnimatedCheck from '../AnimatedCheck';
-import DatePicker from 'react-native-date-picker';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import DateInput from '../DateInput';
 
 interface FilterModalProps {
   visible: boolean;
@@ -17,30 +15,61 @@ interface FilterModalProps {
   onDateSelect: (date: Date | null) => void;
 }
 
-const FilterModal: React.FC<FilterModalProps> = ({visible, onClose, onPrioritySelect, onTagSelect, onDateSelect}) => {
+interface FilterModalProps {
+  visible: boolean;
+  onClose: () => void;
+  onPrioritySelect: (priority: 'lowToHigh' | 'highToLow' | null) => void;
+  onTagSelect: (tags: string[]) => void;
+  onDateSelect: (date: Date | null) => void;
+}
+
+const FilterModal: React.FC<FilterModalProps> = ({
+  visible,
+  onClose,
+  onPrioritySelect,
+  onTagSelect,
+  onDateSelect,
+}) => {
   const [isOrdenarOpen, setIsOrdenarOpen] = useState(false);
   const [isTagsOpen, setIsTagsOpen] = useState(false);
   const [isDataOpen, setIsDataOpen] = useState(false);
-  const [selectedPriority, setSelectedPriority] = useState<'lowToHigh' | 'highToLow' | null>(null);
+  const [selectedPriority, setSelectedPriority] = useState<
+    'lowToHigh' | 'highToLow' | null
+  >(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const availableTags = ['TRABALHO', 'CASA', 'ACADEMIA'];
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [filterDate, setFilterDate] = useState<Date | null>(null);
 
+  useEffect(() => {
+    if (visible) {
+      setIsOrdenarOpen(false);
+      setIsTagsOpen(false);
+      setIsDataOpen(false);
+    }
+  }, [visible]);
+
   const toggleOrdenar = () => {
-    setIsOrdenarOpen(!isOrdenarOpen);
+    setIsOrdenarOpen(prevState => {
+      return !prevState;
+    });
   };
 
   const toggleTags = () => {
-    setIsTagsOpen(!isTagsOpen);
+    setIsTagsOpen(prevState => {
+      return !prevState;
+    });
   };
 
   const toggleData = () => {
-    setIsDataOpen(!isDataOpen);
+    setIsDataOpen(prevState => {
+      return !prevState;
+    });
   };
 
   const handlePrioritySelect = (priority: 'lowToHigh' | 'highToLow') => {
-    setSelectedPriority(prevPriority => (prevPriority === priority ? null : priority));
+    setSelectedPriority(prevPriority =>
+      prevPriority === priority ? null : priority,
+    );
   };
 
   const handleTagSelect = (tag: string) => {
@@ -51,16 +80,7 @@ const FilterModal: React.FC<FilterModalProps> = ({visible, onClose, onPrioritySe
     }
   };
 
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (selectedDate: Date) => {
-    hideDatePicker();
+  const handleDateChange = (selectedDate: Date | null) => {
     setFilterDate(selectedDate);
   };
 
@@ -112,25 +132,33 @@ const FilterModal: React.FC<FilterModalProps> = ({visible, onClose, onPrioritySe
             <Collapsible collapsed={!isOrdenarOpen}>
               <View>
                 <View style={[styles.itemAccordion, styles.lineDown]}>
-                  <TouchableOpacity style={styles.selectionAreaItemAccordion} onPress={() => handlePrioritySelect('lowToHigh')}>
+                  <TouchableOpacity
+                    style={styles.selectionAreaItemAccordion}
+                    onPress={() => handlePrioritySelect('lowToHigh')}>
                     <AnimatedCheck
                       isCompleted={selectedPriority === 'lowToHigh'}
                       onToggle={() => handlePrioritySelect('lowToHigh')}
                       checkedImageSource={require('../../Assets/icons/checked-input.png')}
                       uncheckedImageSource={require('../../Assets/icons/uncheck-input.png')}
                     />
-                    <Text style={styles.optionText}>Prioridade (de baixa para alta)</Text>
+                    <Text style={styles.optionText}>
+                      Prioridade (de baixa para alta)
+                    </Text>
                   </TouchableOpacity>
                 </View>
                 <View style={styles.itemAccordion}>
-                  <TouchableOpacity style={styles.selectionAreaItemAccordion} onPress={() => handlePrioritySelect('highToLow')}>
+                  <TouchableOpacity
+                    style={styles.selectionAreaItemAccordion}
+                    onPress={() => handlePrioritySelect('highToLow')}>
                     <AnimatedCheck
                       isCompleted={selectedPriority === 'highToLow'}
                       onToggle={() => handlePrioritySelect('highToLow')}
                       checkedImageSource={require('../../Assets/icons/checked-input.png')}
                       uncheckedImageSource={require('../../Assets/icons/uncheck-input.png')}
                     />
-                    <Text style={styles.optionText}>Prioridade (de alta para baixa)</Text>
+                    <Text style={styles.optionText}>
+                      Prioridade (de alta para baixa)
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -151,8 +179,12 @@ const FilterModal: React.FC<FilterModalProps> = ({visible, onClose, onPrioritySe
             <Collapsible collapsed={!isTagsOpen}>
               <View style={styles.tagsContainer}>
                 {availableTags.map(tag => (
-                  <View key={tag} style={[styles.itemAccordion, styles.tagItem]}>
-                    <TouchableOpacity style={styles.selectionAreaItemAccordion} onPress={() => handleTagSelect(tag)}>
+                  <View
+                    key={tag}
+                    style={[styles.itemAccordion, styles.tagItem]}>
+                    <TouchableOpacity
+                      style={styles.selectionAreaItemAccordion}
+                      onPress={() => handleTagSelect(tag)}>
                       <AnimatedCheck
                         isCompleted={selectedTags.includes(tag)}
                         onToggle={() => handleTagSelect(tag)}
@@ -180,22 +212,9 @@ const FilterModal: React.FC<FilterModalProps> = ({visible, onClose, onPrioritySe
             </TouchableOpacity>
             <Collapsible collapsed={!isDataOpen}>
               <View style={styles.dateFilterContainer}>
-                <TouchableOpacity onPress={showDatePicker}>
-                  <View style={styles.dateInput}>
-                    <Text style={styles.dateText}>
-                      {filterDate ? format(filterDate, 'dd/MM/yyyy', { locale: ptBR }) : 'Selecionar data'}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-
-                <DatePicker
-                  modal
-                  open={isDatePickerVisible}
-                  date={filterDate || new Date()}
-                  mode="date"
-                  locale="pt-BR"
-                  onConfirm={handleConfirm}
-                  onCancel={hideDatePicker}
+                <DateInput
+                  initialDate={filterDate}
+                  onDateChange={handleDateChange}
                 />
               </View>
             </Collapsible>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -13,35 +13,81 @@ import Filter from '../../components/Filter';
 import FilterModal from '../../components/FilterModal';
 import Fonts from '../../Theme/fonts';
 
+type PriorityType = 'lowToHigh' | 'highToLow' | null;
+type TagsType = string[];
+type DateType = Date | null;
+
+interface Task {
+  title: string;
+  description: string;
+  deadline: string;
+  id: string;
+  categories: string[];
+  isCompleted: boolean;
+  priority?: number;
+}
+
 const Home: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
-  const [tasks, setTasks] = useState<
+  const [tasks, setTasks] = useState<Task[]>([
     {
-      title: string;
-      description: string;
-      deadline: string;
-      id: string;
-      categories: string[];
-      isCompleted: boolean;
-    }[]
-  >([]);
+      id: '1',
+      title: 'Comprar pão',
+      description: 'Na padaria da esquina',
+      deadline: '2025-05-10',
+      categories: ['CASA'],
+      isCompleted: false,
+      priority: 0,
+    },
+    {
+      id: '2',
+      title: 'Relatório mensal',
+      description: 'Enviar para o chefe',
+      deadline: '2025-05-08',
+      categories: ['TRABALHO'],
+      isCompleted: false,
+      priority: 2,
+    },
+    {
+      id: '3',
+      title: 'Ir à academia',
+      description: 'Treino de pernas',
+      deadline: '2025-05-07',
+      categories: ['ACADEMIA'],
+      isCompleted: true,
+      priority: 1,
+    },
+    {
+      id: '4',
+      title: 'Pagar conta de luz',
+      description: 'Vence amanhã',
+      deadline: '2025-05-08',
+      categories: ['CASA'],
+      isCompleted: false,
+      priority: 2,
+    },
+  ]);
+  const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);
 
-  const handleCreateTask = (task: {
+  const [selectedPriority, setSelectedPriority] = useState<PriorityType>(null);
+  const [selectedTags, setSelectedTags] = useState<TagsType>([]);
+  const [selectedDate, setSelectedDate] = useState<DateType>(null);
+
+  const handleCreateTask = (taskData: {
     title: string;
     description: string;
     deadline: string;
   }) => {
-    console.log('handleCreateTask chamada com:', task);
-    setTasks(prevTasks => [
-      ...prevTasks,
-      {
-        ...task,
-        id: String(Date.now()),
-        categories: [],
-        isCompleted: false,
-      },
-    ]);
+    console.log('handleCreateTask chamada com:', taskData);
+    const newTask: Task = {
+      ...taskData,
+      id: String(Date.now()),
+      categories: [],
+      isCompleted: false,
+      priority: 0,
+    };
+    setTasks(prevTasks => [...prevTasks, newTask]);
     setModalVisible(false);
   };
 
@@ -61,6 +107,58 @@ const Home: React.FC = () => {
     setFilterModalVisible(false);
   };
 
+  const handlePrioritySelect = (priority: PriorityType) => {
+    console.log('Home: handlePrioritySelect chamado com:', priority);
+    setSelectedPriority(priority);
+  };
+
+  const handleTagSelect = (tags: TagsType) => {
+    console.log('Home: handleTagSelect chamado com:', tags);
+    setSelectedTags(tags);
+  };
+
+  const handleDateSelect = (date: DateType) => {
+    console.log(
+      'Home: handleDateSelect chamado com:',
+      date ? date.toLocaleDateString() : null,
+    );
+    setSelectedDate(date);
+  };
+
+  useEffect(() => {
+    let tempTasks = [...tasks];
+
+    if (selectedTags.length > 0) {
+      tempTasks = tempTasks.filter(task =>
+        selectedTags.every(tag => task.categories.includes(tag)),
+      );
+    }
+
+    if (selectedDate) {
+      const filterDateString = selectedDate.toISOString().split('T')[0];
+      tempTasks = tempTasks.filter(task => {
+        const taskDate = new Date(task.deadline);
+        const taskDateString = taskDate.toISOString().split('T')[0];
+        return taskDateString === filterDateString;
+      });
+    }
+
+    if (selectedPriority) {
+      tempTasks.sort((a, b) => {
+        const priorityA = a.priority !== undefined ? a.priority : -1;
+        const priorityB = b.priority !== undefined ? b.priority : -1;
+
+        if (selectedPriority === 'lowToHigh') {
+          return priorityA - priorityB;
+        } else {
+          return priorityB - priorityA;
+        }
+      });
+    }
+
+    setFilteredTasks(tempTasks);
+  }, [tasks, selectedPriority, selectedTags, selectedDate]);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -78,7 +176,7 @@ const Home: React.FC = () => {
       ) : (
         <View style={styles.taskListContainer}>
           <Filter onPress={handleOpenFilterModal} />
-          <TaskList tasks={tasks} setTasks={setTasks} />
+          <TaskList tasks={filteredTasks} setTasks={setTasks} />
         </View>
       )}
 
@@ -102,6 +200,9 @@ const Home: React.FC = () => {
       <FilterModal
         visible={filterModalVisible}
         onClose={handleCloseFilterModal}
+        onPrioritySelect={handlePrioritySelect} 
+        onTagSelect={handleTagSelect}
+        onDateSelect={handleDateSelect}
       />
     </View>
   );
