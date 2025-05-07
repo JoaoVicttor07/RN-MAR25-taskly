@@ -48,21 +48,21 @@ export default function AvatarSelector() {
     }
 
     if (!isModalVisible) {
-      // Exibe o modal após a seleção do avatar
       setIsModalVisible(true);
     }
   };
 
   const handleModalClose = () => {
-    if (!isModalVisible) return; // Evita chamadas repetidas
-  
+    if (!isModalVisible) return;
+
     setIsModalVisible(false);
-  
+
     if (isEditing) {
-      // Redireciona para o Menu sem passar parâmetros
-      navigation.navigate('Menu');
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Home'}],
+      });
     } else {
-      // Redireciona para a Home
       navigation.navigate('Home');
     }
   };
@@ -151,8 +151,6 @@ export default function AvatarSelector() {
         style={styles.confirmButton}
         onPress={handleConfirm}
       />
-
-      {/* Modal de Confirmação */}
       <Modal
         visible={isModalVisible}
         title={
