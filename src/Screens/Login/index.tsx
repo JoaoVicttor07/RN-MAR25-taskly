@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import { API_BASE_URL } from '../../env';
-import { storeToken } from '../../Utils/authUtils';
+import * as Keychain from 'react-native-keychain';
+import { storeToken, setBiometryEnabled, isBiometryEnabled } from '../../Utils/authUtils';
 import styles from './style';
 import Input from '../../components/input';
 import Button from '../../components/button';
@@ -50,13 +51,14 @@ const Login: React.FC = () => {
         if (savedEmail) {
           setEmail(savedEmail);
           setRememberMe(true);
-          setCheckboxImage(checkedIcon);
+        } else {
+          setRememberMe(false);
         }
       } catch (error) {
-        console.error('Erro ao carregar o e-mail salvo:', error);
+        console.error('Erro ao carregar e-mail salvo:', error);
       }
     };
-
+  
     loadRememberedEmail();
   }, []);
 
@@ -119,6 +121,20 @@ const Login: React.FC = () => {
   
     setIsSubmitting(true);
     try {
+      const biometryEnabled = await isBiometryEnabled();
+  
+      if (biometryEnabled) {
+        console.log('Biometria está ativada. Verificando credenciais...');
+        const credentials = await Keychain.getGenericPassword();
+        if (!credentials) {
+          console.log('Nenhuma credencial encontrada para autenticação biométrica.');
+        } else {
+          console.log('Credenciais encontradas:', credentials);
+        }
+      } else {
+        console.log('Biometria desativada. Usuário deve fazer login manual.');
+      }
+  
       const response = await axios.post(`${API_BASE_URL}/auth/login`, {
         email,
         password,
@@ -126,9 +142,16 @@ const Login: React.FC = () => {
   
       if (response.status === 200) {
         console.log('Login bem-sucedido:', response.data);
-        await storeToken(response.data.id_token);
   
-        // Salva o e-mail no AsyncStorage se "Lembrar de Mim" estiver marcado
+        // Armazena o idToken e o refreshToken
+        await storeToken(response.data.id_token, response.data.refresh_token);
+  
+        // Salva o estado de ativação da biometria
+        if (biometryEnabled) {
+          await setBiometryEnabled(true);
+        }
+  
+        // Salva ou remove o email no AsyncStorage com base no estado de "Lembrar de Mim"
         if (rememberMe) {
           await AsyncStorage.setItem('rememberedEmail', email);
         } else {
@@ -142,27 +165,8 @@ const Login: React.FC = () => {
         });
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const status = error.response?.status;
-  
-        if (status === 401) {
-          console.log('Erro 401: E-mail ou senha incorretos.');
-          setErrors((prevErrors) => ({
-            ...prevErrors,
-            email: 'E-mail ou senha incorretos.',
-            password: 'E-mail ou senha incorretos.',
-          }));
-        } else if (status === 500) {
-          console.log('Erro 500: Erro interno do servidor.');
-          Alert.alert('Erro', 'Erro interno do servidor. Tente mais tarde.');
-        } else {
-          console.log('Outro erro:', error);
-          Alert.alert('Erro', 'Algo deu errado. Verifique sua conexão.');
-        }
-      } else {
-        console.log('Erro de conexão:', error);
-        Alert.alert('Erro', 'Erro de conexão. Verifique sua internet.');
-      }
+      console.error('Erro ao fazer login:', error);
+      Alert.alert('Erro', 'Não foi possível fazer login. Verifique suas credenciais.');
     } finally {
       setIsSubmitting(false);
     }

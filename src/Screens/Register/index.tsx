@@ -15,9 +15,9 @@ import BiometryModal from './BiometryResgister';
 import { registerUser } from '../../hooks/useApi';
 import styles from './style';
 import * as Keychain from 'react-native-keychain';
+import ReactNativeBiometrics from 'react-native-biometrics';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../Navigation/types';
-import 'react-native-gesture-handler';
 
 export default function Register() {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -45,10 +45,79 @@ export default function Register() {
     }
   };
 
+  // Funções de validação
+  const validateName = (value: string): string | null => {
+    if (!value) {
+      return 'O nome é obrigatório.';
+    }
+    const parts = value.trim().split(' ').filter(Boolean);
+    if (parts.length < 2 || parts[1].length < 3) {
+      return 'Digite o nome completo.';
+    }
+    return null;
+  };
+
+  const validateEmail = (email: string): string | null => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.trim()) {
+      return 'O e-mail é obrigatório.';
+    } else if (!emailRegex.test(email)) {
+      return 'E-mail inválido.';
+    }
+    return null;
+  };
+
+  const validateNumber = (value: string): string | null => {
+    const cleaned = value.replace(/\D/g, ''); // Remove caracteres não numéricos
+    if (!cleaned) {
+      return 'O número é obrigatório.';
+    } else if (cleaned.length !== 11) {
+      return 'Número inválido. Deve conter 11 dígitos.';
+    }
+    return null;
+  };
+
+  const validatePassword = (password: string): string | null => {
+    if (!password.trim()) {
+      return 'A senha é obrigatória.';
+    } else if (password.length < 6) {
+      return 'A senha deve ter pelo menos 6 caracteres.';
+    }
+    return null;
+  };
+
+  const validateConfirmPassword = (confirmPassword: string): string | null => {
+    if (!confirmPassword.trim()) {
+      return 'A confirmação de senha é obrigatória.';
+    } else if (confirmPassword !== password) {
+      return 'As senhas não coincidem.';
+    }
+    return null;
+  };
+
   const handleRegister = async () => {
     setLoading(true);
     console.log('Iniciando cadastro...');
+    const nameError = validateName(name);
+    const emailError = validateEmail(email);
+    const numberError = validateNumber(number);
+    const passwordError = validatePassword(password);
+    const confirmPasswordError = validateConfirmPassword(confirmPassword);
+
+    setNameError(nameError || '');
+    setEmailError(emailError || '');
+    setNumberError(numberError || '');
+    setPasswordError(passwordError || '');
+    setConfirmPasswordError(confirmPasswordError || '');
+
+    if (nameError || emailError || numberError || passwordError || confirmPasswordError) {
+      console.log('Validação falhou.');
+      setLoading(false);
+      return;
+    }
+
     try {
+      console.log('Enviando dados para a API...');
       const response = await registerUser({
         email,
         password,
@@ -57,14 +126,21 @@ export default function Register() {
       });
       console.log('Resposta da API:', response);
 
-      if ((response.status === 200 || response.status === 201) && response.data.idToken) {
+      if (
+        (response.status === 200 || response.status === 201) &&
+        response.data.idToken
+      ) {
         await storeToken(response.data.idToken);
         console.log('Cadastro concluído!');
-        setShowBiometryModal(true); // <- MOSTRA O MODAL
+        setShowBiometryModal(true); // Exibe o modal de biometria
+      } else {
+        console.log('Resposta inesperada da API:', response);
       }
-      
     } catch (error: any) {
-      if (error.response?.data?.error === 'O email está em uso por outra conta.') {
+      console.error('Erro ao registrar usuário:', error);
+      if (
+        error.response?.data?.error === 'O email está em uso por outra conta.'
+      ) {
         Alert.alert('Erro', 'Este e-mail já está cadastrado.');
       } else if (error.response) {
         Alert.alert('Erro', error.response.data?.error || 'Erro no cadastro.');
@@ -76,54 +152,40 @@ export default function Register() {
     }
   };
 
-  const validateEmail = (value: string) => {
-    if (!value) setEmailError('Campo obrigatório');
-    else
-      setEmailError(
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? '' : 'E-mail inválido',
-      );
-  };
-
-  const validateName = (value: string) => {
-    if (!value) setNameError('Campo obrigatório');
-    else {
-      const parts = value.trim().split(' ').filter(Boolean);
-      setNameError(
-        parts.length < 2 || parts[1].length < 3 ? 'Digite o nome completo' : '',
-      );
-    }
-  };
-
-  const validateNumber = (value: string) => {
-    if (!value) setNumberError('Campo obrigatório');
-    else
-      setNumberError(
-        value.replace(/\D/g, '').length === 11 ? '' : 'Número inválido',
-      );
-  };
-
-  const validatePassword = (value: string) => {
-    if (!value) setPasswordError('Campo obrigatório');
-    else
-      setPasswordError(
-        value.length < 8 ? 'A senha deve ter no mínimo 8 caracteres' : '',
-      );
-  };
-
-  const validateConfirmPassword = (value: string) => {
-    if (!value) setConfirmPasswordError('Campo obrigatório');
-    else
-      setConfirmPasswordError(value !== password ? 'Senhas não coincidem' : '');
-  };
-
   const handleBiometryActivate = async () => {
     setBiometryApiLoading(true);
-    console.log('Simulando chamada para ativar biometria...');
-    setTimeout(() => {
+    console.log('Iniciando autenticação biométrica...');
+  
+    const rnBiometrics = new ReactNativeBiometrics();
+  
+    try {
+      const { available, biometryType } = await rnBiometrics.isSensorAvailable();
+  
+      if (!available) {
+        Alert.alert('Erro', 'Biometria não disponível neste dispositivo.');
+        setBiometryApiLoading(false);
+        return;
+      }
+  
+      console.log(`Tipo de biometria disponível: ${biometryType}`);
+  
+      const { success } = await rnBiometrics.simplePrompt({
+        promptMessage: 'Confirme sua identidade',
+      });
+  
+      if (success) {
+        console.log('Autenticação biométrica bem-sucedida!');
+        setShowBiometryModal(false);
+        navigation.navigate('AvatarSelector');
+      } else {
+        console.log('Autenticação biométrica cancelada pelo usuário.');
+      }
+    } catch (error) {
+      console.error('Erro durante a autenticação biométrica:', error);
+      Alert.alert('Erro', 'Falha na autenticação biométrica.');
+    } finally {
       setBiometryApiLoading(false);
-      setShowBiometryModal(false);
-      navigation.navigate('AvatarSelector');
-    }, 2000);
+    }
   };
 
   return (
@@ -141,34 +203,48 @@ export default function Register() {
           <Input
             label="Nome Completo"
             value={name}
-            onChangeText={text => {
+            onChangeText={(text) => {
               setName(text);
-              if (nameError) validateName(text);
+              if (nameError) {
+                const error = validateName(text);
+                setNameError(error || '');
+              }
             }}
-            onBlur={() => validateName(name)}
+            onBlur={() => {
+              const error = validateName(name);
+              setNameError(error || '');
+            }}
             error={nameError}
             containerStyle={styles.inputSpacing}
           />
           <Input
             label="E-mail"
             value={email}
-            onChangeText={text => {
+            onChangeText={(text) => {
               setEmail(text);
               if (emailError) validateEmail(text);
             }}
-            onBlur={() => validateEmail(email)}
+            onBlur={() => {
+              const error = validateEmail(email);
+              setEmailError(error || '');
+            }}
             error={emailError}
-            containerStyle={styles.inputSpacing}          
+            containerStyle={styles.inputSpacing}
           />
-          
           <Input
             label="Número"
             value={number}
-            onChangeText={text => {
+            onChangeText={(text) => {
               setNumber(text);
-              if (numberError) validateNumber(text);
+              if (numberError) {
+                const error = validateNumber(text);
+                setNumberError(error || '');
+              }
             }}
-            onBlur={() => validateNumber(number)}
+            onBlur={() => {
+              const error = validateNumber(number);
+              setNumberError(error || '');
+            }}
             error={numberError}
             mask="phone"
             containerStyle={styles.inputSpacing}
@@ -176,11 +252,14 @@ export default function Register() {
           <Input
             label="Senha"
             value={password}
-            onChangeText={text => {
+            onChangeText={(text) => {
               setPassword(text);
               if (passwordError) validatePassword(text);
             }}
-            onBlur={() => validatePassword(password)}
+            onBlur={() => {
+              const error = validatePassword(password);
+              setPasswordError(error || '');
+            }}
             error={passwordError}
             secureTextEntry
             containerStyle={styles.inputSpacing}
@@ -188,18 +267,20 @@ export default function Register() {
           <Input
             label="Confirmar senha"
             value={confirmPassword}
-            onChangeText={text => {
+            onChangeText={(text) => {
               setConfirmPassword(text);
               if (confirmPasswordError) validateConfirmPassword(text);
             }}
-            onBlur={() => validateConfirmPassword(confirmPassword)}
+            onBlur={() => {
+              const error = validateConfirmPassword(confirmPassword);
+              setConfirmPasswordError(error || '');
+            }}
             error={confirmPasswordError}
             secureTextEntry
             containerStyle={styles.inputSpacing}
           />
         </View>
 
-        {/* Exibe o ActivityIndicator no centro da tela enquanto loading for true */}
         {loading && (
           <View
             style={{
@@ -208,8 +289,7 @@ export default function Register() {
               left: '50%',
               transform: [{ translateX: -25 }, { translateY: -25 }],
               zIndex: 9999,
-            }}
-          >
+            }}>
             <ActivityIndicator size="large" color="#5B3CC4" />
           </View>
         )}
@@ -222,11 +302,10 @@ export default function Register() {
         />
       </ScrollView>
 
-      {/* MODAL BIOMETRIA */}
       <BiometryModal
         visible={showBiometryModal}
         title="Ative o Desbloqueio por Biometria"
-        description="Use sua impressão digital para acessar seu app de tarefas com rapidez e segurança. Se preferir, voc~e ainda poderá usar sua senha sempre que quiser."
+        description="Use sua impressão digital para acessar seu app de tarefas com rapidez e segurança. Se preferir, você ainda poderá usar sua senha sempre que quiser."
         buttonLeftText="Agora não"
         buttonRightText="ATIVAR"
         loading={biometryApiLoading}
