@@ -4,8 +4,8 @@ import { TouchableOpacity, Image, Animated, ImageSourcePropType } from 'react-na
 interface AnimatedCheckProps {
   isCompleted: boolean;
   onToggle: () => void;
-  checkedImageSource: ImageSourcePropType; // Nova prop para a imagem marcada
-  uncheckedImageSource: ImageSourcePropType; // Nova prop para a imagem desmarcada
+  checkedImageSource: ImageSourcePropType;
+  uncheckedImageSource: ImageSourcePropType;
 }
 
 const AnimatedCheck: React.FC<AnimatedCheckProps> = ({

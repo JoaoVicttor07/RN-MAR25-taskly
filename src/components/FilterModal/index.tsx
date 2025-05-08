@@ -169,7 +169,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   {availableTags.map(tag => (
                     <View
                       key={tag}
-                      style={[styles.itemAccordion, styles.tagItem]}>
+                      style={[styles.itemAccordion, styles.tagItem, styles.lineDown]}>
                       <TouchableOpacity style={styles.selectionAreaItemAccordion} onPress={() => handleTagSelect(tag)}>
                         <AnimatedCheck
                           isCompleted={selectedTags.includes(tag)}

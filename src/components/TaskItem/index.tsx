@@ -49,6 +49,8 @@ const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isC
         <AnimatedCheck
           isCompleted={isCompleted}
           onToggle={onToggleComplete}
+          checkedImageSource={require('../../Assets/icons/checked-input.png')}
+          uncheckedImageSource={require('../../Assets/icons/uncheck-input.png')}
         />
       </View>
       <Text style={styles.description}>{description}</Text>
