@@ -9,13 +9,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#F4F4F4',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    paddingBottom: 127,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 8,
-    width: 329,
+    width: '100%',
   },
   title: {
     ...Fonts.Roboto70024,
@@ -33,22 +34,10 @@ const styles = StyleSheet.create({
   },
   taskListContainer: {
     flex: 1,
-    marginTop: 20,
     marginBottom: 20,
     alignItems: 'center',
     width: '100%',
-  },
-  button: {
-    backgroundColor: '#5B3CC4',
-    borderRadius: 8,
-    alignItems: 'center',
-    width: 329,
-  },
-  buttonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  }
 });
 
 export default styles;

@@ -4,7 +4,8 @@ const styles = StyleSheet.create({
     filterContainer: {
         width: '100%',
         flexDirection: 'row-reverse',
-        marginTop: 40,
+        paddingTop: 40,
+        paddingBottom: 16,
       },
       filterIcon: {
         resizeMode: 'contain',
