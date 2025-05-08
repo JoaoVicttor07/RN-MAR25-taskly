@@ -3,7 +3,9 @@ import * as Keychain from 'react-native-keychain';
 // Salvar token no Android Keystore
 export const storeToken = async (token: string) => {
   try {
-    await Keychain.setGenericPassword('authToken', token);
+    // O primeiro parâmetro é o nome de usuário (pode ser qualquer string)
+    await Keychain.setGenericPassword('user', token);
+    console.log('Token salvo com sucesso!');
   } catch (error) {
     console.error('Erro ao salvar o token:', error);
   }
@@ -19,3 +21,21 @@ export const getToken = async () => {
     return null;
   }
 };
+
+// import * as Keychain from 'react-native-keychain';
+
+// const testKeychain = async () => {
+//   try {
+//     await Keychain.setGenericPassword('testUser', 'testPassword');
+//     const credentials = await Keychain.getGenericPassword();
+//     if (credentials) {
+//       console.log('Credenciais recuperadas:', credentials);
+//     } else {
+//       console.log('Nenhuma credencial encontrada.');
+//     }
+//   } catch (error) {
+//     console.error('Erro ao testar o Keychain:', error);
+//   }
+// };
+
+// testKeychain();
