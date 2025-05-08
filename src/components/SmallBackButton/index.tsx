@@ -1,6 +1,7 @@
 import React from 'react';
-import { TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { TouchableOpacity, Image} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import styles from './styles';
 
 interface SmallBackButtonProps {
     onPress?: () => void;
@@ -23,16 +24,5 @@ const SmallBackButton: React.FC<SmallBackButtonProps> = ({ onPress }) => {
         </TouchableOpacity>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        marginTop: 15,
-        alignItems: 'center',
-        backgroundColor: '#AAAAAA',
-        padding: 15.37,
-        borderRadius: 12,
-        maxWidth: 48,
-    },
-});
 
 export default SmallBackButton;
