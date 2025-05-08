@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  Image,
-} from 'react-native';
+import { View } from 'react-native';
 import styles from './style';
 import Button from '../../components/button';
 import CreateTaskModal from '../../components/ModalCreateTask/Index';
@@ -12,12 +8,13 @@ import TaskList from '../../components/TaskItem/TaskList';
 import Filter from '../../components/Filter';
 import FilterModal from '../../components/FilterModal';
 import Fonts from '../../Theme/fonts';
+import DefaultHeader from '../../components/DefaultHeader';
 
 type PriorityType = 'lowToHigh' | 'highToLow' | null;
 type TagsType = string[];
 type DateType = Date | null;
 
-interface Task {
+export interface Task {
   title: string;
   description: string;
   deadline: string;
@@ -64,6 +61,15 @@ const Home: React.FC = () => {
       description: 'Vence amanhã',
       deadline: '2025-05-08',
       categories: ['CASA', 'FINANCEIRO'],
+      isCompleted: false,
+      priority: 2,
+    },
+    {
+      id: '5',
+      title: 'Bater o ponto',
+      description: 'bater o ponoto pelo site do kairos e depois tenho que sair para tomar café.',
+      deadline: '2025-05-08',
+      categories: ['TRABALHO', 'LAZER', 'COMPASS'],
       isCompleted: false,
       priority: 2,
     },
@@ -162,13 +168,7 @@ const Home: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>TASKLY</Text>
-        <Image
-          source={require('../../Assets/Images/Avatars/avatar-1.jpg')}
-          style={styles.avatar}
-        />
-      </View>
+    <DefaultHeader />
 
       {tasks.length === 0 ? (
         <View style={styles.containerNoTask}>

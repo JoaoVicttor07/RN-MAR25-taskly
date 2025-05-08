@@ -11,6 +11,7 @@ import EditPersonalInfoScreen from '../Screens/EditPersonalInfo/EditPersonalInfo
 import Login from '../Screens/Login/index';
 import BottomTabNavigator from '../components/BottomTabNavigator';
 import { RootStackParamList } from './types';
+import TaskDetailsScreen from '../Screens/TaskDetails';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -20,30 +21,34 @@ const AppNavigator: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated 
       <Stack.Navigator
         initialRouteName={isAuthenticated ? 'MainApp' : 'Login'}
         screenOptions={{ headerShown: false }}>
-        {/* 📌 Tela de Login */}
+        {/* Tela de Login */}
         <Stack.Screen name="Login" component={Login} />
 
-        {/* 📌 Tela de tarefas (Home) */}
+        {/* Tela de tarefas (Home) */}
         <Stack.Screen name="Home" component={Home} />
 
-        {/* 📌 Tela de cadastro */}
+        {/* Tela de detalhes da tarefa */}
+        <Stack.Screen name="TaskDetails" component={TaskDetailsScreen} />
+
+        {/* Tela de cadastro */}
         <Stack.Screen name="Register" component={Register} />
 
-        {/* 📌 Tela de menu */}
+        {/* Tela de menu */}
         <Stack.Screen name="Menu" component={Menu} />
 
-        {/* 📌 Tela de Termos e Regulamentos */}
+        {/* Tela de Termos e Regulamentos */}
         <Stack.Screen name="Regulamentos" component={TermosPage} />
 
-        {/* 📌 Tela de seleção de avatar */}
+        {/* Tela de seleção de avatar */}
         <Stack.Screen name="AvatarSelector" component={AvatarSelector} />
 
-        {/* 📌 Tela de seleção de preferencia de tema */}
+        {/* Tela de seleção de preferencia de tema */}
         <Stack.Screen name="PreferencesMenu" component={PreferencesMenu} />
 
-        {/* 📌 Tela de edição de informações pessoais */}
+        {/* Tela de edição de informações pessoais */}
         <Stack.Screen name="EditPersonalInfo" component={EditPersonalInfoScreen} />
 
+        {/* Tela principal com navegação por abas */}
         <Stack.Screen name="MainApp" component={BottomTabNavigator} />
       </Stack.Navigator>
     </NavigationContainer>

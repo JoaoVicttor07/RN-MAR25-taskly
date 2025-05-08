@@ -7,7 +7,14 @@ export type RootStackParamList = {
   AvatarSelector: { isEditing: boolean } | undefined;
   PreferencesMenu: undefined;
   EditPersonalInfo: undefined;
-  Login: undefined; 
+  Login: undefined;
   MainApp: undefined;
+  TaskDetails: { task: {
+    id: string;
+    title: string;
+    description: string;
+    categories: string[];
+    isCompleted: boolean;
+    priority?: number;
+  } };
 };
-

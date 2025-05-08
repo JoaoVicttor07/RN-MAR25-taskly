@@ -13,14 +13,14 @@ const App: React.FC = () => {
       try {
         const biometryEnabled = await isBiometryEnabled();
         console.log(`Biometria está ${biometryEnabled ? 'ativada' : 'desativada'}.`);
-    
+
         if (biometryEnabled) {
           console.log('Verificando credenciais armazenadas...');
           const credentials = await Keychain.getGenericPassword();
-    
+
           if (credentials) {
             const { password: storedToken, username: refreshToken } = credentials;
-    
+
             if (!storedToken || isTokenExpired(storedToken)) {
               console.log('Token inválido ou expirado. Tentando renovar...');
               try {

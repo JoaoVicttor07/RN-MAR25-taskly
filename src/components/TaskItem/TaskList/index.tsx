@@ -10,6 +10,7 @@ interface Task {
   categories: string[];
   isCompleted: boolean;
   deadline: string;
+  priority?: number;
 }
 
 interface TaskListProps {
@@ -37,6 +38,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, setTasks }) => {
         categories={item.categories || []}
         isCompleted={item.isCompleted}
         onToggleComplete={() => handleToggleComplete(item.id)}
+        task={item}
       />
     );
   }, [handleToggleComplete]);

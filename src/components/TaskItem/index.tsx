@@ -2,6 +2,11 @@ import React, { useRef, useCallback } from 'react';
 import { Text, View, TouchableOpacity, FlatList, Animated } from 'react-native';
 import { styles } from './style';
 import AnimatedCheck from '../AnimatedCheck';
+import { useNavigation, NavigationProp } from '@react-navigation/native'; // Importe NavigationProp
+import { RootStackParamList } from '../../Navigation/types'; // Importe seu RootStackParamList
+import { Task } from '../../Screens/Home/Index'; // Importe a interface Task
+import CategoryTag from '../CategoryTag'; // Importe o componente CategoryTag
+import Fonts from '../../Theme/fonts'; // Importe os estilos de fonte
 
 interface TaskItemProps {
   title: string;
@@ -9,10 +14,11 @@ interface TaskItemProps {
   categories: string[];
   isCompleted: boolean;
   onToggleComplete: () => void;
+  task: Task;
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isCompleted, onToggleComplete }) => {
-
+const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isCompleted, onToggleComplete, task }) => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>(); // ✅ Inicialize useNavigation() aqui
   const buttonScaleValue = useRef(new Animated.Value(1)).current;
 
   const animateScale = useCallback(
@@ -28,7 +34,9 @@ const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isC
 
   const handleButtonPress = () => {
     animateScale(buttonScaleValue, 0.9, 50, () => {
-      animateScale(buttonScaleValue, 1, 100);
+      animateScale(buttonScaleValue, 1, 100, () => {
+        navigation.navigate('TaskDetails', { task });
+      });
     });
   };
 
@@ -37,10 +45,11 @@ const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isC
   };
 
   const renderCategoryItem = useCallback(({ item }: { item: string }) => (
-    <Text style={styles.tag}>{item}</Text>
+    <CategoryTag item={item} fontStyle={{...Fonts.Roboto40012}}/>
   ), []);
 
   const keyExtractorCategory = useCallback((item: string, index: number) => index.toString(), []);
+
 
   return (
     <View style={styles.itemArea}>
