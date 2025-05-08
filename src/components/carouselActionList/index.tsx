@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FlatList, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../../navigation';
+import type { RootStackParamList } from '../../Navigation/types';
 import { CarouselActionItem } from '../carouselActionItem';
 import userIcon from '../../Assets/icons/User.png';
 import biometryIcon from '../../Assets/icons/FingerprintSimple.png';
@@ -62,7 +62,19 @@ export function CarouselActionList() {
   };
 
   const handleConfirm = () => {
-    // Aqui será aplicado a logica de confirmação futuramente
+    if (currentModal === 'Sair da Conta') {
+      // 📌 Aqui será implementada a lógica de logout no futuro:
+      // - Chamar o endpoint de logout da API
+      // - Apagar o token do usuário do armazenamento local (AsyncStorage, SecureStore, etc.)
+      console.log('Usuário deslogado');
+
+      // Redireciona para a página de login
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+    }
+
     setModalVisible(false);
     setCurrentModal(null);
   };

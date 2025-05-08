@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import styles from './style';
 import Button from '../../components/button';
-import CreateTaskModal from '../../components/ModalCreateTask';
+import CreateTaskModal from '../../components/ModalCreateTask/Index';
 import EmptyState from '../../components/EmptyState';
 import TaskList from '../../components/TaskItem/TaskList';
 import Filter from '../../components/Filter';

@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 import Fonts from '../../Theme/fonts';
 
 const AVATAR_SIZE = 90;
@@ -14,41 +14,41 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: '#F4F4F4',
     alignItems: 'center',
-    justifyContent: "flex-start",
+    justifyContent: 'flex-start',
     paddingTop: 25,
   },
   content: {
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 24,
   },
   textAvatar: {
-    color: "#000000",
+    color: '#000000',
     marginBottom: 4,
-    textAlign: "center",
-    ...Fonts.Roboto70024
+    textAlign: 'center',
+    ...Fonts.Roboto70024,
   },
   textPick: {
-    color: "#000000",
+    color: '#000000',
     marginBottom: 12,
-    textAlign: "center",
-    ...Fonts.Roboto40016
+    textAlign: 'center',
+    ...Fonts.Roboto40016,
   },
   avatarsRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
     marginBottom: 40,
-    width: "100%",
+    width: '100%',
   },
   avatarTouchable: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     width: AVATAR_SIZE + AVATAR_MARGIN,
     height: AVATAR_SIZE + AVATAR_MARGIN,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   confirmButton: {
-    alignSelf: "center",
+    alignSelf: 'center',
     marginTop: 16,
     height: 48,
   },
