@@ -5,7 +5,7 @@ import { ThemeProvider } from './src/Theme/ThemeContext'; // Importa o provedor 
 const App: React.FC = () => {
 
   return (
-    <ThemeProvider> {/* Envolve o aplicativo com o provedor de tema */}
+    <ThemeProvider> {/* Envolve o aplicativo com o provedor de tema n */}
       <AppNavigator />
     </ThemeProvider>
   );
@@ -13,3 +13,5 @@ const App: React.FC = () => {
 
 export default App;
 
+//npm install react-native-keychain
+// npm install --save-dev @types/react-native-keychain
