@@ -72,19 +72,19 @@ export default function AvatarSelector() {
 
   const handleModalClose = () => {
     if (!isModalVisible) return;
-
+  
     setIsModalVisible(false);
-
+  
     if (isEditing) {
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Home' }], 
+        routes: [{ name: 'MainApp' }], // Certifique-se de que "MainApp" contém o BottomTabNavigator
       });
     } else {
       navigation.reset({
         index: 0,
         routes: [{ name: 'MainApp' }],
-      });      
+      });
     }
   };
 
