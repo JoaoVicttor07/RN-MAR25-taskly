@@ -65,7 +65,7 @@ npm react-native run android
 
 ---
 
-##🧑‍💻 Contribuidores
+## 🧑‍💻 Contribuidores
 
 - Amanda Duarte Meneghini do Carmo
 - Camila Cardozo Rocha
