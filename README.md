@@ -6,7 +6,7 @@
 
 ## ⚙️ Funcionalidades 
 
-#### 🔐 Autenticação
+##### 🔐 Autenticação
 - Login com opção `Lembrar de mim` e cadastro completo com validações, integrados a API proposta.
 
 #### 🧑‍🎨 Personalização Inicial
@@ -35,7 +35,7 @@
 - [React Native](https://reactnative.dev/)
 - [React Navigation](https://reactnavigation.org/)
 - [Async Storage](https://react-native-async-storage.github.io/async-storage/)
-- [TypeScript] para maior robustez no código
+- [TypeScript] (https://www.typescriptlang.org/pt/docs/)
 
 ---
 
@@ -46,18 +46,22 @@
 ```bash
 git clone https://github.com/JoaoVicttor07/RN-MAR25-taskly.git
 cd RN-MAR25-taskly
+```
 
 #### Instale as dependências
 ```bash
 npm install
+```
 
 #### Inicie o Servidor 
 ```bash
 npm react-native start
+```
 
 #### Execute o aplicativo
 ```bash
 npm react-native run android
+```
 
 ---
 
