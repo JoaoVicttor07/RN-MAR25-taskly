@@ -2,11 +2,11 @@ import React, { useRef, useCallback } from 'react';
 import { Text, View, TouchableOpacity, FlatList, Animated } from 'react-native';
 import { styles } from './style';
 import AnimatedCheck from '../AnimatedCheck';
-import { useNavigation, NavigationProp } from '@react-navigation/native'; // Importe NavigationProp
-import { RootStackParamList } from '../../Navigation/types'; // Importe seu RootStackParamList
-import { Task } from '../../Screens/Home/Index'; // Importe a interface Task
-import CategoryTag from '../CategoryTag'; // Importe o componente CategoryTag
-import Fonts from '../../Theme/fonts'; // Importe os estilos de fonte
+import { useNavigation, NavigationProp } from '@react-navigation/native'; 
+import { RootStackParamList } from '../../Navigation/types';
+import { Task } from '../../Screens/Home/Index';
+import CategoryTag from '../CategoryTag';
+import Fonts from '../../Theme/fonts';
 
 interface TaskItemProps {
   title: string;
@@ -18,7 +18,7 @@ interface TaskItemProps {
 }
 
 const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isCompleted, onToggleComplete, task }) => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>(); // ✅ Inicialize useNavigation() aqui
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const buttonScaleValue = useRef(new Animated.Value(1)).current;
 
   const animateScale = useCallback(
