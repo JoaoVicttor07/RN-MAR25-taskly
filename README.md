@@ -1,6 +1,74 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# 📱 APP de Tarefas (Taskly) do Desafio React Native 
 
-# Getting Started
+ Um aplicativo mobile de tarefas desenvolvido com React Native. Ele permite que você organize suas atividades, defina prazos e prioridades, além de personalizar seu perfil. A interface deste aplicativo foi desenvolvida seguindo o design especificado no Figma disponibilizado.
+
+---
+
+## ⚙️ Funcionalidades 
+
+#### 🔐 Autenticação
+- Login com opção `Lembrar de mim` e cadastro completo com validações, integrados a API proposta.
+
+#### 🧑‍🎨 Personalização Inicial
+- Seleção de avatar logo no primeiro acesso. 
+
+#### 🗂️ Gerenciamento de Tarefas
+- Adicionar, editar e remover tarefas com título, descrição, prazo, tags e prioridade. 
+
+#### ✅ Subtarefas Detalhadas
+- Dividir as tarefas em subtarefas (checklist) para um acompanhamento minucioso. 
+
+#### 🔍 Filtragem
+- Visualizar as tarefas por prioridade (alta ou baixa). 
+
+#### 📅 Organização
+- Ordenar as tarefas por data de vencimento, tags e prioridade. 
+
+#### 👤 Edição de Perfil
+- Visualização e edição das informações, escolha de avatar e preferências para a escolha do tema.
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+
+- [React Native](https://reactnative.dev/)
+- [React Navigation](https://reactnavigation.org/)
+- [Async Storage](https://react-native-async-storage.github.io/async-storage/)
+- [TypeScript] para maior robustez no código
+
+---
+
+## 📦 Instalação
+
+#### Clone o repositório
+
+```bash
+git clone https://github.com/JoaoVicttor07/RN-MAR25-taskly.git
+cd RN-MAR25-taskly
+
+#### Instale as dependências
+```bash
+npm install
+
+#### Inicie o Servidor 
+```bash
+npm react-native start
+
+#### Execute o aplicativo
+```bash
+npm react-native run android
+
+---
+
+##🧑‍💻 Contribuidores
+
+- Amanda Duarte Meneghini do Carmo
+- Camila Cardozo Rocha
+- Diogo da Silva Souza
+- Jailson Rodrigues de Neiva
+- João Victor Santos da Costa
+
 
 > **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
 
