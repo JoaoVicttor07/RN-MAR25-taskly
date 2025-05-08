@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -28,15 +28,15 @@ interface Task {
 }
 
 const Home: React.FC = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [filterModalVisible, setFilterModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([
     {
       id: '1',
       title: 'Comprar pão',
       description: 'Na padaria da esquina',
       deadline: '2025-05-10',
-      categories: ['CASA'],
+      categories: ['CASA', 'GASTO'],
       isCompleted: false,
       priority: 0,
     },
@@ -63,23 +63,30 @@ const Home: React.FC = () => {
       title: 'Pagar conta de luz',
       description: 'Vence amanhã',
       deadline: '2025-05-08',
-      categories: ['CASA'],
+      categories: ['CASA', 'FINANCEIRO'],
       isCompleted: false,
       priority: 2,
     },
   ]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);
-
+  const [allTags, setAllTags] = useState<string[]>([]);
   const [selectedPriority, setSelectedPriority] = useState<PriorityType>(null);
   const [selectedTags, setSelectedTags] = useState<TagsType>([]);
   const [selectedDate, setSelectedDate] = useState<DateType>(null);
+
+  useEffect(() => {
+    const uniqueTags = new Set<string>();
+    tasks.forEach(task => {
+      task.categories.forEach(tag => uniqueTags.add(tag));
+    });
+    setAllTags(Array.from(uniqueTags));
+  }, [tasks]);
 
   const handleCreateTask = (taskData: {
     title: string;
     description: string;
     deadline: string;
   }) => {
-    console.log('handleCreateTask chamada com:', taskData);
     const newTask: Task = {
       ...taskData,
       id: String(Date.now()),
@@ -88,40 +95,34 @@ const Home: React.FC = () => {
       priority: 0,
     };
     setTasks(prevTasks => [...prevTasks, newTask]);
-    setModalVisible(false);
+    setIsModalVisible(false);
   };
 
   const handleOpenCreateTaskModal = () => {
-    setModalVisible(true);
+    setIsModalVisible(true);
   };
 
   const handleCloseCreateTaskModal = () => {
-    setModalVisible(false);
+    setIsModalVisible(false);
   };
 
   const handleOpenFilterModal = () => {
-    setFilterModalVisible(true);
+    setIsFilterModalVisible(true);
   };
 
   const handleCloseFilterModal = () => {
-    setFilterModalVisible(false);
+    setIsFilterModalVisible(false);
   };
 
   const handlePrioritySelect = (priority: PriorityType) => {
-    console.log('Home: handlePrioritySelect chamado com:', priority);
     setSelectedPriority(priority);
   };
 
   const handleTagSelect = (tags: TagsType) => {
-    console.log('Home: handleTagSelect chamado com:', tags);
     setSelectedTags(tags);
   };
 
   const handleDateSelect = (date: DateType) => {
-    console.log(
-      'Home: handleDateSelect chamado com:',
-      date ? date.toLocaleDateString() : null,
-    );
     setSelectedDate(date);
   };
 
@@ -192,17 +193,18 @@ const Home: React.FC = () => {
       />
 
       <CreateTaskModal
-        visible={modalVisible}
+        visible={isModalVisible}
         onClose={handleCloseCreateTaskModal}
         onCreate={handleCreateTask}
       />
 
       <FilterModal
-        visible={filterModalVisible}
+        visible={isFilterModalVisible}
         onClose={handleCloseFilterModal}
-        onPrioritySelect={handlePrioritySelect} 
+        onPrioritySelect={handlePrioritySelect}
         onTagSelect={handleTagSelect}
         onDateSelect={handleDateSelect}
+        availableTags={allTags}
       />
     </View>
   );

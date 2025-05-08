@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {Modal, View, Text, TouchableOpacity, Image} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Modal, View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import styles from './style';
 import Button from '../button';
 import Fonts from '../../Theme/fonts';
@@ -13,15 +13,9 @@ interface FilterModalProps {
   onPrioritySelect: (priority: 'lowToHigh' | 'highToLow' | null) => void;
   onTagSelect: (tags: string[]) => void;
   onDateSelect: (date: Date | null) => void;
+  availableTags: string[];
 }
 
-interface FilterModalProps {
-  visible: boolean;
-  onClose: () => void;
-  onPrioritySelect: (priority: 'lowToHigh' | 'highToLow' | null) => void;
-  onTagSelect: (tags: string[]) => void;
-  onDateSelect: (date: Date | null) => void;
-}
 
 const FilterModal: React.FC<FilterModalProps> = ({
   visible,
@@ -29,47 +23,40 @@ const FilterModal: React.FC<FilterModalProps> = ({
   onPrioritySelect,
   onTagSelect,
   onDateSelect,
+  availableTags,
 }) => {
-  const [isOrdenarOpen, setIsOrdenarOpen] = useState(false);
+  const [isSortOpen, setIsSortOpen] = useState(false);
   const [isTagsOpen, setIsTagsOpen] = useState(false);
-  const [isDataOpen, setIsDataOpen] = useState(false);
+  const [isDateOpen, setIsDateOpen] = useState(false);
   const [selectedPriority, setSelectedPriority] = useState<
     'lowToHigh' | 'highToLow' | null
   >(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const availableTags = ['TRABALHO', 'CASA', 'ACADEMIA'];
   const [filterDate, setFilterDate] = useState<Date | null>(null);
 
   useEffect(() => {
     if (visible) {
-      setIsOrdenarOpen(false);
+      setIsSortOpen(false);
       setIsTagsOpen(false);
-      setIsDataOpen(false);
+      setIsDateOpen(false);
+      
     }
   }, [visible]);
 
-  const toggleOrdenar = () => {
-    setIsOrdenarOpen(prevState => {
-      return !prevState;
-    });
+  const toggleSort = () => {
+    setIsSortOpen(prevState => !prevState);
   };
 
   const toggleTags = () => {
-    setIsTagsOpen(prevState => {
-      return !prevState;
-    });
+    setIsTagsOpen(prevState => !prevState);
   };
 
-  const toggleData = () => {
-    setIsDataOpen(prevState => {
-      return !prevState;
-    });
+  const toggleDate = () => {
+    setIsDateOpen(prevState => !prevState);
   };
 
   const handlePrioritySelect = (priority: 'lowToHigh' | 'highToLow') => {
-    setSelectedPriority(prevPriority =>
-      prevPriority === priority ? null : priority,
-    );
+    setSelectedPriority(prevPriority => (prevPriority === priority ? null : priority));
   };
 
   const handleTagSelect = (tag: string) => {
@@ -119,17 +106,17 @@ const FilterModal: React.FC<FilterModalProps> = ({
           <View style={styles.accordionArea}>
             <TouchableOpacity
               style={styles.accordionHeader}
-              onPress={toggleOrdenar}>
+              onPress={toggleSort}>
               <Text style={styles.accordionTitle}>Ordenar por</Text>
               <Image
                 source={
-                  isOrdenarOpen
+                  isSortOpen
                     ? require('../../Assets/icons/arrowUp.png')
                     : require('../../Assets/icons/arrowDown.png')
                 }
               />
             </TouchableOpacity>
-            <Collapsible collapsed={!isOrdenarOpen}>
+            <Collapsible collapsed={!isSortOpen}>
               <View>
                 <View style={[styles.itemAccordion, styles.lineDown]}>
                   <TouchableOpacity
@@ -177,40 +164,40 @@ const FilterModal: React.FC<FilterModalProps> = ({
               />
             </TouchableOpacity>
             <Collapsible collapsed={!isTagsOpen}>
-              <View style={styles.tagsContainer}>
-                {availableTags.map(tag => (
-                  <View
-                    key={tag}
-                    style={[styles.itemAccordion, styles.tagItem]}>
-                    <TouchableOpacity
-                      style={styles.selectionAreaItemAccordion}
-                      onPress={() => handleTagSelect(tag)}>
-                      <AnimatedCheck
-                        isCompleted={selectedTags.includes(tag)}
-                        onToggle={() => handleTagSelect(tag)}
-                        checkedImageSource={require('../../Assets/icons/CheckSquare-2.png')}
-                        uncheckedImageSource={require('../../Assets/icons/CheckSquare-1.png')}
-                      />
-                      <Text style={styles.optionText}>{tag}</Text>
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              </View>
+              <ScrollView style={styles.tagsScrollView}>
+                <View style={styles.tagsContainer}>
+                  {availableTags.map(tag => (
+                    <View
+                      key={tag}
+                      style={[styles.itemAccordion, styles.tagItem]}>
+                      <TouchableOpacity style={styles.selectionAreaItemAccordion} onPress={() => handleTagSelect(tag)}>
+                        <AnimatedCheck
+                          isCompleted={selectedTags.includes(tag)}
+                          onToggle={() => handleTagSelect(tag)}
+                          checkedImageSource={require('../../Assets/icons/CheckSquare-2.png')}
+                          uncheckedImageSource={require('../../Assets/icons/CheckSquare-1.png')}
+                        />
+                        <Text style={styles.optionText}>{tag}</Text>
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </View>
+              </ScrollView>
             </Collapsible>
 
             <TouchableOpacity
               style={[styles.accordionHeader, styles.lineTop]}
-              onPress={toggleData}>
+              onPress={toggleDate}>
               <Text style={styles.accordionTitle}>Data</Text>
               <Image
                 source={
-                  isDataOpen
+                  isDateOpen
                     ? require('../../Assets/icons/arrowUp.png')
                     : require('../../Assets/icons/arrowDown.png')
                 }
               />
             </TouchableOpacity>
-            <Collapsible collapsed={!isDataOpen}>
+            <Collapsible collapsed={!isDateOpen}>
               <View style={styles.dateFilterContainer}>
                 <DateInput
                   initialDate={filterDate}

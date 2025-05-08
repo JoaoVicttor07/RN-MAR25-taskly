@@ -86,6 +86,9 @@ const styles = StyleSheet.create({
     ...Fonts.Roboto40016,
     color: '#1E1E1E',
   },
+  tagsScrollView: {
+    maxHeight: 105
+  }
 });
 
 export default styles

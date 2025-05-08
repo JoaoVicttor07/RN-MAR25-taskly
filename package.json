@@ -17,6 +17,7 @@
     "appcenter-analytics": "5.0.3",
     "appcenter-crashes": "5.0.3",
     "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
     "react": "19.0.0",
     "react-native": "0.79.1",
     "react-native-collapsible": "^1.6.2",
