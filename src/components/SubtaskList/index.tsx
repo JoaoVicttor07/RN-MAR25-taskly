@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import AnimatedCheck from '../AnimatedCheck';
 import { styles } from './style';
-import { ImageSourcePropType } from 'react-native';
 import Input from '../input';
+import { ImageSourcePropType } from 'react-native';
 
 interface Subtask {
   id: string;
@@ -42,51 +42,38 @@ const SubtaskList: React.FC<SubtaskListProps> = ({
     }
   }, [editText, onEditSubtask]);
 
-  const renderSubtaskItem = useCallback(
-    ({ item }: { item: Subtask }) => (
-      <View style={styles.subtaskItem}>
-        {editingId === item.id ? (
-          <View style={styles.inputEditArea}>
-            <Input
-              value={editText}
-              onChangeText={setEditText}
-            />
-            <TouchableOpacity style={styles.confirmEditButton} onPress={() => handleConfirmEdit(item.id)}>
-              <Image source={require('../../Assets/icons/arrowConfirm.png')} />
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <View style={styles.subtaskArea}>
-            <View style={styles.subtaskAreaText}>
-              <AnimatedCheck
-                isCompleted={item.isCompleted}
-                onToggle={() => onToggleSubtask(item.id)}
-                checkedImageSource={checkedImage}
-                uncheckedImageSource={uncheckedImage}
-              />
-              <Text style={[styles.subtaskText, item.isCompleted && styles.subtaskTextCompleted]}>
-                {item.text}
-              </Text>
-            </View>
-            <TouchableOpacity onPress={() => handleEditPress(item.id, item.text)}>
-              <Image source={require('../../Assets/icons/Pencil.png')} />
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
-    ),
-    [onToggleSubtask, checkedImage, uncheckedImage, editingId, editText, handleConfirmEdit, handleEditPress]
-  );
-
-  const keyExtractorSubtask = useCallback((item: Subtask) => item.id, []);
-
   return (
-    <FlatList
-      data={subtasks}
-      renderItem={renderSubtaskItem}
-      keyExtractor={keyExtractorSubtask}
-      nestedScrollEnabled={true}
-    />
+    <View>
+      {subtasks.map((item) => (
+        <View key={item.id} style={styles.subtaskItem}>
+          {editingId === item.id ? (
+            <View style={styles.inputEditArea}>
+              <Input value={editText} onChangeText={setEditText} />
+              <TouchableOpacity style={styles.confirmEditButton} onPress={() => handleConfirmEdit(item.id)}>
+                <Image source={require('../../Assets/icons/arrowConfirm.png')} />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.subtaskArea}>
+              <View style={styles.subtaskAreaText}>
+                <AnimatedCheck
+                  isCompleted={item.isCompleted}
+                  onToggle={() => onToggleSubtask(item.id)}
+                  checkedImageSource={checkedImage}
+                  uncheckedImageSource={uncheckedImage}
+                />
+                <Text style={[styles.subtaskText, item.isCompleted && styles.subtaskTextCompleted]}>
+                  {item.text}
+                </Text>
+              </View>
+              <TouchableOpacity onPress={() => handleEditPress(item.id, item.text)}>
+                <Image source={require('../../Assets/icons/Pencil.png')} />
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+      ))}
+    </View>
   );
 };
 
