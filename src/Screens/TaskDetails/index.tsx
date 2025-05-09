@@ -117,6 +117,13 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
     >
+      <ScrollView
+        ref={scrollViewRef}
+        style={styles.container}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={styles.scrollViewContent}
+      >
         <DefaultHeader leftComponent={<SmallBackButton />} />
         <View style={styles.taskDetailsContainer}>
           <View>
@@ -175,8 +182,10 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
         </TouchableOpacity>
 
         <View style={styles.bottomSpace} />
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };
 
 export default TaskDetailsScreen;
+
