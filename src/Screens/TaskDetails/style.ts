@@ -3,9 +3,10 @@ import Fonts from '../../Theme/fonts';
 
 export const styles = StyleSheet.create({
     container: {
-      flex: 1,
+      flexGrow: 1,
       padding: 32,
       backgroundColor: '#F4F4F4',
+      marginBottom: 20,
     },
     taskDetailsContainer: {
       backgroundColor: '#FFFFFF',
@@ -60,12 +61,6 @@ export const styles = StyleSheet.create({
       color: '#5B3CC4',
       textTransform: 'uppercase',
     },
-    subtitle: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      marginTop: 20,
-      color: '#333',
-    },
     addSubtaskContainer: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -90,30 +85,22 @@ export const styles = StyleSheet.create({
       color: '#FFFFFF',
       textTransform: 'uppercase',
     },
-    subtaskItem: {
-      flexDirection: 'row',
-      alignSelf: 'center',
-      marginBottom: 8,
+    addSubtaskInputContainer:{
+      height: 70,
     },
-    checkbox: {
-      width: 20,
-      height: 20,
-      borderRadius: 10,
-      borderWidth: 1,
-      borderColor: '#CCC',
-      marginRight: 10,
+    confirmButton: {
+      position: 'absolute',
+      right: 10,
+      top: 13,
     },
-    checkboxChecked: {
-      backgroundColor: '#4CAF50',
-      borderColor: '#4CAF50',
+    keyboardAvoidingView: {
+      flex: 1,
+      backgroundColor: '#F4F4F4',
     },
-    subtaskText: {
-      fontSize: 16,
-      color: '#555',
-      flexShrink: 1,
+    scrollViewContent: {
+      paddingBottom: 20,
     },
-    subtaskTextCompleted: {
-      textDecorationLine: 'line-through',
-      color: '#999',
+    bottomSpace: {
+      height: 50 
     },
   });

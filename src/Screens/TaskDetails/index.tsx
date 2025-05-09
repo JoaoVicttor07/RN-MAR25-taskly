@@ -1,11 +1,22 @@
-import React, { useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, FlatList, TextInput } from 'react-native';
+import React, { useState, useCallback, useRef } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../Navigation/types';
 import { styles } from './style';
 import DefaultHeader from '../../components/DefaultHeader';
 import CategoryTag from '../../components/CategoryTag';
 import SmallBackButton from '../../components/SmallBackButton';
+import Input from '../../components/input';
+import SubtaskList from '../../components/SubtaskList';
 
 type TaskDetailsRouteProp = RouteProp<RootStackParamList, 'TaskDetails'>;
 
@@ -36,6 +47,7 @@ const TaskDetailsScreen = () => {
 
   const [subtasks, setSubtasks] = useState<Subtask[]>([]);
   const [newSubtaskText, setNewSubtaskText] = useState('');
+  const [isAddingSubtask, setIsAddingSubtask] = useState(false);
 
   const renderTagItem = useCallback(({ item }: { item: string }) => (
     <CategoryTag item={item} />
@@ -45,6 +57,11 @@ const TaskDetailsScreen = () => {
 
   const handleResolveTask = () => {
     console.log(`Tarefa "${task.title}" resolvida!`);
+  };
+
+  const handleShowAddSubtaskInput = () => {
+    setIsAddingSubtask(true);
+    setNewSubtaskText('');
   };
 
   const handleAddSubtask = useCallback(() => {
@@ -59,44 +76,42 @@ const TaskDetailsScreen = () => {
     }
   }, [newSubtaskText, setSubtasks]);
 
-  const renderSubtaskItem = useCallback(({ item }: { item: Subtask }) => (
-    <View style={styles.subtaskItem}>
-      <TouchableOpacity onPress={() => {
-        setSubtasks(prevSubtasks =>
-          prevSubtasks.map(subtask =>
-            subtask.id === item.id ? { ...subtask, isCompleted: !subtask.isCompleted } : subtask
-          )
-        );
-      }}>
-        <View style={[styles.checkbox, item.isCompleted && styles.checkboxChecked]} />
-      </TouchableOpacity>
-      <Text style={[styles.subtaskText, item.isCompleted && styles.subtaskTextCompleted]}>{item.text}</Text>
-    </View>
-  ), [setSubtasks]);
-
-  const keyExtractorSubtask = useCallback((item: Subtask) => item.id, []);
+  const handleToggleSubtask = useCallback((id: string) => {
+    setSubtasks(prevSubtasks =>
+      prevSubtasks.map(subtask =>
+        subtask.id === id ? { ...subtask, isCompleted: !subtask.isCompleted } : subtask
+      )
+    );
+  }, [setSubtasks]);
 
   const priorityText = mapPriorityToString(task.priority);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   return (
-    <View style={styles.container}>
-      <DefaultHeader
-        leftComponent={<SmallBackButton />}
-      />
-      <View style={styles.taskDetailsContainer}>
-        <View>
-          <Text style={styles.title}>Título</Text>
-          <Text style={styles.titleTag}>{task.title}</Text>
-        </View>
-
-        <View>
-          <Text style={styles.title}>Descrição</Text>
-          <Text style={styles.description}>{task.description}</Text>
-        </View>
-
-        <View>
-          <Text style={styles.title}>Tags</Text>
+    <KeyboardAvoidingView
+      style={styles.keyboardAvoidingView}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+    >
+      <ScrollView
+        ref={scrollViewRef}
+        style={styles.container}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={styles.scrollViewContent}
+      >
+        <DefaultHeader leftComponent={<SmallBackButton />} />
+        <View style={styles.taskDetailsContainer}>
           <View>
+            <Text style={styles.title}>Título</Text>
+            <Text style={styles.titleTag}>{task.title}</Text>
+          </View>
+          <View>
+            <Text style={styles.title}>Descrição</Text>
+            <Text style={styles.description}>{task.description}</Text>
+          </View>
+          <View>
+            <Text style={styles.title}>Tags</Text>
             <FlatList
               data={task.categories}
               renderItem={renderTagItem}
@@ -106,35 +121,40 @@ const TaskDetailsScreen = () => {
               contentContainerStyle={styles.carousel}
             />
           </View>
+          <View>
+            <Text style={styles.title}>Prioridade</Text>
+            <Text style={styles.priority}>{priorityText}</Text>
+          </View>
+          <TouchableOpacity style={styles.resolveButton} onPress={handleResolveTask}>
+            <Text style={styles.resolveButtonText}>Resolver Tarefa</Text>
+          </TouchableOpacity>
         </View>
-
-        <View>
-          <Text style={styles.title}>Prioridade</Text>
-          <Text style={styles.priority}>{priorityText}</Text>
-        </View>
-
-        <TouchableOpacity style={styles.resolveButton} onPress={handleResolveTask}>
-          <Text style={styles.resolveButtonText}>Resolver Tarefa</Text>
+        <SubtaskList subtasks={subtasks} onToggleSubtask={handleToggleSubtask} />
+        {isAddingSubtask && (
+          <View style={styles.addSubtaskInputContainer}>
+            <Input
+              style={styles.input}
+              placeholder="Escreva sua subtarefa..."
+              value={newSubtaskText}
+              onChangeText={setNewSubtaskText}
+              onFocus={() => {
+                console.log('Input de subtarefa recebeu foco!');
+                scrollViewRef.current?.scrollToEnd({ animated: true });
+              }}
+            />
+            <TouchableOpacity style={styles.confirmButton} onPress={handleAddSubtask}>
+              <Image source={require('../../Assets/icons/arrowConfirm.png')} />
+            </TouchableOpacity>
+          </View>
+        )}
+        <TouchableOpacity style={styles.addButton} onPress={handleShowAddSubtaskInput}>
+          <Text style={styles.addButtonText}>ADICIONAR SUBTASK</Text>
         </TouchableOpacity>
-      </View>
-      <FlatList
-        data={subtasks}
-        renderItem={renderSubtaskItem}
-        keyExtractor={keyExtractorSubtask}
-      />
-      <View style={styles.addSubtaskContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Escreva sua subtarefa..."
-          value={newSubtaskText}
-          onChangeText={setNewSubtaskText}
-        />
-      </View>
-      <TouchableOpacity style={styles.addButton} onPress={handleAddSubtask}>
-        <Text style={styles.addButtonText}>ADICIONAR SUBTASK</Text>
-      </TouchableOpacity>
-    </View>
+        <View style={styles.bottomSpace} />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
+
 
 export default TaskDetailsScreen;
