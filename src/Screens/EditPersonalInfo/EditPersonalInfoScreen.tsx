@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { View, KeyboardAvoidingView, ScrollView, Alert } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, KeyboardAvoidingView, ScrollView, Alert} from 'react-native';
 import Input from '../../components/input';
 import Button from '../../components/button';
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../../navigation';
+import {useNavigation} from '@react-navigation/native';
+import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import type {RootStackParamList} from '../../navigation';
 import ProfileHeader from '../../components/ProfileHeader';
 import ProgressBar from '../../components/ProgressBar';
 import styles from './style';
-import { API_BASE_URL } from '../../env';
+import {API_BASE_URL} from '../../env';
 import * as Keychain from 'react-native-keychain';
 
 type NavigationProp = NativeStackNavigationProp<
@@ -22,9 +22,8 @@ function EditPersonalInfoScreen() {
   const [nameError, setNameError] = useState('');
   const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState('');
-  const [email, setEmail] = useState(''); // Estado para armazenar o e-mail do usuário
+  const [email, setEmail] = useState('');
 
-  // Função para buscar o perfil do usuário
   const fetchUserProfile = async () => {
     try {
       const credentials = await Keychain.getGenericPassword();
@@ -41,21 +40,27 @@ function EditPersonalInfoScreen() {
 
       if (response.ok) {
         const data = await response.json();
-        setEmail(data.email); // Define o e-mail no estado
-        setName(data.name || ''); // Define o nome no estado, se disponível
-        setPhone(data.phone || ''); // Define o telefone no estado, se disponível
+        setEmail(data.email);
+        setName(data.name || '');
+        setPhone(data.phone || '');
       } else {
         console.error('Erro ao buscar perfil:', response.status);
-        Alert.alert('Erro', 'Não foi possível carregar as informações do perfil.');
+        Alert.alert(
+          'Erro',
+          'Não foi possível carregar as informações do perfil.',
+        );
       }
     } catch (error) {
       console.error('Erro ao buscar perfil:', error);
-      Alert.alert('Erro', 'Não foi possível carregar as informações do perfil.');
+      Alert.alert(
+        'Erro',
+        'Não foi possível carregar as informações do perfil.',
+      );
     }
   };
 
   useEffect(() => {
-    fetchUserProfile(); // Busca o perfil do usuário ao carregar a tela
+    fetchUserProfile();
   }, []);
 
   const validateName = (value: string): string | null => {
@@ -82,30 +87,28 @@ function EditPersonalInfoScreen() {
   const handleContinue = async () => {
     const localNameError = !name ? 'Campo obrigatório' : validateName(name);
     const localPhoneError = !phone ? 'Campo obrigatório' : validatePhone(phone);
-  
+
     setNameError(localNameError || '');
     setPhoneError(localPhoneError || '');
-  
+
     if (!localNameError && !localPhoneError && name && phone) {
       try {
         const credentials = await Keychain.getGenericPassword();
         if (!credentials) {
           throw new Error('Token não encontrado. Faça login novamente.');
         }
-  
-        // Atualiza o nome do usuário na API
+
         const response = await fetch(`${API_BASE_URL}/profile/name`, {
           method: 'PUT',
           headers: {
             Authorization: `Bearer ${credentials.password}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ name }),
+          body: JSON.stringify({name}),
         });
-  
-        if (response.ok) {
 
-          navigation.navigate('AvatarSelector', { isEditing: true });
+        if (response.ok) {
+          navigation.navigate('AvatarSelector', {isEditing: true});
         } else {
           console.error('Erro ao atualizar nome:', response.status);
           Alert.alert('Erro', 'Não foi possível atualizar seu nome.');
@@ -118,8 +121,8 @@ function EditPersonalInfoScreen() {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <KeyboardAvoidingView style={{flex: 1}} behavior="height">
+      <ScrollView contentContainerStyle={{flexGrow: 1}}>
         <View style={styles.container}>
           <ProfileHeader
             title="EDIÇÃO DE PERFIL"
@@ -146,7 +149,7 @@ function EditPersonalInfoScreen() {
             placeholder="Digite seu e-mail"
             keyboardType="email-address"
             containerStyle={styles.inputSpacing}
-            editable={false} // Campo não editável
+            editable={false}
           />
           <Input
             label="Número"

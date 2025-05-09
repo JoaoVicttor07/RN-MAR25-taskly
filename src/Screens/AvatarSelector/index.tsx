@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,10 +8,10 @@ import {
   Dimensions,
   BackHandler,
 } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RouteProp } from '@react-navigation/native';
-import type { RootStackParamList } from '../../Navigation';
+import {useRoute, useNavigation} from '@react-navigation/native';
+import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import type {RouteProp} from '@react-navigation/native';
+import type {RootStackParamList} from '../../Navigation';
 import Button from '../../components/button';
 import ProfileHeader from '../../components/ProfileHeader';
 import ProgressBar from '../../components/ProgressBar';
@@ -21,11 +21,11 @@ import styles from './style';
 import avatar1 from '../../Assets/Images/Avatars/avatar-1.jpg';
 
 const AVATARS = [
-  { id: '1', source: avatar1, borderColor: '#6C4AE4' },
-  { id: '2', source: avatar1, borderColor: '#E4B14A' },
-  { id: '3', source: avatar1, borderColor: '#4AE47B' },
-  { id: '4', source: avatar1, borderColor: '#E44A4A' },
-  { id: '5', source: avatar1, borderColor: '#B89B5B' },
+  {id: '1', source: avatar1, borderColor: '#6C4AE4'},
+  {id: '2', source: avatar1, borderColor: '#E4B14A'},
+  {id: '3', source: avatar1, borderColor: '#4AE47B'},
+  {id: '4', source: avatar1, borderColor: '#E44A4A'},
+  {id: '5', source: avatar1, borderColor: '#B89B5B'},
 ];
 
 const AVATAR_SIZE = 100;
@@ -40,7 +40,7 @@ export default function AvatarSelector() {
     useNavigation<
       NativeStackNavigationProp<RootStackParamList, 'AvatarSelector'>
     >();
-  const { isEditing = false } = route.params || {};
+  const {isEditing = false} = route.params || {};
 
   useEffect(() => {
     const backAction = () => {
@@ -53,7 +53,7 @@ export default function AvatarSelector() {
 
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
-      backAction
+      backAction,
     );
 
     return () => backHandler.remove();
@@ -72,18 +72,18 @@ export default function AvatarSelector() {
 
   const handleModalClose = () => {
     if (!isModalVisible) return;
-  
+
     setIsModalVisible(false);
-  
+
     if (isEditing) {
       navigation.reset({
         index: 0,
-        routes: [{ name: 'MainApp' }], // Certifique-se de que "MainApp" contém o BottomTabNavigator
+        routes: [{name: 'MainApp'}],
       });
     } else {
       navigation.reset({
         index: 0,
-        routes: [{ name: 'MainApp' }],
+        routes: [{name: 'MainApp'}],
       });
     }
   };
@@ -112,7 +112,7 @@ export default function AvatarSelector() {
         <Text style={styles.textPick}>(Escolha somente um.)</Text>
       </View>
       <View style={styles.avatarsRow}>
-        {AVATARS.map((avatar) => {
+        {AVATARS.map(avatar => {
           const isSelected = selectedId === avatar.id;
           const isDimmed = selectedId && !isSelected;
           return (
@@ -134,8 +134,7 @@ export default function AvatarSelector() {
                 },
               ]}
               activeOpacity={0.7}
-              onPress={() => handleAvatarPress(avatar.id)}
-            >
+              onPress={() => handleAvatarPress(avatar.id)}>
               <Image
                 source={avatar.source}
                 style={{

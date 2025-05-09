@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {
   View,
   ScrollView,
@@ -6,22 +6,25 @@ import {
   TouchableOpacity,
   Text,
   ImageSourcePropType,
-  Alert,
 } from 'react-native';
 import axios from 'axios';
-import { API_BASE_URL } from '../../env';
+import {API_BASE_URL} from '../../env';
 import * as Keychain from 'react-native-keychain';
-import { storeToken, setBiometryEnabled, isBiometryEnabled } from '../../Utils/authUtils';
+import {
+  storeToken,
+  setBiometryEnabled,
+  isBiometryEnabled,
+} from '../../Utils/authUtils';
 import styles from './style';
 import Input from '../../components/input';
 import Button from '../../components/button';
 import Fonts from '../../Theme/fonts';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../navigation/types';
+import LoginErrorModal from './Modal';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../navigation/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Definindo os ícones fora do componente
 const checkedIcon: ImageSourcePropType = require('../../Assets/icons/CheckSquare-2.png');
 const uncheckedIcon: ImageSourcePropType = require('../../Assets/icons/CheckSquare-1.png');
 
@@ -34,16 +37,14 @@ const Login: React.FC = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
-    {}
-  );
+  const [errors, setErrors] = useState<{email?: string; password?: string}>({});
   const [rememberMe, setRememberMe] = useState<boolean>(false);
-  const [checkboxImage, setCheckboxImage] = useState<ImageSourcePropType>(
-    uncheckedIcon
-  );
+  const [checkboxImage, setCheckboxImage] =
+    useState<ImageSourcePropType>(uncheckedIcon);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  // Recuperar o e-mail salvo ao abrir o app
   useEffect(() => {
     const loadRememberedEmail = async () => {
       try {
@@ -58,24 +59,24 @@ const Login: React.FC = () => {
         console.error('Erro ao carregar e-mail salvo:', error);
       }
     };
-  
+
     loadRememberedEmail();
   }, []);
 
   const handleEmailChange = useCallback(
     (text: string) => {
       setEmail(text);
-      setErrors((prevErrors) => ({ ...prevErrors, email: undefined }));
+      setErrors(prevErrors => ({...prevErrors, email: undefined}));
     },
-    [setEmail, setErrors]
+    [setEmail, setErrors],
   );
 
   const handlePasswordChange = useCallback(
     (text: string) => {
       setPassword(text);
-      setErrors((prevErrors) => ({ ...prevErrors, password: undefined }));
+      setErrors(prevErrors => ({...prevErrors, password: undefined}));
     },
-    [setPassword, setErrors]
+    [setPassword, setErrors],
   );
 
   const handleRememberMe = (): void => {
@@ -88,21 +89,21 @@ const Login: React.FC = () => {
     let isValid = true;
 
     if (!email) {
-      setErrors((prevErrors) => ({ ...prevErrors, email: 'Campo obrigatório' }));
+      setErrors(prevErrors => ({...prevErrors, email: 'Campo obrigatório'}));
       isValid = false;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setErrors((prevErrors) => ({ ...prevErrors, email: 'E-mail inválido' }));
+      setErrors(prevErrors => ({...prevErrors, email: 'E-mail inválido'}));
       isValid = false;
     }
 
     if (!password) {
-      setErrors((prevErrors) => ({
+      setErrors(prevErrors => ({
         ...prevErrors,
         password: 'Campo obrigatório',
       }));
       isValid = false;
     } else if (password.length < 8) {
-      setErrors((prevErrors) => ({
+      setErrors(prevErrors => ({
         ...prevErrors,
         password: 'A senha deve ter no mínimo 8 caracteres',
       }));
@@ -118,55 +119,54 @@ const Login: React.FC = () => {
       console.log('Inputs inválidos:', errors);
       return;
     }
-  
+
     setIsSubmitting(true);
     try {
       const biometryEnabled = await isBiometryEnabled();
-  
+
       if (biometryEnabled) {
         console.log('Biometria está ativada. Verificando credenciais...');
         const credentials = await Keychain.getGenericPassword();
         if (!credentials) {
-          console.log('Nenhuma credencial encontrada para autenticação biométrica.');
+          console.log(
+            'Nenhuma credencial encontrada para autenticação biométrica.',
+          );
         } else {
           console.log('Credenciais encontradas:', credentials);
         }
       } else {
         console.log('Biometria desativada. Usuário deve fazer login manual.');
       }
-  
+
       const response = await axios.post(`${API_BASE_URL}/auth/login`, {
         email,
         password,
       });
-  
+
       if (response.status === 200) {
         console.log('Login bem-sucedido:', response.data);
-  
-        // Armazena o idToken e o refreshToken
+
         await storeToken(response.data.id_token, response.data.refresh_token);
-  
-        // Salva o estado de ativação da biometria
+
         if (biometryEnabled) {
           await setBiometryEnabled(true);
         }
-  
-        // Salva ou remove o email no AsyncStorage com base no estado de "Lembrar de Mim"
+
         if (rememberMe) {
           await AsyncStorage.setItem('rememberedEmail', email);
         } else {
           await AsyncStorage.removeItem('rememberedEmail');
         }
-  
-        // Redireciona para o BottomTabNavigator
+
         navigation.reset({
           index: 0,
-          routes: [{ name: 'MainApp' }],
+          routes: [{name: 'MainApp'}],
         });
       }
     } catch (error) {
       console.error('Erro ao fazer login:', error);
-      Alert.alert('Erro', 'Não foi possível fazer login. Verifique suas credenciais.');
+      setErrorMessage('E-mail e/ou senha incorretos');
+      setIsErrorModalVisible(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -187,14 +187,14 @@ const Login: React.FC = () => {
           label="E-mail"
           value={email}
           onChangeText={handleEmailChange}
-          error={errors.email} // Exibe o erro no campo de e-mail
+          error={errors.email}
           containerStyle={styles.inputSpacing}
         />
         <Input
           label="Senha"
           value={password}
           onChangeText={handlePasswordChange}
-          error={errors.password} // Exibe o erro no campo de senha
+          error={errors.password}
           secureTextEntry
           containerStyle={styles.inputSpacing}
         />
@@ -236,6 +236,12 @@ const Login: React.FC = () => {
         width="100%"
         style={styles.buttonCreate}
         onPress={handleCreateAccount}
+      />
+      <LoginErrorModal
+        visible={isErrorModalVisible}
+        title="Ops! Ocorreu um problema"
+        description={errorMessage}
+        onClose={() => setIsErrorModalVisible(false)}
       />
     </ScrollView>
   );
