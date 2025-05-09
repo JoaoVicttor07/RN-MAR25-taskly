@@ -1,9 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View, Text, Image, TouchableOpacity, Alert } from 'react-native';
-import { CarouselActionList } from '../../../components/carouselActionList/index';
+import React, {useEffect, useState, useCallback} from 'react';
+import {
+  SafeAreaView,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import {CarouselActionList} from '../../../components/carouselActionList/index';
 import Modal from '../../AvatarSelector/Modal';
 import styles from './style';
-import { API_BASE_URL } from '../../../env';
+import {API_BASE_URL} from '../../../env';
 import * as Keychain from 'react-native-keychain';
 
 type Props = {
@@ -11,20 +18,19 @@ type Props = {
   route: any;
 };
 
-const MenuPrincipal = ({ navigation, route }: Props) => {
+const MenuPrincipal = ({navigation, route}: Props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [hasShownModal, setHasShownModal] = useState(false); // Controle para evitar exibição duplicada
+  const [hasShownModal, setHasShownModal] = useState(false);
   const [userData, setUserData] = useState({
     name: '',
     email: '',
     phone: '',
-  }); // Estado para armazenar os dados do usuário
+  });
 
-  // Função para buscar o perfil do usuário
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = useCallback(async () => {
     try {
       const credentials = await Keychain.getGenericPassword();
-      if (!credentials) {
+      if (!credentials || !credentials.password) {
         throw new Error('Token não encontrado. Faça login novamente.');
       }
 
@@ -43,24 +49,38 @@ const MenuPrincipal = ({ navigation, route }: Props) => {
           email: data.email || 'Email não disponível',
           phone: data.phone || 'Telefone não disponível',
         });
+      } else if (response.status === 401) {
+        console.log('Erro ao buscar perfil: token inválido ou expirado');
+        Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        });
       } else {
         console.error('Erro ao buscar perfil:', response.status);
-        Alert.alert('Erro', 'Não foi possível carregar as informações do perfil.');
+        Alert.alert(
+          'Erro',
+          'Não foi possível carregar as informações do perfil.',
+        );
       }
     } catch (error) {
       console.error('Erro ao buscar perfil:', error);
-      Alert.alert('Erro', 'Não foi possível carregar as informações do perfil.');
+      Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Login'}],
+      });
     }
-  };
+  }, [navigation]);
 
   useEffect(() => {
-    fetchUserProfile(); // Busca o perfil do usuário ao carregar a tela
-  }, []);
+    fetchUserProfile();
+  }, [fetchUserProfile]);
 
   useEffect(() => {
     if (route.params?.showConfirmationModal && !hasShownModal) {
       setIsModalVisible(true);
-      setHasShownModal(true); // Marca o modal como exibido
+      setHasShownModal(true);
     }
   }, [route.params, hasShownModal]);
 

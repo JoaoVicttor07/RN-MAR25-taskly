@@ -7,6 +7,11 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(async (config) => {
+
+  if (config.url === '/auth/register') {
+    return config;
+  }
+
   const token = await getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -30,6 +35,17 @@ export const registerUser = async (data: {
   }
 };
 
+// Função para realizar login de um usuário
+export const loginUser = async (data: { email: string; password: string }) => {
+  try {
+    const response = await api.post('/auth/login', data);
+    return response;
+  } catch (error) {
+    console.error('Erro ao realizar login:', error);
+    throw error;
+  }
+};
+
 // Função para renovar o token de autenticação
 export const refreshAuthToken = async (refreshToken: string): Promise<string> => {
   try {
@@ -37,7 +53,7 @@ export const refreshAuthToken = async (refreshToken: string): Promise<string> =>
 
     if (response.status === 200) {
       console.log('Token renovado com sucesso:', response.data);
-      return response.data.idToken; // Retorna o novo token
+      return response.data.idToken;
     } else {
       throw new Error('Erro ao renovar o token.');
     }
