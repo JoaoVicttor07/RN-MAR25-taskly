@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,29 +8,24 @@ import {
   Dimensions,
   BackHandler,
 } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RouteProp } from '@react-navigation/native';
-import type { RootStackParamList } from '../../Navigation';
+import {useRoute, useNavigation} from '@react-navigation/native';
+import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import type {RouteProp} from '@react-navigation/native';
+import type {RootStackParamList} from '../../Navigation';
 import Button from '../../components/button';
 import ProfileHeader from '../../components/ProfileHeader';
 import ProgressBar from '../../components/ProgressBar';
 import Modal from './Modal';
 import styles from './style';
-import * as Keychain from 'react-native-keychain';
 
-import avatar1 from '../../Assets/Images/Avatars/avatar-1.png';
-import avatar2 from '../../Assets/Images/Avatars/avatar-2.jpg';
-import avatar3 from '../../Assets/Images/Avatars/avatar-3.jpg';
-import avatar4 from '../../Assets/Images/Avatars/avatar-4.png';
-import avatar5 from '../../Assets/Images/Avatars/avatar-5.png';
+import avatar1 from '../../Assets/Images/Avatars/avatar-1.jpg';
 
 const AVATARS = [
-  { id: 'avatar_1', source: avatar1, borderColor: '#6C4AE4' },
-  { id: 'avatar_2', source: avatar2, borderColor: '#E4B14A' },
-  { id: 'avatar_3', source: avatar3, borderColor: '#4AE47B' },
-  { id: 'avatar_4', source: avatar4, borderColor: '#E44A4A' },
-  { id: 'avatar_5', source: avatar5, borderColor: '#B89B5B' },
+  {id: '1', source: avatar1, borderColor: '#6C4AE4'},
+  {id: '2', source: avatar1, borderColor: '#E4B14A'},
+  {id: '3', source: avatar1, borderColor: '#4AE47B'},
+  {id: '4', source: avatar1, borderColor: '#E44A4A'},
+  {id: '5', source: avatar1, borderColor: '#B89B5B'},
 ];
 
 const AVATAR_SIZE = 100;
@@ -40,75 +35,75 @@ const GRAY_BORDER = '#D1D5DB';
 export default function AvatarSelector() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
   const route = useRoute<RouteProp<RootStackParamList, 'AvatarSelector'>>();
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'AvatarSelector'>>();
-  const { isEditing = false } = route.params || {};
+  const navigation =
+    useNavigation<
+      NativeStackNavigationProp<RootStackParamList, 'AvatarSelector'>
+    >();
+  const {isEditing = false} = route.params || {};
 
   useEffect(() => {
     const backAction = () => {
       if (!isEditing) {
-        BackHandler.exitApp();
+        BackHandler.exitApp(); // Fecha o aplicativo
         return true;
       }
       return false;
     };
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
     return () => backHandler.remove();
   }, [isEditing]);
 
-  const handleAvatarPress = (id: string) => {
-    setSelectedId(prev => (prev === id ? null : id));
-  };
-
-  const handleConfirm = async () => {
+  const handleConfirm = () => {
     if (!selectedId) {
-      Alert.alert('Selecione um avatar para continuar.');
+      Alert.alert('Por favor, selecione um avatar antes de continuar.');
       return;
     }
 
-    setLoading(true);
-
-    try {
-      const credentials = await Keychain.getGenericPassword();
-      if (!credentials) {
-        throw new Error('Token de autenticação não encontrado.');
-      }
-
-      const response = await fetch('https://seu-backend.com/profile/avatar', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${credentials.password}`,
-        },
-        body: JSON.stringify({ picture: selectedId }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Erro ao salvar avatar.');
-      }
-
+    if (!isModalVisible) {
       setIsModalVisible(true);
-    } catch (error: any) {
-      Alert.alert('Erro', error.message || 'Ocorreu um erro ao salvar o avatar.');
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleModalClose = () => {
+    if (!isModalVisible) return;
+
     setIsModalVisible(false);
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'MainApp' }],
-    });
+
+    if (isEditing) {
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'MainApp'}],
+      });
+    } else {
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'MainApp'}],
+      });
+    }
+  };
+
+  const handleAvatarPress = (id: string) => {
+    if (selectedId === id) {
+      setSelectedId(null);
+    } else {
+      setSelectedId(id);
+    }
   };
 
   return (
     <View style={styles.container}>
       {isEditing && (
         <View style={styles.headerContainer}>
-          <ProfileHeader title="EDIÇÃO DE PERFIL" onBackPress={() => navigation.goBack()} />
+          <ProfileHeader
+            title="EDIÇÃO DE PERFIL"
+            onBackPress={() => navigation.goBack()}
+          />
           <ProgressBar progress={1} />
         </View>
       )}
@@ -116,7 +111,6 @@ export default function AvatarSelector() {
         <Text style={styles.textAvatar}>SELECIONE SEU AVATAR</Text>
         <Text style={styles.textPick}>(Escolha somente um.)</Text>
       </View>
-
       <View style={styles.avatarsRow}>
         {AVATARS.map(avatar => {
           const isSelected = selectedId === avatar.id;
@@ -140,8 +134,7 @@ export default function AvatarSelector() {
                 },
               ]}
               activeOpacity={0.7}
-              onPress={() => handleAvatarPress(avatar.id)}
-            >
+              onPress={() => handleAvatarPress(avatar.id)}>
               <Image
                 source={avatar.source}
                 style={{
@@ -171,21 +164,24 @@ export default function AvatarSelector() {
           );
         })}
       </View>
-
       <Button
-        title={loading ? 'SALVANDO...' : isEditing ? 'CONFIRMAR EDIÇÃO' : 'CONFIRMAR SELEÇÃO'}
+        title={isEditing ? 'CONFIRMAR EDIÇÃO' : 'CONFIRMAR SELEÇÃO'}
         fontFamily="Roboto60020"
         backgroundColor="#6C4AE4"
         width={Dimensions.get('window').width * 0.9}
         style={styles.confirmButton}
         onPress={handleConfirm}
-        disabled={loading}
       />
-
       <Modal
         visible={isModalVisible}
-        title={isEditing ? 'Perfil atualizado' : 'Cadastro realizado com sucesso!'}
-        description={isEditing ? 'Suas informações foram salvas com sucesso.' : 'Você será direcionado para a tela principal.'}
+        title={
+          isEditing ? 'Perfil atualizado' : 'Cadastro realizado com sucesso!'
+        }
+        description={
+          isEditing
+            ? 'Suas informações foram salvas com sucesso.'
+            : 'Você será direcionado para a tela principal.'
+        }
         confirmText="OK"
         confirmColor="#32C25B"
         onClose={handleModalClose}
