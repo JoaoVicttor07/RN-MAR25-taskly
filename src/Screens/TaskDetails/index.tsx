@@ -7,7 +7,7 @@ import {
   Image,
   ScrollView,
   KeyboardAvoidingView,
-  Platform,
+  Platform
 } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../Navigation/types';
@@ -47,7 +47,8 @@ const TaskDetailsScreen = () => {
 
   const [subtasks, setSubtasks] = useState<Subtask[]>([]);
   const [newSubtaskText, setNewSubtaskText] = useState('');
-  const [isAddingSubtask, setIsAddingSubtask] = useState(false);
+  const [showInput, setShowInput] = useState(false);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const renderTagItem = useCallback(({ item }: { item: string }) => (
     <CategoryTag item={item} />
@@ -60,19 +61,21 @@ const TaskDetailsScreen = () => {
   };
 
   const handleShowAddSubtaskInput = () => {
-    setIsAddingSubtask(true);
+    setShowInput(true);
     setNewSubtaskText('');
   };
 
   const handleAddSubtask = useCallback(() => {
-    if (newSubtaskText.trim()) {
+    const text = newSubtaskText.trim();
+    if (text) {
       const newSubtask: Subtask = {
         id: String(Date.now()),
-        text: newSubtaskText.trim(),
+        text: text,
         isCompleted: false,
       };
       setSubtasks(prevSubtasks => [...prevSubtasks, newSubtask]);
       setNewSubtaskText('');
+      setShowInput(false); // Oculta o input após adicionar
     }
   }, [newSubtaskText, setSubtasks]);
 
@@ -85,7 +88,6 @@ const TaskDetailsScreen = () => {
   }, [setSubtasks]);
 
   const priorityText = mapPriorityToString(task.priority);
-  const scrollViewRef = useRef<ScrollView>(null);
 
   return (
     <KeyboardAvoidingView
@@ -129,32 +131,34 @@ const TaskDetailsScreen = () => {
             <Text style={styles.resolveButtonText}>Resolver Tarefa</Text>
           </TouchableOpacity>
         </View>
+
         <SubtaskList subtasks={subtasks} onToggleSubtask={handleToggleSubtask} />
-        {isAddingSubtask && (
+
+        {/* Input de adicionar subtarefa */}
+        {showInput && (
           <View style={styles.addSubtaskInputContainer}>
             <Input
               style={styles.input}
               placeholder="Escreva sua subtarefa..."
               value={newSubtaskText}
               onChangeText={setNewSubtaskText}
-              onFocus={() => {
-                console.log('Input de subtarefa recebeu foco!');
-                scrollViewRef.current?.scrollToEnd({ animated: true });
-              }}
+              onFocus={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
             />
             <TouchableOpacity style={styles.confirmButton} onPress={handleAddSubtask}>
               <Image source={require('../../Assets/icons/arrowConfirm.png')} />
             </TouchableOpacity>
           </View>
         )}
+
+        {/* Botão para adicionar nova subtarefa */}
         <TouchableOpacity style={styles.addButton} onPress={handleShowAddSubtaskInput}>
           <Text style={styles.addButtonText}>ADICIONAR SUBTASK</Text>
         </TouchableOpacity>
+
         <View style={styles.bottomSpace} />
       </ScrollView>
     </KeyboardAvoidingView>
   );
 };
-
 
 export default TaskDetailsScreen;
