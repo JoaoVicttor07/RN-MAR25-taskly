@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import React, {useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
 import {
   Text,
   ScrollView,
@@ -12,12 +12,12 @@ import {
 import Button from '../../components/button';
 import Input from '../../components/input';
 import BiometryModal from './BiometryResgister';
-import { registerUser } from '../../hooks/useApi';
+import {registerUser, loginUser} from '../../hooks/useApi';
 import styles from './style';
 import * as Keychain from 'react-native-keychain';
 import ReactNativeBiometrics from 'react-native-biometrics';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../Navigation/types';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParamList} from '../../Navigation/types';
 
 export default function Register() {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -45,7 +45,6 @@ export default function Register() {
     }
   };
 
-  // Funções de validação
   const validateName = (value: string): string | null => {
     if (!value) {
       return 'O nome é obrigatório.';
@@ -68,7 +67,7 @@ export default function Register() {
   };
 
   const validateNumber = (value: string): string | null => {
-    const cleaned = value.replace(/\D/g, ''); // Remove caracteres não numéricos
+    const cleaned = value.replace(/\D/g, '');
     if (!cleaned) {
       return 'O número é obrigatório.';
     } else if (cleaned.length !== 11) {
@@ -110,7 +109,13 @@ export default function Register() {
     setPasswordError(passwordError || '');
     setConfirmPasswordError(confirmPasswordError || '');
 
-    if (nameError || emailError || numberError || passwordError || confirmPasswordError) {
+    if (
+      nameError ||
+      emailError ||
+      numberError ||
+      passwordError ||
+      confirmPasswordError
+    ) {
       console.log('Validação falhou.');
       setLoading(false);
       return;
@@ -122,8 +127,10 @@ export default function Register() {
         email,
         password,
         name,
-        phone_number: number,
+        phone_number: number.replace(/\D/g, ''),
       });
+
+      console.log('Token retornado no registro:', response.data.idToken);
       console.log('Resposta da API:', response);
 
       if (
@@ -132,7 +139,29 @@ export default function Register() {
       ) {
         await storeToken(response.data.idToken);
         console.log('Cadastro concluído!');
-        setShowBiometryModal(true); // Exibe o modal de biometria
+
+        try {
+          console.log('Realizando login após o registro...');
+          const loginResponse = await loginUser({
+            email,
+            password,
+          });
+
+          console.log('Token retornado no login:', loginResponse.data.id_token);
+          await storeToken(loginResponse.data.id_token);
+
+          console.log('Login realizado com sucesso após o registro!');
+        } catch (error) {
+          console.error('Erro ao realizar login após o registro:', error);
+          Alert.alert(
+            'Erro',
+            'Não foi possível realizar login após o registro.',
+          );
+          setLoading(false);
+          return;
+        }
+
+        setShowBiometryModal(true);
       } else {
         console.log('Resposta inesperada da API:', response);
       }
@@ -155,24 +184,23 @@ export default function Register() {
   const handleBiometryActivate = async () => {
     setBiometryApiLoading(true);
     console.log('Iniciando autenticação biométrica...');
-  
     const rnBiometrics = new ReactNativeBiometrics();
-  
+
     try {
-      const { available, biometryType } = await rnBiometrics.isSensorAvailable();
-  
+      const {available, biometryType} = await rnBiometrics.isSensorAvailable();
+
       if (!available) {
         Alert.alert('Erro', 'Biometria não disponível neste dispositivo.');
         setBiometryApiLoading(false);
         return;
       }
-  
+
       console.log(`Tipo de biometria disponível: ${biometryType}`);
-  
-      const { success } = await rnBiometrics.simplePrompt({
+
+      const {success} = await rnBiometrics.simplePrompt({
         promptMessage: 'Confirme sua identidade',
       });
-  
+
       if (success) {
         console.log('Autenticação biométrica bem-sucedida!');
         setShowBiometryModal(false);
@@ -203,7 +231,7 @@ export default function Register() {
           <Input
             label="Nome Completo"
             value={name}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setName(text);
               if (nameError) {
                 const error = validateName(text);
@@ -220,7 +248,7 @@ export default function Register() {
           <Input
             label="E-mail"
             value={email}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setEmail(text);
               if (emailError) validateEmail(text);
             }}
@@ -234,7 +262,7 @@ export default function Register() {
           <Input
             label="Número"
             value={number}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setNumber(text);
               if (numberError) {
                 const error = validateNumber(text);
@@ -252,7 +280,7 @@ export default function Register() {
           <Input
             label="Senha"
             value={password}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setPassword(text);
               if (passwordError) validatePassword(text);
             }}
@@ -267,7 +295,7 @@ export default function Register() {
           <Input
             label="Confirmar senha"
             value={confirmPassword}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setConfirmPassword(text);
               if (confirmPasswordError) validateConfirmPassword(text);
             }}
@@ -287,7 +315,7 @@ export default function Register() {
               position: 'absolute',
               top: '50%',
               left: '50%',
-              transform: [{ translateX: -25 }, { translateY: -25 }],
+              transform: [{translateX: -25}, {translateY: -25}],
               zIndex: 9999,
             }}>
             <ActivityIndicator size="large" color="#5B3CC4" />

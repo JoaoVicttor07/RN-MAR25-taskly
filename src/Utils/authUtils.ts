@@ -1,5 +1,5 @@
 import * as Keychain from 'react-native-keychain';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../hooks/useApi';
 
@@ -24,18 +24,16 @@ export const isBiometryEnabled = async (): Promise<boolean> => {
   }
 };
 
-// Verifica se o dispositivo suporta biometria
 export const isBiometrySupported = async (): Promise<boolean> => {
   try {
     const biometryType = await Keychain.getSupportedBiometryType();
-    return !!biometryType; // Retorna true se houver suporte
+    return !!biometryType;
   } catch (error) {
     console.error('Erro ao verificar suporte à biometria:', error);
     return false;
   }
 };
 
-// Salvar tokens no Keychain
 export const storeToken = async (idToken: string, refreshToken: string) => {
   try {
     if (!refreshToken) {
@@ -52,7 +50,6 @@ export const storeToken = async (idToken: string, refreshToken: string) => {
   }
 };
 
-// Recuperar token armazenado
 export const getToken = async (): Promise<string | null> => {
   try {
     const credentials = await Keychain.getGenericPassword();
@@ -63,7 +60,6 @@ export const getToken = async (): Promise<string | null> => {
   }
 };
 
-// Remover token armazenado
 export const removeToken = async () => {
   try {
     await Keychain.resetGenericPassword();
@@ -73,39 +69,37 @@ export const removeToken = async () => {
   }
 };
 
-// Verificar se o token está expirado
 export const isTokenExpired = (token: string): boolean => {
   try {
     if (!token || token.split('.').length !== 3) {
       throw new Error('Token inválido ou malformado.');
     }
 
-    const decoded: { exp: number } = jwtDecode(token);
+    const decoded: {exp: number} = jwtDecode(token);
     const currentTime = Math.floor(Date.now() / 1000);
     return decoded.exp < currentTime;
   } catch (error) {
     console.error('Erro ao verificar validade do token:', error);
-    return true; // Considera o token como expirado em caso de erro
+    return true;
   }
 };
 
-// Renovar token usando a API
-export const refreshAuthToken = async (refreshToken: string): Promise<string> => {
+export const refreshAuthToken = async (
+  refreshToken: string,
+): Promise<string> => {
   try {
     if (!refreshToken) {
       throw new Error('Refresh token não fornecido.');
     }
 
-    const response = await api.post('/auth/refresh', { refreshToken });
-    const { idToken, refreshToken: newRefreshToken } = response.data;
+    const response = await api.post('/auth/refresh', {refreshToken});
+    const {idToken, refreshToken: newRefreshToken} = response.data;
 
-    // Salva o novo token no Keychain
     await storeToken(idToken, newRefreshToken);
     return idToken;
   } catch (error) {
     console.error('Erro ao renovar o token:', error);
 
-    // Remove tokens inválidos do Keychain
     await removeToken();
     throw error;
   }

@@ -71,9 +71,8 @@ export default function AvatarSelector() {
   };
 
   const handleModalClose = () => {
-    if (!isModalVisible) {
-      return;
-    }
+    if (!isModalVisible) return;
+
     setIsModalVisible(false);
 
     if (isEditing) {
