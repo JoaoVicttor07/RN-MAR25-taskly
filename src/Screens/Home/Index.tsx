@@ -1,18 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { View } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, FlatList, TouchableOpacity } from 'react-native';
 import styles from './style';
 import Button from '../../components/button';
 import CreateTaskModal from '../../components/ModalCreateTask/Index';
 import EmptyState from '../../components/EmptyState';
-import TaskList from '../../components/TaskItem/TaskList';
+import TaskItem from '../../components/TaskItem';
 import Filter from '../../components/Filter';
 import FilterModal from '../../components/FilterModal';
 import Fonts from '../../Theme/fonts';
 import DefaultHeader from '../../components/DefaultHeader';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../navigation/types';
 
-type PriorityType = 'lowToHigh' | 'highToLow' | null;
-type TagsType = string[];
-type DateType = Date | null;
+export interface Subtask {
+  id: string;
+  text: string;
+  isCompleted: boolean;
+}
 
 export interface Task {
   title: string;
@@ -22,9 +27,15 @@ export interface Task {
   categories: string[];
   isCompleted: boolean;
   priority?: number;
+  subtasks: Subtask[];
 }
 
+type PriorityType = 'lowToHigh' | 'highToLow' | null;
+type TagsType = string[];
+type DateType = Date | null;
+// Removed redundant useNavigation call
 const Home: React.FC = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([
@@ -36,6 +47,7 @@ const Home: React.FC = () => {
       categories: ['CASA', 'GASTO'],
       isCompleted: false,
       priority: 0,
+      subtasks: [],
     },
     {
       id: '2',
@@ -45,6 +57,7 @@ const Home: React.FC = () => {
       categories: ['TRABALHO'],
       isCompleted: false,
       priority: 2,
+      subtasks: [],
     },
     {
       id: '3',
@@ -54,6 +67,7 @@ const Home: React.FC = () => {
       categories: ['ACADEMIA'],
       isCompleted: true,
       priority: 1,
+      subtasks: [],
     },
     {
       id: '4',
@@ -63,6 +77,7 @@ const Home: React.FC = () => {
       categories: ['CASA', 'FINANCEIRO'],
       isCompleted: false,
       priority: 2,
+      subtasks: [],
     },
     {
       id: '5',
@@ -72,6 +87,7 @@ const Home: React.FC = () => {
       categories: ['TRABALHO', 'LAZER', 'COMPASS'],
       isCompleted: false,
       priority: 2,
+      subtasks: [],
     },
   ]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);
@@ -88,7 +104,7 @@ const Home: React.FC = () => {
     setAllTags(Array.from(uniqueTags));
   }, [tasks]);
 
-  const handleCreateTask = (taskData: {
+  const handleCreateTask = useCallback((taskData: {
     title: string;
     description: string;
     deadline: string;
@@ -99,38 +115,64 @@ const Home: React.FC = () => {
       categories: [],
       isCompleted: false,
       priority: 0,
+      subtasks: [], // Inicializa subtasks como array vazio ao criar
     };
     setTasks(prevTasks => [...prevTasks, newTask]);
     setIsModalVisible(false);
-  };
+  }, [setTasks]);
 
-  const handleOpenCreateTaskModal = () => {
+  const handleOpenCreateTaskModal = useCallback(() => {
     setIsModalVisible(true);
-  };
+  }, []);
 
-  const handleCloseCreateTaskModal = () => {
+  const handleCloseCreateTaskModal = useCallback(() => {
     setIsModalVisible(false);
-  };
+  }, []);
 
-  const handleOpenFilterModal = () => {
+  const handleOpenFilterModal = useCallback(() => {
     setIsFilterModalVisible(true);
-  };
+  }, []);
 
-  const handleCloseFilterModal = () => {
+  const handleCloseFilterModal = useCallback(() => {
     setIsFilterModalVisible(false);
-  };
+  }, []);
 
-  const handlePrioritySelect = (priority: PriorityType) => {
+  const handlePrioritySelect = useCallback((priority: PriorityType) => {
     setSelectedPriority(priority);
-  };
+  }, []);
 
-  const handleTagSelect = (tags: TagsType) => {
+  const handleTagSelect = useCallback((tags: TagsType) => {
     setSelectedTags(tags);
-  };
+  }, []);
 
-  const handleDateSelect = (date: DateType) => {
+  const handleDateSelect = useCallback((date: DateType) => {
     setSelectedDate(date);
-  };
+  }, []);
+
+  const handleUpdatedTask = useCallback((updatedTask: Task) => {
+    setTasks(prevTasks =>
+      prevTasks.map(t => (t.id === updatedTask.id ? updatedTask : t)) // Atualiza a task pai
+    );
+  }, []);
+
+  const handleTaskDetailsNavigation = useCallback((task: Task) => {
+    navigation.navigate('TaskDetails', { task, onTaskUpdated: handleUpdatedTask });
+  }, [navigation, handleUpdatedTask]);
+
+  const renderTaskItem = useCallback(({ item }: { item: Task }) => (
+    <TouchableOpacity onPress={() => handleTaskDetailsNavigation(item)}>
+      <TaskItem
+        title={item.title}
+        description={item.description}
+        categories={item.categories}
+        isCompleted={item.isCompleted}
+        task={item}
+        onToggleComplete={() => {}} // Adicione esta linha
+      />
+    </TouchableOpacity>
+  ), [handleTaskDetailsNavigation]); // Remova `setTasks` daqui
+
+  const keyExtractorTask = useCallback((item: Task) => item.id, []);
 
   useEffect(() => {
     let tempTasks = [...tasks];
@@ -168,7 +210,7 @@ const Home: React.FC = () => {
 
   return (
     <View style={styles.container}>
-    <DefaultHeader />
+      <DefaultHeader />
 
       {tasks.length === 0 ? (
         <View style={styles.containerNoTask}>
@@ -177,7 +219,11 @@ const Home: React.FC = () => {
       ) : (
         <View style={styles.taskListContainer}>
           <Filter onPress={handleOpenFilterModal} />
-          <TaskList tasks={filteredTasks} setTasks={setTasks} />
+            <FlatList
+              data={filteredTasks}
+              renderItem={renderTaskItem}
+              keyExtractor={keyExtractorTask}
+            />
         </View>
       )}
 

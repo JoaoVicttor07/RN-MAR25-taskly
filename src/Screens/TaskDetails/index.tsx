@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,7 @@ import {
   Image,
   ScrollView,
   KeyboardAvoidingView,
-  Platform
+  Platform,
 } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../Navigation/types';
@@ -17,8 +17,13 @@ import CategoryTag from '../../components/CategoryTag';
 import SmallBackButton from '../../components/SmallBackButton';
 import Input from '../../components/input';
 import SubtaskList from '../../components/SubtaskList';
+import { Task } from '../Home';
 
 type TaskDetailsRouteProp = RouteProp<RootStackParamList, 'TaskDetails'>;
+
+interface TaskDetailsProps {
+  onTaskUpdated?: (updatedTask: Task) => void;
+}
 
 interface Subtask {
   id: string;
@@ -41,14 +46,21 @@ const mapPriorityToString = (priority?: number): PriorityLevel => {
   }
 };
 
-const TaskDetailsScreen = () => {
+const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
   const route = useRoute<TaskDetailsRouteProp>();
-  const { task } = route.params;
-
-  const [subtasks, setSubtasks] = useState<Subtask[]>([]);
+  const { task: initialTask } = route.params;
+  const [task, setTask] = useState<Task>(initialTask);
+  const [subtasks, setSubtasks] = useState<Subtask[]>(initialTask.subtasks || []);
   const [newSubtaskText, setNewSubtaskText] = useState('');
   const [showInput, setShowInput] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
+
+  useEffect(() => {
+    if (initialTask) {
+      setTask(initialTask);
+      setSubtasks(initialTask.subtasks || []);
+    }
+  }, [initialTask]);
 
   const renderTagItem = useCallback(({ item }: { item: string }) => (
     <CategoryTag item={item} />
@@ -73,19 +85,29 @@ const TaskDetailsScreen = () => {
         text: text,
         isCompleted: false,
       };
-      setSubtasks(prevSubtasks => [...prevSubtasks, newSubtask]);
+      const updatedSubtasks = [...subtasks, newSubtask];
+      setSubtasks(updatedSubtasks);
       setNewSubtaskText('');
-      setShowInput(false); // Oculta o input após adicionar
+      setShowInput(false); // Adicione esta linha para esconder o input
+      onTaskUpdated?.({ ...task, subtasks: updatedSubtasks });
     }
-  }, [newSubtaskText, setSubtasks]);
+  }, [newSubtaskText, subtasks, task, onTaskUpdated]);
 
   const handleToggleSubtask = useCallback((id: string) => {
-    setSubtasks(prevSubtasks =>
-      prevSubtasks.map(subtask =>
-        subtask.id === id ? { ...subtask, isCompleted: !subtask.isCompleted } : subtask
-      )
+    const updatedSubtasks = subtasks.map(subtask =>
+      subtask.id === id ? { ...subtask, isCompleted: !subtask.isCompleted } : subtask
     );
-  }, [setSubtasks]);
+    setSubtasks(updatedSubtasks);
+    onTaskUpdated?.({ ...task, subtasks: updatedSubtasks });
+  }, [subtasks, task, onTaskUpdated]);
+
+  const handleEditSubtask = useCallback((id: string, newText: string) => {
+    const updatedSubtasks = subtasks.map(subtask =>
+      subtask.id === id ? { ...subtask, text: newText } : subtask
+    );
+    setSubtasks(updatedSubtasks);
+    onTaskUpdated?.({ ...task, subtasks: updatedSubtasks });
+  }, [subtasks, task, onTaskUpdated]);
 
   const priorityText = mapPriorityToString(task.priority);
 
@@ -132,9 +154,14 @@ const TaskDetailsScreen = () => {
           </TouchableOpacity>
         </View>
 
-        <SubtaskList subtasks={subtasks} onToggleSubtask={handleToggleSubtask} />
+        <SubtaskList
+          subtasks={subtasks}
+          onToggleSubtask={handleToggleSubtask}
+          checkedImage={require('../../Assets/icons/CheckSquare-2.png')}
+          uncheckedImage={require('../../Assets/icons/CheckSquare-1.png')}
+          onEditSubtask={handleEditSubtask}
+        />
 
-        {/* Input de adicionar subtarefa */}
         {showInput && (
           <View style={styles.addSubtaskInputContainer}>
             <Input
@@ -150,7 +177,6 @@ const TaskDetailsScreen = () => {
           </View>
         )}
 
-        {/* Botão para adicionar nova subtarefa */}
         <TouchableOpacity style={styles.addButton} onPress={handleShowAddSubtaskInput}>
           <Text style={styles.addButtonText}>ADICIONAR SUBTASK</Text>
         </TouchableOpacity>

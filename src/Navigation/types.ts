@@ -1,3 +1,5 @@
+import { Task } from '../Screens/Home';
+
 export type RootStackParamList = {
   InitialScreen: undefined;
   Home: undefined;
@@ -9,12 +11,8 @@ export type RootStackParamList = {
   EditPersonalInfo: undefined;
   Login: undefined;
   MainApp: undefined;
-  TaskDetails: { task: {
-    id: string;
-    title: string;
-    description: string;
-    categories: string[];
-    isCompleted: boolean;
-    priority?: number;
-  } };
+  TaskDetails: {
+    task: Task;
+    onTaskUpdated?: (updatedTask: Task) => void;
+  };
 };
