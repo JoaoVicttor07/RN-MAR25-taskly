@@ -46,6 +46,14 @@ const styles = StyleSheet.create({
       height:47,
       marginTop:8,
     },
+
+    centeredLoader: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: [{translateX: -25}, {translateY: -25}],
+      zIndex: 9999,
+    },
     
   });
 

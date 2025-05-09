@@ -10,41 +10,35 @@ import PreferencesMenu from '../Screens/PreferencesMenu';
 import EditPersonalInfoScreen from '../Screens/EditPersonalInfo/EditPersonalInfoScreen';
 import Login from '../Screens/Login/index';
 import BottomTabNavigator from '../components/BottomTabNavigator';
+import SplashScreen from '../Screens/SplashScreen';
 import { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const AppNavigator: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }) => {
+const AppNavigator: React.FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={isAuthenticated ? 'MainApp' : 'Login'}
-        screenOptions={{ headerShown: false }}>
-        {/* 📌 Tela de Login */}
+        initialRouteName="SplashScreen"
+        screenOptions={{ headerShown: false }}
+      >
+        {/* Splash Screen */}
+        <Stack.Screen name="SplashScreen" component={SplashScreen} />
+
+        {/* Tela de Login */}
         <Stack.Screen name="Login" component={Login} />
 
-        {/* 📌 Tela de tarefas (Home) */}
-        <Stack.Screen name="Home" component={Home} />
-
-        {/* 📌 Tela de cadastro */}
-        <Stack.Screen name="Register" component={Register} />
-
-        {/* 📌 Tela de menu */}
-        <Stack.Screen name="Menu" component={Menu} />
-
-        {/* 📌 Tela de Termos e Regulamentos */}
-        <Stack.Screen name="Regulamentos" component={TermosPage} />
-
-        {/* 📌 Tela de seleção de avatar */}
-        <Stack.Screen name="AvatarSelector" component={AvatarSelector} />
-
-        {/* 📌 Tela de seleção de preferencia de tema */}
-        <Stack.Screen name="PreferencesMenu" component={PreferencesMenu} />
-
-        {/* 📌 Tela de edição de informações pessoais */}
-        <Stack.Screen name="EditPersonalInfo" component={EditPersonalInfoScreen} />
-
+        {/* Tela principal após autenticação */}
         <Stack.Screen name="MainApp" component={BottomTabNavigator} />
+
+        {/* Outras telas */}
+        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="Menu" component={Menu} />
+        <Stack.Screen name="Regulamentos" component={TermosPage} />
+        <Stack.Screen name="AvatarSelector" component={AvatarSelector} />
+        <Stack.Screen name="PreferencesMenu" component={PreferencesMenu} />
+        <Stack.Screen name="EditPersonalInfo" component={EditPersonalInfoScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
