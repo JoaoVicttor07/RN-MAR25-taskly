@@ -151,16 +151,20 @@ const Login: React.FC = () => {
   };
 
   const handleLogin = async () => {
-    if (!validateInputs()) {
-      return;
-    }
+  if (!validateInputs()) {
+    return;
+  }
 
-    setIsSubmitting(true);
-    try {
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, {
-        email: email,
-        password: password,
-      });
+  setIsSubmitting(true);
+  try {
+    console.log('Iniciando login...');
+    const response = await axios.post(`${API_BASE_URL}/auth/login`, {
+      email: email,
+      password: password,
+    });
+
+    if (response.status === 200) {
+      console.log('Login bem-sucedido:', response.data);
 
       const id_token = response.data.id_token;
       const refresh_token = response.data.refresh_token;
@@ -174,15 +178,21 @@ const Login: React.FC = () => {
         await AsyncStorage.removeItem('rememberedEmail');
       }
 
+      console.log('Redirecionando para a tela principal...');
       navigation.reset({ index: 0, routes: [{ name: 'MainApp' }] });
-    } catch (error) {
-      console.error('Erro ao fazer login:', error);
+    } else {
+      console.error('Erro no login: status', response.status);
       setErrorMessage('E-mail e/ou senha incorretos');
       setIsErrorModalVisible(true);
-    } finally {
-      setIsSubmitting(false);
     }
-  };
+  } catch (error) {
+    console.error('Erro ao fazer login:', error);
+    setErrorMessage('E-mail e/ou senha incorretos');
+    setIsErrorModalVisible(true);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const handleCreateAccount = () => {
     navigation.navigate('Register');

@@ -9,33 +9,39 @@ const App: React.FC = () => {
 
   // Inicia a verificação de autenticação após a SplashScreen
   useEffect(() => {
-    const initializeApp = async () => {
-      try {
-        const credentials = await Keychain.getGenericPassword(); // Obtém as credenciais salvas
-        if (credentials) {
-          const { password: storedToken, username: refreshToken } = credentials;
+  const initializeApp = async () => {
+    try {
+      console.log('Inicializando o aplicativo...');
+      const credentials = await Keychain.getGenericPassword();
+      if (credentials) {
+        const { password: storedToken, username: refreshToken } = credentials;
 
-          if (!storedToken || isTokenExpired(storedToken)) {
-            console.log('Token inválido ou expirado. Tentando renovar...');
-            try {
-              const newToken = await refreshAuthToken(refreshToken); // Tenta renovar o token
-              await Keychain.setGenericPassword(credentials.username, newToken); // Salva o novo token
-            } catch (error) {
-              console.error('Erro ao renovar o token:', error);
-              await removeToken(); // Remove tokens inválidos
-            }
+        if (!storedToken || isTokenExpired(storedToken)) {
+          console.log('Token inválido ou expirado. Tentando renovar...');
+          try {
+            const newToken = await refreshAuthToken(refreshToken);
+            await Keychain.setGenericPassword(refreshToken, newToken);
+            console.log('Token renovado com sucesso!');
+          } catch (error) {
+            console.error('Erro ao renovar o token:', error);
+            await removeToken();
           }
+        } else {
+          console.log('Token válido encontrado.');
         }
-      } catch (error) {
-        console.error('Erro ao inicializar o aplicativo:', error);
-        Alert.alert('Erro', 'Não foi possível inicializar o aplicativo. Por favor, tente novamente.');
-      } finally {
-        setIsLoading(false); // Finaliza o carregamento após verificar as credenciais
+      } else {
+        console.log('Nenhum token encontrado.');
       }
-    };
+    } catch (error) {
+      console.error('Erro ao inicializar o aplicativo:', error);
+      Alert.alert('Erro', 'Não foi possível inicializar o aplicativo. Por favor, tente novamente.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    initializeApp();
-  }, []);
+  initializeApp();
+}, []);
 
   // Enquanto a autenticação não é verificada, exibe um carregando
   if (isLoading) {

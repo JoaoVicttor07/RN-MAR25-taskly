@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   SafeAreaView,
   View,
@@ -7,10 +7,10 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import {CarouselActionList} from '../../../components/carouselActionList/index';
+import { CarouselActionList } from '../../../components/carouselActionList/index';
 import Modal from '../../AvatarSelector/Modal';
 import styles from './style';
-import {API_BASE_URL} from '../../../env';
+import { API_BASE_URL } from '../../../env';
 import * as Keychain from 'react-native-keychain';
 
 type Props = {
@@ -18,13 +18,14 @@ type Props = {
   route: any;
 };
 
-const MenuPrincipal = ({navigation, route}: Props) => {
+const MenuPrincipal = ({ navigation, route }: Props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasShownModal, setHasShownModal] = useState(false);
   const [userData, setUserData] = useState({
     name: '',
     email: '',
     phone: '',
+    avatarUrl: '', // Adicionado para armazenar o avatar
   });
 
   const fetchUserProfile = useCallback(async () => {
@@ -48,13 +49,14 @@ const MenuPrincipal = ({navigation, route}: Props) => {
           name: data.name || 'Usuário',
           email: data.email || 'Email não disponível',
           phone: data.phone || 'Telefone não disponível',
+          avatarUrl: data.avatarUrl || '', // Atualiza o avatar
         });
       } else if (response.status === 401) {
         console.log('Erro ao buscar perfil: token inválido ou expirado');
         Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
         navigation.reset({
           index: 0,
-          routes: [{name: 'Login'}],
+          routes: [{ name: 'Login' }],
         });
       } else {
         console.error('Erro ao buscar perfil:', response.status);
@@ -68,7 +70,7 @@ const MenuPrincipal = ({navigation, route}: Props) => {
       Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
       navigation.reset({
         index: 0,
-        routes: [{name: 'Login'}],
+        routes: [{ name: 'Login' }],
       });
     }
   }, [navigation]);
@@ -88,7 +90,11 @@ const MenuPrincipal = ({navigation, route}: Props) => {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.profileSection}>
         <Image
-          source={require('../../../Assets/Images/Ellipse1.png')}
+          source={
+            userData.avatarUrl
+              ? { uri: userData.avatarUrl }
+              : require('../../../Assets/Images/Ellipse1.png')
+          }
           style={styles.avatar}
         />
         <View style={styles.containerInfo}>
@@ -107,7 +113,8 @@ const MenuPrincipal = ({navigation, route}: Props) => {
       <View style={styles.containerButtons}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('PreferencesMenu')}>
+          onPress={() => navigation.navigate('PreferencesMenu')}
+        >
           <Text style={styles.buttonText}>Preferências</Text>
           <Image
             source={require('../../../Assets/icons/VectorBack.png')}
@@ -117,7 +124,8 @@ const MenuPrincipal = ({navigation, route}: Props) => {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Regulamentos')}>
+          onPress={() => navigation.navigate('Regulamentos')}
+        >
           <Text style={styles.buttonText}>Termos e regulamentos</Text>
           <Image
             source={require('../../../Assets/icons/VectorBack.png')}

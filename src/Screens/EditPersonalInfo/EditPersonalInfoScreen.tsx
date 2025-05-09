@@ -1,14 +1,14 @@
-import React, {useState, useEffect} from 'react';
-import {View, KeyboardAvoidingView, ScrollView, Alert} from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, KeyboardAvoidingView, ScrollView, Alert } from 'react-native';
 import Input from '../../components/input';
 import Button from '../../components/button';
-import {useNavigation} from '@react-navigation/native';
-import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import type {RootStackParamList} from '../../navigation';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../../Navigation/types';
 import ProfileHeader from '../../components/ProfileHeader';
 import ProgressBar from '../../components/ProgressBar';
 import styles from './style';
-import {API_BASE_URL} from '../../env';
+import { API_BASE_URL } from '../../env';
 import * as Keychain from 'react-native-keychain';
 
 type NavigationProp = NativeStackNavigationProp<
@@ -24,10 +24,10 @@ function EditPersonalInfoScreen() {
   const [phoneError, setPhoneError] = useState('');
   const [email, setEmail] = useState('');
 
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = useCallback(async () => {
     try {
       const credentials = await Keychain.getGenericPassword();
-      if (!credentials) {
+      if (!credentials || !credentials.password) {
         throw new Error('Token não encontrado. Faça login novamente.');
       }
 
@@ -43,6 +43,13 @@ function EditPersonalInfoScreen() {
         setEmail(data.email);
         setName(data.name || '');
         setPhone(data.phone || '');
+      } else if (response.status === 401) {
+        console.error('Erro ao buscar perfil: token inválido ou expirado');
+        Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Login' }],
+        });
       } else {
         console.error('Erro ao buscar perfil:', response.status);
         Alert.alert(
@@ -54,14 +61,18 @@ function EditPersonalInfoScreen() {
       console.error('Erro ao buscar perfil:', error);
       Alert.alert(
         'Erro',
-        'Não foi possível carregar as informações do perfil.',
+        'Não foi possível carregar as informações do perfil. Faça login novamente.',
       );
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
     }
-  };
+  }, [navigation]);
 
   useEffect(() => {
     fetchUserProfile();
-  }, []);
+  }, [fetchUserProfile]);
 
   const validateName = (value: string): string | null => {
     if (!value) {
@@ -104,11 +115,11 @@ function EditPersonalInfoScreen() {
             Authorization: `Bearer ${credentials.password}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({name}),
+          body: JSON.stringify({ name }),
         });
 
         if (response.ok) {
-          navigation.navigate('AvatarSelector', {isEditing: true});
+          navigation.navigate('AvatarSelector', { isEditing: true });
         } else {
           console.error('Erro ao atualizar nome:', response.status);
           Alert.alert('Erro', 'Não foi possível atualizar seu nome.');
@@ -121,8 +132,8 @@ function EditPersonalInfoScreen() {
   };
 
   return (
-    <KeyboardAvoidingView style={{flex: 1}} behavior="height">
-      <ScrollView contentContainerStyle={{flexGrow: 1}}>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.container}>
           <ProfileHeader
             title="EDIÇÃO DE PERFIL"
@@ -132,7 +143,7 @@ function EditPersonalInfoScreen() {
           <Input
             label="Nome Completo"
             value={name}
-            onChangeText={text => {
+            onChangeText={(text) => {
               setName(text);
               if (nameError) {
                 validateName(text);
@@ -154,7 +165,7 @@ function EditPersonalInfoScreen() {
           <Input
             label="Número"
             value={phone}
-            onChangeText={text => {
+            onChangeText={(text) => {
               setPhone(text);
               if (phoneError) {
                 validatePhone(text);

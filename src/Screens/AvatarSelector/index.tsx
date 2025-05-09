@@ -17,15 +17,18 @@ import ProfileHeader from '../../components/ProfileHeader';
 import ProgressBar from '../../components/ProgressBar';
 import Modal from './Modal';
 import styles from './style';
+import {API_BASE_URL} from '../../env';
+import * as Keychain from 'react-native-keychain';
 
-import avatar1 from '../../Assets/Images/Avatars/avatar-1.jpg';
+import avatar1 from '../../Assets/Images/Avatars/avatar_1.jpg';
+import avatar2 from '../../Assets/Images/Avatars/avatar_2.png';
 
 const AVATARS = [
-  {id: '1', source: avatar1, borderColor: '#6C4AE4'},
-  {id: '2', source: avatar1, borderColor: '#E4B14A'},
-  {id: '3', source: avatar1, borderColor: '#4AE47B'},
-  {id: '4', source: avatar1, borderColor: '#E44A4A'},
-  {id: '5', source: avatar1, borderColor: '#B89B5B'},
+  {id: 'avatar_1', source: avatar1, borderColor: '#6C4AE4'},
+  {id: 'avatar_2', source: avatar2, borderColor: '#E4B14A'},
+  {id: 'avatar_3', source: avatar1, borderColor: '#4AE47B'},
+  {id: 'avatar_4', source: avatar1, borderColor: '#E44A4A'},
+  {id: 'avatar_5', source: avatar1, borderColor: '#B89B5B'},
 ];
 
 const AVATAR_SIZE = 100;
@@ -59,14 +62,50 @@ export default function AvatarSelector() {
     return () => backHandler.remove();
   }, [isEditing]);
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!selectedId) {
       Alert.alert('Por favor, selecione um avatar antes de continuar.');
       return;
     }
 
-    if (!isModalVisible) {
-      setIsModalVisible(true);
+    console.log('API_BASE_URL:', API_BASE_URL);
+
+    try {
+      const credentials = await Keychain.getGenericPassword();
+      if (!credentials || !credentials.password) {
+        throw new Error('Token não encontrado. Faça login novamente.');
+      }
+
+      console.log('Enviando picture:', selectedId);
+
+      const response = await fetch(`${API_BASE_URL}/profile/avatar`, {
+        // Corrigido o endpoint
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${credentials.password}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({picture: selectedId}), // Campo "picture" conforme esperado
+      });
+
+      console.log('Status da resposta:', response.status);
+      const responseText = await response.text(); // Lê a resposta como texto
+      console.log('Resposta da API (texto):', responseText);
+
+      if (response.ok) {
+        console.log('Avatar atualizado com sucesso!');
+        setIsModalVisible(true);
+      } else {
+        console.error(
+          'Erro ao atualizar avatar:',
+          response.status,
+          responseText,
+        );
+        Alert.alert('Erro', 'Não foi possível atualizar o avatar.');
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar avatar:', error);
+      Alert.alert('Erro', 'Não foi possível atualizar o avatar.');
     }
   };
 
@@ -75,17 +114,10 @@ export default function AvatarSelector() {
 
     setIsModalVisible(false);
 
-    if (isEditing) {
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'MainApp'}],
-      });
-    } else {
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'MainApp'}],
-      });
-    }
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'MainApp'}],
+    });
   };
 
   const handleAvatarPress = (id: string) => {
