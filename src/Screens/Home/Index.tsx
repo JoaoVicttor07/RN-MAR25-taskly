@@ -13,7 +13,7 @@ import Fonts from '../../Theme/fonts';
 import DefaultHeader from '../../components/DefaultHeader';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../navigation/types'; // Ajuste o caminho se necessário
+import { RootStackParamList } from '../../Navigation/types'; // Ajuste o caminho se necessário
 import { getTasks, saveTasks } from '../../Utils/asyncStorageUtils'; // Ajuste o caminho se necessário
 
 export interface Subtask {
