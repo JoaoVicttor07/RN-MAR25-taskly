@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
       paddingBottom: 20,
     },
     bottomSpace: {
-      height: 50
+      height: 50,
     },
   });
 
