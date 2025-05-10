@@ -22,6 +22,10 @@ import { updateTask } from '../../Utils/asyncStorageUtils';
 import ArrowConfirmIcon from '../../Assets/icons/arrowConfirm.png';
 import CheckedIcon from '../../Assets/icons/CheckSquare-2.png';
 import UncheckedIcon from '../../Assets/icons/CheckSquare-1.png';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+
 
 
 
@@ -68,8 +72,15 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
 
   const keyExtractorTag = useCallback((item: string, index: number) => index.toString(), []);
 
-  const handleResolveTask = () => {
-    console.log(`Tarefa "${task.title}" resolvida!`);
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'TaskDetails'>>();
+
+
+  const handleResolveTask = async () => {
+    const updatedTask = { ...task, isCompleted: true };
+    setTask(updatedTask);
+    await handleUpdateTask(updatedTask);
+
+    navigation.navigate('Home'); // redireciona para Home após resolver
   };
 
   const handleShowAddSubtaskInput = () => {
