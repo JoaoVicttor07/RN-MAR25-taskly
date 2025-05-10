@@ -2,16 +2,7 @@ import React, { useCallback } from 'react';
 import { View, FlatList, ListRenderItem } from 'react-native';
 import TaskItem from '../index';
 import { styles } from './style';
-
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  categories: string[];
-  isCompleted: boolean;
-  deadline: string;
-  priority?: number;
-}
+import { Task } from '../../../Screens/Home/Index';
 
 interface TaskListProps {
   tasks: Task[];
