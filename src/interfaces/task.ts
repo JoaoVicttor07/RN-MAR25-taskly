@@ -1,4 +1,3 @@
-// src/types/task.ts
 export interface Subtask {
     id: string;
     text: string;

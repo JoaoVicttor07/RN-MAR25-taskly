@@ -2,11 +2,13 @@ import React, { useRef, useCallback } from 'react';
 import { Text, View, TouchableOpacity, FlatList, Animated } from 'react-native';
 import { styles } from './style';
 import AnimatedCheck from '../AnimatedCheck';
-import { useNavigation, NavigationProp } from '@react-navigation/native'; 
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../Navigation/types';
-import { Task } from '../../Screens/Home/Index';
+import { Task } from '../../interfaces/task';
 import CategoryTag from '../CategoryTag';
 import Fonts from '../../Theme/fonts';
+import CheckedIcon from '../../Assets/icons/checked-input.png';
+import UncheckedIcon from '../../Assets/icons/uncheck-input.png';
 
 interface TaskItemProps {
   title: string;
@@ -50,6 +52,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isC
 
   const keyExtractorCategory = useCallback((item: string, index: number) => index.toString(), []);
 
+  console.log('TaskItem rendered:', title, isCompleted);
 
   return (
     <View style={styles.itemArea}>
@@ -57,9 +60,12 @@ const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isC
         <Text style={styles.title}>{title}</Text>
         <AnimatedCheck
           isCompleted={isCompleted}
-          onToggle={onToggleComplete}
-          checkedImageSource={require('../../Assets/icons/checked-input.png')}
-          uncheckedImageSource={require('../../Assets/icons/uncheck-input.png')}
+          onToggle={() => {
+            console.log('onToggleComplete called'); // Debug
+            onToggleComplete();
+          }}
+          checkedImageSource={CheckedIcon}
+          uncheckedImageSource={UncheckedIcon}
         />
       </View>
       <Text style={styles.description}>{description}</Text>

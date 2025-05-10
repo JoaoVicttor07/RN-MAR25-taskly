@@ -17,7 +17,7 @@ import CategoryTag from '../../components/CategoryTag';
 import SmallBackButton from '../../components/SmallBackButton';
 import Input from '../../components/input';
 import SubtaskList from '../../components/SubtaskList';
-import { Task, Subtask } from '../../Screens/Home';
+import { Task, Subtask } from '../../interfaces/task';
 import { updateTask } from '../../Utils/asyncStorageUtils';
 import ArrowConfirmIcon from '../../Assets/icons/arrowConfirm.png';
 import CheckedIcon from '../../Assets/icons/CheckSquare-2.png';

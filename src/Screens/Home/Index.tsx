@@ -14,7 +14,7 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../Navigation/types';
 import { getTasks, saveTasks } from '../../Utils/asyncStorageUtils';
-import { Task } from '../../interfaces/task';  // Importe Task e Subtask do arquivo dedicado
+import { Task } from '../../interfaces/task';  // Importa Task e Subtask do arquivo dedicado
 
 type PriorityType = 'lowToHigh' | 'highToLow' | null;
 type TagsType = string[];
@@ -128,6 +128,14 @@ const Home: React.FC = () => {
     });
   }, [navigation]);
 
+  const handleToggleTaskComplete = useCallback((taskId: string) => {
+    setTasks(prevTasks =>
+      prevTasks.map(task =>
+        task.id === taskId ? { ...task, isCompleted: !task.isCompleted } : task
+      )
+    );
+  }, [setTasks]);
+
   // Renderiza um item de tarefa na lista
   const renderTaskItem = useCallback(({ item }: { item: Task }) => (
     <TouchableOpacity onPress={() => handleTaskDetailsNavigation(item)}>
@@ -137,10 +145,10 @@ const Home: React.FC = () => {
         categories={item.categories}
         isCompleted={item.isCompleted}
         task={item}
-        onToggleComplete={() => { /* Implementar se necessário no TaskItem */ }}
+        onToggleComplete={() => handleToggleTaskComplete(item.id)} // Passe a função aqui
       />
     </TouchableOpacity>
-  ), [handleTaskDetailsNavigation]);
+  ), [handleTaskDetailsNavigation, handleToggleTaskComplete]);
 
   // Função para extrair a chave única de um item da tarefa
   const keyExtractorTask = useCallback((item: Task) => item.id, []);
