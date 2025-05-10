@@ -1,4 +1,5 @@
-import { Task } from '../Screens/Home';
+import {RouteProp} from '@react-navigation/native';
+import {Task} from '../interfaces/task';
 
 export type RootStackParamList = {
   InitialScreen: undefined;
@@ -6,13 +7,14 @@ export type RootStackParamList = {
   Register: undefined;
   Menu: undefined;
   Regulamentos: undefined;
-  AvatarSelector: { isEditing: boolean } | undefined;
+  AvatarSelector: {isEditing: boolean} | undefined;
   PreferencesMenu: undefined;
   EditPersonalInfo: undefined;
   Login: undefined;
   MainApp: undefined;
   TaskDetails: {
     task: Task;
-    onTaskUpdated?: (updatedTask: Task) => void;
   };
 };
+
+export type TaskDetailsRouteProp = RouteProp<RootStackParamList, 'TaskDetails'>;
