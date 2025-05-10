@@ -83,6 +83,14 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
     navigation.navigate('Home'); // redireciona para Home após resolver
   };
 
+  const handleReopenTask = async () => {
+    const updatedTask = { ...task, isCompleted: false };
+    setTask(updatedTask);
+    await handleUpdateTask(updatedTask);
+    navigation.navigate('Home'); // também pode redirecionar se quiser
+  };
+
+
   const handleShowAddSubtaskInput = () => {
     setShowInput(true);
     setNewSubtaskText('');
@@ -181,9 +189,15 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
             <Text style={styles.title}>Prioridade</Text>
             <Text style={styles.priority}>{priorityText}</Text>
           </View>
-          <TouchableOpacity style={styles.resolveButton} onPress={handleResolveTask}>
-            <Text style={styles.resolveButtonText}>Resolver Tarefa</Text>
+          <TouchableOpacity
+            style={task.isCompleted ? styles.reopenButton : styles.resolveButton}
+            onPress={task.isCompleted ? handleReopenTask : handleResolveTask}
+          >
+            <Text style={task.isCompleted ? styles.reopenButtonText : styles.resolveButtonText}>
+              {task.isCompleted ? 'Reabrir Tarefa' : 'Resolver Tarefa'}
+            </Text>
           </TouchableOpacity>
+
         </View>
 
         <SubtaskList

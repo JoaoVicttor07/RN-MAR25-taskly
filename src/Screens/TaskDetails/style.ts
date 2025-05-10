@@ -61,6 +61,17 @@ const styles = StyleSheet.create({
       color: '#5B3CC4',
       textTransform: 'uppercase',
     },
+    reopenButton:{
+      alignItems: 'center',
+      backgroundColor: '#E63946',
+      borderRadius: 8,
+      paddingVertical: 2,
+    },
+    reopenButtonText:{
+      ...Fonts.Roboto40016,
+      color: '#FFFFFF',
+      textTransform: 'uppercase',
+    },
     addSubtaskContainer: {
       flexDirection: 'row',
       alignItems: 'center',

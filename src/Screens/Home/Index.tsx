@@ -145,7 +145,7 @@ const Home: React.FC = () => {
         categories={item.categories}
         isCompleted={item.isCompleted}
         task={item}
-        onToggleComplete={() => handleToggleTaskComplete(item.id)} // Passe a função aqui
+        onToggleComplete={() => handleToggleTaskComplete(item.id)}
       />
     </TouchableOpacity>
   ), [handleTaskDetailsNavigation, handleToggleTaskComplete]);
