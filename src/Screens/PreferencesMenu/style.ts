@@ -3,9 +3,7 @@ import Fonts from '../../Theme/fonts';
 
 const styles = (theme: any) => StyleSheet.create({
     container: {
-        padding: 30,
-        flex: 1, // Adicione flex: 1 para que a tela ocupe todo o espaço
-        backgroundColor: theme.background, // Cor de fundo themable
+        paddingHorizontal: 30,
     },
     header: {
         flexDirection: 'row',

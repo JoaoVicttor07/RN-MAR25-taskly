@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import React, { useState } from "react";
+import { View } from "react-native";
 import {useNavigation} from '@react-navigation/native';
 import BackButton from '../../components/BackButton';
 import SettingCard from '../../components/SettingCard';
@@ -20,8 +20,8 @@ export default function PreferencesMenu() {
 
                 <BackButton
                 onPress={() => navigation.goBack()}
+                rightText="Preferências"
                 />
-                <Text style={themedStyles.textPreferences}>Preferências</Text>
             </View>
             <SettingCard onPress={() => setModalVisible(true)} />
             <ThemeModal visible={modalVisible} onClose={() => setModalVisible(false)} />

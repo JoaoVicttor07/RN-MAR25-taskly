@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Image } from 'react-native';
-import styles  from "./style";
+import styles  from './style';
 
 interface TabIconProps {
   focused: boolean;
   color: string;
-  iconSource: string | ReturnType<typeof require>; 
+  iconSource: string | ReturnType<typeof require>;
 }
 
 const TabIcon: React.FC<TabIconProps> = ({ focused, color, iconSource }) => {

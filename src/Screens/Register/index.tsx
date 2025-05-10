@@ -1,14 +1,26 @@
-import React, {useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import {Text, ScrollView, View, Alert} from 'react-native';
+import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import {
+  Text,
+  ScrollView,
+  View,
+  TouchableOpacity,
+  Image,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import Button from '../../components/button';
 import Input from '../../components/input';
-import BackButton from '../../components/BackButton';
-import getStyles from './style'; // Importe a função de estilos
-import { useTheme } from '../../Theme/ThemeContext'; // Importe o useTheme
+import BiometryModal from './BiometryResgister';
+import { registerUser } from '../../hooks/useApi';
+import styles from './style';
+import * as Keychain from 'react-native-keychain';
+import ReactNativeBiometrics from 'react-native-biometrics';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../Navigation/types';
 
 export default function Register() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [name, setName] = useState('');
@@ -19,159 +31,292 @@ export default function Register() {
   const [passwordError, setPasswordError] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
-  const { theme } = useTheme(); // Obtenha o tema
-  const themedStyles = getStyles(theme); // Aplique o tema aos estilos
+  const [loading, setLoading] = useState(false);
+  const [showBiometryModal, setShowBiometryModal] = useState(false);
+  const [biometryApiLoading, setBiometryApiLoading] = useState(false);
 
-  const validateEmail = (value: string) => {
-    if (!value) {
-      setEmailError('Campo obrigatório');
-    } else {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      setEmailError(emailRegex.test(value) ? '' : 'e-mail inválido');
+  const storeToken = async (token: string) => {
+    try {
+      console.log('Tentando salvar token...');
+      await Keychain.setGenericPassword('authToken', token);
+      console.log('Token salvo com segurança!');
+    } catch (error) {
+      console.error('Erro ao salvar token:', error);
     }
   };
 
-  const validateName = (value: string) => {
+  // Funções de validação
+  const validateName = (value: string): string | null => {
     if (!value) {
-      setNameError('Campo obrigatório');
-    } else {
-      const parts = value.trim().split(' ').filter(Boolean);
-      if (parts.length < 2) {
-        setNameError('Digite o nome completo');
-      } else if (parts[1].length < 3) {
-        setNameError('Digite o nome completo');
+      return 'O nome é obrigatório.';
+    }
+    const parts = value.trim().split(' ').filter(Boolean);
+    if (parts.length < 2 || parts[1].length < 3) {
+      return 'Digite o nome completo.';
+    }
+    return null;
+  };
+
+  const validateEmail = (email: string): string | null => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.trim()) {
+      return 'O e-mail é obrigatório.';
+    } else if (!emailRegex.test(email)) {
+      return 'E-mail inválido.';
+    }
+    return null;
+  };
+
+  const validateNumber = (value: string): string | null => {
+    const cleaned = value.replace(/\D/g, ''); // Remove caracteres não numéricos
+    if (!cleaned) {
+      return 'O número é obrigatório.';
+    } else if (cleaned.length !== 11) {
+      return 'Número inválido. Deve conter 11 dígitos.';
+    }
+    return null;
+  };
+
+  const validatePassword = (password: string): string | null => {
+    if (!password.trim()) {
+      return 'A senha é obrigatória.';
+    } else if (password.length < 6) {
+      return 'A senha deve ter pelo menos 6 caracteres.';
+    }
+    return null;
+  };
+
+  const validateConfirmPassword = (confirmPassword: string): string | null => {
+    if (!confirmPassword.trim()) {
+      return 'A confirmação de senha é obrigatória.';
+    } else if (confirmPassword !== password) {
+      return 'As senhas não coincidem.';
+    }
+    return null;
+  };
+
+  const handleRegister = async () => {
+    setLoading(true);
+    console.log('Iniciando cadastro...');
+    const nameError = validateName(name);
+    const emailError = validateEmail(email);
+    const numberError = validateNumber(number);
+    const passwordError = validatePassword(password);
+    const confirmPasswordError = validateConfirmPassword(confirmPassword);
+
+    setNameError(nameError || '');
+    setEmailError(emailError || '');
+    setNumberError(numberError || '');
+    setPasswordError(passwordError || '');
+    setConfirmPasswordError(confirmPasswordError || '');
+
+    if (nameError || emailError || numberError || passwordError || confirmPasswordError) {
+      console.log('Validação falhou.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      console.log('Enviando dados para a API...');
+      const response = await registerUser({
+        email,
+        password,
+        name,
+        phone_number: number,
+      });
+      console.log('Resposta da API:', response);
+
+      if (
+        (response.status === 200 || response.status === 201) &&
+        response.data.idToken
+      ) {
+        await storeToken(response.data.idToken);
+        console.log('Cadastro concluído!');
+        setShowBiometryModal(true); // Exibe o modal de biometria
       } else {
-        setNameError('');
+        console.log('Resposta inesperada da API:', response);
       }
-    }
-  };
-
-  const validateNumber = (value: string) => {
-    if (!value) {
-      setNumberError('Campo obrigatório');
-    } else {
-      const cleaned = value.replace(/\D/g, '');
-      if (cleaned.length === 11) {
-        setNumberError('');
+    } catch (error: any) {
+      console.error('Erro ao registrar usuário:', error);
+      if (
+        error.response?.data?.error === 'O email está em uso por outra conta.'
+      ) {
+        Alert.alert('Erro', 'Este e-mail já está cadastrado.');
+      } else if (error.response) {
+        Alert.alert('Erro', error.response.data?.error || 'Erro no cadastro.');
       } else {
-        setNumberError('Número inválido');
+        Alert.alert('Erro', 'Erro inesperado. Verifique sua internet.');
       }
+    } finally {
+      setLoading(false);
     }
   };
 
-  const validatePassword = (value: string) => {
-    if (!value) {setPasswordError('Campo obrigatório');}
-    else if (value.length < 8) {setPasswordError('A senha deve ter no mínimo 8 caracteres');}
-    else {setPasswordError('');}
-  };
-
-  const validateConfirmPassword = (value: string) => {
-    if (!value) {setConfirmPasswordError('Campo obrigatório');}
-    else if (value !== password) {setConfirmPasswordError('Senhas não coincidem');}
-    else {setConfirmPasswordError('');}
-  };
-
-  const handleRegister = () => {
-    validateName(name);
-    validateEmail(email);
-    validateNumber(number);
-    validatePassword(password);
-    validateConfirmPassword(confirmPassword);
-
-    if (
-      !nameError &&
-      !emailError &&
-      !numberError &&
-      !passwordError &&
-      !confirmPasswordError &&
-      name &&
-      email &&
-      number &&
-      password &&
-      confirmPassword &&
-      password === confirmPassword
-    ) {
-      Alert.alert('Tudo ok!');
+  const handleBiometryActivate = async () => {
+    setBiometryApiLoading(true);
+    console.log('Iniciando autenticação biométrica...');
+  
+    const rnBiometrics = new ReactNativeBiometrics();
+  
+    try {
+      const { available, biometryType } = await rnBiometrics.isSensorAvailable();
+  
+      if (!available) {
+        Alert.alert('Erro', 'Biometria não disponível neste dispositivo.');
+        setBiometryApiLoading(false);
+        return;
+      }
+  
+      console.log(`Tipo de biometria disponível: ${biometryType}`);
+  
+      const { success } = await rnBiometrics.simplePrompt({
+        promptMessage: 'Confirme sua identidade',
+      });
+  
+      if (success) {
+        console.log('Autenticação biométrica bem-sucedida!');
+        setShowBiometryModal(false);
+        navigation.navigate('AvatarSelector');
+      } else {
+        console.log('Autenticação biométrica cancelada pelo usuário.');
+      }
+    } catch (error) {
+      console.error('Erro durante a autenticação biométrica:', error);
+      Alert.alert('Erro', 'Falha na autenticação biométrica.');
+    } finally {
+      setBiometryApiLoading(false);
     }
   };
 
   return (
-    <ScrollView contentContainerStyle={themedStyles.container}>
-      <View style={themedStyles.form}>
-        <BackButton
-          onPress={() => navigation.goBack()}
-        />
-        <Text style={themedStyles.title}>CADASTRO</Text>
-        <Input
-          label="Nome Completo"
-          value={name}
-          onChangeText={text => {
-            setName(text);
-            if (nameError) {validateName(text);}
-          }}
-          onBlur={() => validateName(name)}
-          error={nameError}
-          containerStyle={themedStyles.inputSpacing}
-        />
-        <Input
-          label="E-mail"
-          value={email}
-          onChangeText={text => {
-            setEmail(text);
-            if (emailError) {validateEmail(text);}
-          }}
-          onBlur={() => validateEmail(email)}
-          error={emailError}
-          containerStyle={themedStyles.inputSpacing}
-        />
-        <Input
-          label="Número"
-          value={number}
-          onChangeText={text => {
-            setNumber(text);
-            if (numberError) {validateNumber(text);}
-          }}
-          onBlur={() => validateNumber(number)}
-          error={numberError}
-          mask="phone"
+    <>
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.form}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}>
+            <Image source={require('../../Assets/icons/VectorBack.png')} />
+            <Text style={styles.backText}>VOLTAR</Text>
+          </TouchableOpacity>
+          <Text style={styles.title}>CADASTRO</Text>
 
-          containerStyle={themedStyles.inputSpacing}
-        />
-        <Input
-          label="Senha"
-          value={password}
-          onChangeText={text => {
-            setPassword(text);
-            if (passwordError) {validatePassword(text);}
-          }}
-          onBlur={() => validatePassword(password)}
-          error={passwordError}
-          secureTextEntry
-          containerStyle={themedStyles.inputSpacing}
-        />
-        <Input
-          label="Confirmar senha"
-          value={confirmPassword}
-          onChangeText={text => {
-            setConfirmPassword(text);
-            if (confirmPasswordError) {validateConfirmPassword(text);}
-          }}
-          onBlur={() => validateConfirmPassword(confirmPassword)}
-          error={confirmPasswordError}
-          secureTextEntry
-          containerStyle={themedStyles.inputSpacing}
-        />
-      </View>
+          <Input
+            label="Nome Completo"
+            value={name}
+            onChangeText={(text) => {
+              setName(text);
+              if (nameError) {
+                const error = validateName(text);
+                setNameError(error || '');
+              }
+            }}
+            onBlur={() => {
+              const error = validateName(name);
+              setNameError(error || '');
+            }}
+            error={nameError}
+            containerStyle={styles.inputSpacing}
+          />
+          <Input
+            label="E-mail"
+            value={email}
+            onChangeText={(text) => {
+              setEmail(text);
+              if (emailError) validateEmail(text);
+            }}
+            onBlur={() => {
+              const error = validateEmail(email);
+              setEmailError(error || '');
+            }}
+            error={emailError}
+            containerStyle={styles.inputSpacing}
+          />
+          <Input
+            label="Número"
+            value={number}
+            onChangeText={(text) => {
+              setNumber(text);
+              if (numberError) {
+                const error = validateNumber(text);
+                setNumberError(error || '');
+              }
+            }}
+            onBlur={() => {
+              const error = validateNumber(number);
+              setNumberError(error || '');
+            }}
+            error={numberError}
+            mask="phone"
+            containerStyle={styles.inputSpacing}
+          />
+          <Input
+            label="Senha"
+            value={password}
+            onChangeText={(text) => {
+              setPassword(text);
+              if (passwordError) validatePassword(text);
+            }}
+            onBlur={() => {
+              const error = validatePassword(password);
+              setPasswordError(error || '');
+            }}
+            error={passwordError}
+            secureTextEntry
+            containerStyle={styles.inputSpacing}
+          />
+          <Input
+            label="Confirmar senha"
+            value={confirmPassword}
+            onChangeText={(text) => {
+              setConfirmPassword(text);
+              if (confirmPasswordError) validateConfirmPassword(text);
+            }}
+            onBlur={() => {
+              const error = validateConfirmPassword(confirmPassword);
+              setConfirmPasswordError(error || '');
+            }}
+            error={confirmPasswordError}
+            secureTextEntry
+            containerStyle={styles.inputSpacing}
+          />
+        </View>
 
-      <Button
-        title="CRIAR CONTA"
-        backgroundColor={theme.AvatarButton}
-        textColor={theme.buttonText}
-        width="100%"
-        fontWeight="bold"
-        style={themedStyles.buttonSpacing}
-        onPress={handleRegister}
+        {loading && (
+          <View
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: [{ translateX: -25 }, { translateY: -25 }],
+              zIndex: 9999,
+            }}>
+            <ActivityIndicator size="large" color="#5B3CC4" />
+          </View>
+        )}
+
+        <Button
+          title="CRIAR CONTA"
+          style={styles.createButton}
+          onPress={handleRegister}
+          disabled={loading}
+        />
+      </ScrollView>
+
+      <BiometryModal
+        visible={showBiometryModal}
+        title="Ative o Desbloqueio por Biometria"
+        description="Use sua impressão digital para acessar seu app de tarefas com rapidez e segurança. Se preferir, você ainda poderá usar sua senha sempre que quiser."
+        buttonLeftText="Agora não"
+        buttonRightText="ATIVAR"
+        loading={biometryApiLoading}
+        onPressLeft={() => {
+          if (!biometryApiLoading) {
+            setShowBiometryModal(false);
+            navigation.navigate('AvatarSelector');
+          }
+        }}
+        onPressRight={handleBiometryActivate}
       />
-    </ScrollView>
+    </>
   );
 }

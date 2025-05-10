@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 import Fonts from '../../Theme/fonts';
 
 export const styles = StyleSheet.create({
@@ -9,6 +9,12 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     gap: 12,
     marginVertical: 8,
+    width: 342,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 8,
   },
   headerTask: {
     flexDirection: 'row',
@@ -21,9 +27,7 @@ export const styles = StyleSheet.create({
   description: {
     ...Fonts.Roboto40016,
   },
-  categoriesContainer: {
-
-  },
+  categoriesContainer: {},
   carousel: {
     flexDirection: 'row',
     gap: 12,

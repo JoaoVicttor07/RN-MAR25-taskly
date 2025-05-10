@@ -6,7 +6,7 @@ import Fonts from '../../../Theme/fonts';
 const styles = (theme: any) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: theme.background,
+    backgroundColor: '#F4F4F4',
     paddingHorizontal: 32,
   },
 
@@ -26,7 +26,7 @@ const styles = (theme: any) => StyleSheet.create({
   containerInfo: {
     width: '100%',
     alignItems: 'center',
-    gap: 8,
+    gap:8,
   },
 
   profileText: {
@@ -57,7 +57,7 @@ const styles = (theme: any) => StyleSheet.create({
     width: 329,
     height: 72,
     borderRadius: 12,
-    shadowColor: theme.shadow, // Cor da sombra
+    shadowColor: '#000',
     shadowOffset: { width: 3, height: 3 },
     shadowOpacity: 0.2,
     shadowRadius: 4,

@@ -1,29 +1,35 @@
 import { StyleSheet } from 'react-native';
 import Fonts from '../../Theme/fonts';
+import { ThemeType } from '../../Theme/theme';
 
 const AVATAR_SIZE = 100;
 const AVATAR_MARGIN = 12;
 
-const styles = (theme: any) => StyleSheet.create({
+const styles = (theme: ThemeType) => StyleSheet.create({
+  headerContainer: {
+    width: '100%',
+    paddingHorizontal: 20,
+    marginBottom: 16,
+  },
   container: {
     flex: 1,
-    backgroundColor: theme.background, // Cor de fundo da tela (dependente do tema)
+    backgroundColor: '#F4F4F4',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    paddingTop: 50,
+    paddingTop: 25,
   },
   content: {
     alignItems: 'center',
     marginBottom: 24,
   },
   textAvatar: {
-    color: theme.text, // Cor do texto principal (dependente do tema)
+    color: '#000000',
     marginBottom: 4,
     textAlign: 'center',
     ...Fonts.Roboto70024,
   },
   textPick: {
-    color: theme.text, // Cor do texto secundário (dependente do tema)
+    color: '#000000',
     marginBottom: 12,
     textAlign: 'center',
     ...Fonts.Roboto40016,

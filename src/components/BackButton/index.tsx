@@ -5,7 +5,7 @@ import { useTheme } from '../../Theme/ThemeContext';
 
 interface BackButtonProps {
   onPress: () => void;
-  rightText?: string; // Texto opcional abaixo do botão
+  rightText?: string; // Texto opcional ao lado do botão
 }
 
 const BackButton: React.FC<BackButtonProps> = ({ onPress, rightText }) => {
