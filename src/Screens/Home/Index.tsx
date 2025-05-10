@@ -1,3 +1,5 @@
+// Home.tsx
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, FlatList, TouchableOpacity } from 'react-native';
 import styles from './style';
@@ -11,9 +13,8 @@ import Fonts from '../../Theme/fonts';
 import DefaultHeader from '../../components/DefaultHeader';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../navigation/types';
-import { getTasks, saveTasks } from '../../Utils/asyncStorageUtils';
-
+import { RootStackParamList } from '../../navigation/types'; // Ajuste o caminho se necessário
+import { getTasks, saveTasks } from '../../Utils/asyncStorageUtils'; // Ajuste o caminho se necessário
 
 export interface Subtask {
   id: string;
@@ -41,6 +42,7 @@ const Home: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([
+    // Dados iniciais, serão substituídos pelos dados do AsyncStorage se existirem
     {
       id: '1',
       title: 'Comprar pão',
@@ -101,12 +103,13 @@ const Home: React.FC = () => {
   useEffect(() => {
     const loadTasks = async () => {
       const storedTasks = await getTasks();
-      setTasks(storedTasks);
+      if (storedTasks && storedTasks.length > 0) {
+        setTasks(storedTasks);
+      }
+      // Se não houver tarefas armazenadas, as tarefas iniciais (hardcoded) serão usadas.
     };
-
     loadTasks();
   }, []);
-
 
   useEffect(() => {
     const uniqueTags = new Set<string>();
@@ -117,9 +120,10 @@ const Home: React.FC = () => {
   }, [tasks]);
 
   useEffect(() => {
-    console.log('Estado tasks atualizado:', tasks);
+    console.log('[Home] Estado tasks atualizado:', tasks);
   }, [tasks]);
 
+  // Salva as tarefas no AsyncStorage sempre que o estado `tasks` mudar.
   useEffect(() => {
     saveTasks(tasks);
   }, [tasks]);
@@ -135,17 +139,18 @@ const Home: React.FC = () => {
       categories: [],
       isCompleted: false,
       priority: 0,
-      subtasks: [], // Inicializa subtasks como array vazio ao criar
+      subtasks: [],
     };
 
     setTasks(prevTasks => {
       const updatedTasks = [...prevTasks, newTask];
-      saveTasks(updatedTasks); // Salva as tarefas atualizadas no AsyncStorage
+      // MODIFICAÇÃO FEITA: A chamada saveTasks(updatedTasks) foi removida daqui.
+      // O useEffect [tasks] cuidará de salvar.
       return updatedTasks;
     });
 
     setIsModalVisible(false);
-  }, [setTasks]);
+  }, []); // setTasks é estável e não precisa estar nas dependências quando se usa a forma de callback.
 
   const handleOpenCreateTaskModal = useCallback(() => {
     setIsModalVisible(true);
@@ -175,16 +180,17 @@ const Home: React.FC = () => {
     setSelectedDate(date);
   }, []);
 
-  const handleTaskDetailsNavigation = useCallback((task: Task) => {
+  // MODIFICAÇÃO FEITA: Adicionado `tasks` às dependências do useCallback.
+  const handleTaskDetailsNavigation = useCallback((taskItem: Task) => {
     navigation.navigate('TaskDetails', {
-      task,
+      task: taskItem,
       onTaskUpdated: (updatedTask: Task) => {
         setTasks(prevTasks =>
           prevTasks.map(t => (t.id === updatedTask.id ? updatedTask : t))
         );
       },
     });
-  }, [navigation, setTasks]);
+  }, [navigation, setTasks]); // Remova 'tasks' e adicione 'setTasks' como dependência
 
   const renderTaskItem = useCallback(({ item }: { item: Task }) => (
     <TouchableOpacity onPress={() => handleTaskDetailsNavigation(item)}>
@@ -194,24 +200,22 @@ const Home: React.FC = () => {
         categories={item.categories}
         isCompleted={item.isCompleted}
         task={item}
-        onToggleComplete={() => { }}
+        onToggleComplete={() => { /* Implementar se necessário no TaskItem */ }}
       />
     </TouchableOpacity>
-  ), [handleTaskDetailsNavigation]);
+  ), [handleTaskDetailsNavigation]); // Depende de handleTaskDetailsNavigation
 
   const keyExtractorTask = useCallback((item: Task) => item.id, []);
 
   useEffect(() => {
     let tempTasks = [...tasks];
 
-    // Filtrar por tags
     if (selectedTags.length > 0) {
       tempTasks = tempTasks.filter(task =>
         selectedTags.every(tag => task.categories.includes(tag))
       );
     }
 
-    // Filtrar por data
     if (selectedDate) {
       const filterDateString = selectedDate.toISOString().split('T')[0];
       tempTasks = tempTasks.filter(task => {
@@ -221,7 +225,6 @@ const Home: React.FC = () => {
       });
     }
 
-    // Ordenar por prioridade
     if (selectedPriority) {
       tempTasks.sort((a, b) => {
         const priorityA = a.priority !== undefined ? a.priority : -1;
@@ -247,11 +250,11 @@ const Home: React.FC = () => {
       ) : (
         <View style={styles.taskListContainer}>
           <Filter onPress={handleOpenFilterModal} />
-            <FlatList
-              data={filteredTasks}
-              renderItem={renderTaskItem}
-              keyExtractor={keyExtractorTask}
-            />
+          <FlatList
+            data={filteredTasks}
+            renderItem={renderTaskItem}
+            keyExtractor={keyExtractorTask}
+          />
         </View>
       )}
 
