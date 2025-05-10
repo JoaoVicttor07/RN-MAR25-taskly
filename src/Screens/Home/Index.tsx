@@ -12,6 +12,8 @@ import DefaultHeader from '../../components/DefaultHeader';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/types';
+import { getTasks, saveTasks } from '../../Utils/asyncStorageUtils';
+
 
 export interface Subtask {
   id: string;
@@ -33,7 +35,7 @@ export interface Task {
 type PriorityType = 'lowToHigh' | 'highToLow' | null;
 type TagsType = string[];
 type DateType = Date | null;
-// Removed redundant useNavigation call
+
 const Home: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -97,6 +99,16 @@ const Home: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<DateType>(null);
 
   useEffect(() => {
+    const loadTasks = async () => {
+      const storedTasks = await getTasks();
+      setTasks(storedTasks);
+    };
+
+    loadTasks();
+  }, []);
+
+
+  useEffect(() => {
     const uniqueTags = new Set<string>();
     tasks.forEach(task => {
       task.categories.forEach(tag => uniqueTags.add(tag));
@@ -104,7 +116,15 @@ const Home: React.FC = () => {
     setAllTags(Array.from(uniqueTags));
   }, [tasks]);
 
-  const handleCreateTask = useCallback((taskData: {
+  useEffect(() => {
+    console.log('Estado tasks atualizado:', tasks);
+  }, [tasks]);
+
+  useEffect(() => {
+    saveTasks(tasks);
+  }, [tasks]);
+
+  const handleCreateTask = useCallback(async (taskData: {
     title: string;
     description: string;
     deadline: string;
@@ -117,7 +137,13 @@ const Home: React.FC = () => {
       priority: 0,
       subtasks: [], // Inicializa subtasks como array vazio ao criar
     };
-    setTasks(prevTasks => [...prevTasks, newTask]);
+
+    setTasks(prevTasks => {
+      const updatedTasks = [...prevTasks, newTask];
+      saveTasks(updatedTasks); // Salva as tarefas atualizadas no AsyncStorage
+      return updatedTasks;
+    });
+
     setIsModalVisible(false);
   }, [setTasks]);
 
@@ -149,15 +175,16 @@ const Home: React.FC = () => {
     setSelectedDate(date);
   }, []);
 
-  const handleUpdatedTask = useCallback((updatedTask: Task) => {
-    setTasks(prevTasks =>
-      prevTasks.map(t => (t.id === updatedTask.id ? updatedTask : t)) // Atualiza a task pai
-    );
-  }, []);
-
   const handleTaskDetailsNavigation = useCallback((task: Task) => {
-    navigation.navigate('TaskDetails', { task, onTaskUpdated: handleUpdatedTask });
-  }, [navigation, handleUpdatedTask]);
+    navigation.navigate('TaskDetails', {
+      task,
+      onTaskUpdated: (updatedTask: Task) => {
+        setTasks(prevTasks =>
+          prevTasks.map(t => (t.id === updatedTask.id ? updatedTask : t))
+        );
+      },
+    });
+  }, [navigation, setTasks]);
 
   const renderTaskItem = useCallback(({ item }: { item: Task }) => (
     <TouchableOpacity onPress={() => handleTaskDetailsNavigation(item)}>
@@ -167,22 +194,24 @@ const Home: React.FC = () => {
         categories={item.categories}
         isCompleted={item.isCompleted}
         task={item}
-        onToggleComplete={() => {}} // Adicione esta linha
+        onToggleComplete={() => { }}
       />
     </TouchableOpacity>
-  ), [handleTaskDetailsNavigation]); // Remova `setTasks` daqui
+  ), [handleTaskDetailsNavigation]);
 
   const keyExtractorTask = useCallback((item: Task) => item.id, []);
 
   useEffect(() => {
     let tempTasks = [...tasks];
 
+    // Filtrar por tags
     if (selectedTags.length > 0) {
       tempTasks = tempTasks.filter(task =>
-        selectedTags.every(tag => task.categories.includes(tag)),
+        selectedTags.every(tag => task.categories.includes(tag))
       );
     }
 
+    // Filtrar por data
     if (selectedDate) {
       const filterDateString = selectedDate.toISOString().split('T')[0];
       tempTasks = tempTasks.filter(task => {
@@ -192,16 +221,15 @@ const Home: React.FC = () => {
       });
     }
 
+    // Ordenar por prioridade
     if (selectedPriority) {
       tempTasks.sort((a, b) => {
         const priorityA = a.priority !== undefined ? a.priority : -1;
         const priorityB = b.priority !== undefined ? b.priority : -1;
 
-        if (selectedPriority === 'lowToHigh') {
-          return priorityA - priorityB;
-        } else {
-          return priorityB - priorityA;
-        }
+        return selectedPriority === 'lowToHigh'
+          ? priorityA - priorityB
+          : priorityB - priorityA;
       });
     }
 
