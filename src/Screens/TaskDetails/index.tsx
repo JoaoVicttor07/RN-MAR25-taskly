@@ -11,24 +11,24 @@ import {
 } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../Navigation/types';
-import { styles } from './style';
+import styles from './style';
 import DefaultHeader from '../../components/DefaultHeader';
 import CategoryTag from '../../components/CategoryTag';
 import SmallBackButton from '../../components/SmallBackButton';
 import Input from '../../components/input';
 import SubtaskList from '../../components/SubtaskList';
-import { Task } from '../Home';
+import { Task, Subtask } from '../../Screens/Home';
+import { updateTask } from '../../Utils/asyncStorageUtils';
+import ArrowConfirmIcon from '../../Assets/icons/arrowConfirm.png';
+import CheckedIcon from '../../Assets/icons/CheckSquare-2.png';
+import UncheckedIcon from '../../Assets/icons/CheckSquare-1.png';
+
+
 
 type TaskDetailsRouteProp = RouteProp<RootStackParamList, 'TaskDetails'>;
 
 interface TaskDetailsProps {
   onTaskUpdated?: (updatedTask: Task) => void;
-}
-
-interface Subtask {
-  id: string;
-  text: string;
-  isCompleted: boolean;
 }
 
 type PriorityLevel = 'ALTA' | 'MÉDIA' | 'BAIXA' | 'Sem prioridade';
@@ -62,7 +62,7 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
     }
   }, [initialTask]);
 
-  const renderTagItem = useCallback(({ item }: { item: string }) => (
+  const renderTagItem = useCallback(({ item }: { item: string }): React.ReactElement => (
     <CategoryTag item={item} />
   ), []);
 
@@ -77,6 +77,20 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
     setNewSubtaskText('');
   };
 
+  const handleUpdateTask = useCallback(
+    async (updatedTask: Task) => {
+      try {
+        await updateTask(updatedTask.id, () => updatedTask);
+        if (onTaskUpdated) {
+          onTaskUpdated(updatedTask);
+        }
+      } catch (error) {
+        console.error('Erro ao atualizar a tarefa:', error);
+      }
+    },
+    [onTaskUpdated]
+  );
+
   const handleAddSubtask = useCallback(() => {
     const text = newSubtaskText.trim();
     if (text) {
@@ -87,33 +101,40 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
       };
       const updatedSubtasks = [...subtasks, newSubtask];
       setSubtasks(updatedSubtasks);
+
+      const updatedTask = { ...task, subtasks: updatedSubtasks };
+      handleUpdateTask(updatedTask); // Atualiza a tarefa no AsyncStorage
       setNewSubtaskText('');
-      setShowInput(false); // Adicione esta linha para esconder o input
-      onTaskUpdated?.({ ...task, subtasks: updatedSubtasks });
+      setShowInput(false);
     }
-  }, [newSubtaskText, subtasks, task, onTaskUpdated]);
+  }, [newSubtaskText, subtasks, task, handleUpdateTask]);
 
   const handleToggleSubtask = useCallback((id: string) => {
     const updatedSubtasks = subtasks.map(subtask =>
       subtask.id === id ? { ...subtask, isCompleted: !subtask.isCompleted } : subtask
     );
     setSubtasks(updatedSubtasks);
-    onTaskUpdated?.({ ...task, subtasks: updatedSubtasks });
-  }, [subtasks, task, onTaskUpdated]);
+
+    // Atualiza a tarefa com as subtasks atualizadas
+    const updatedTask = { ...task, subtasks: updatedSubtasks };
+    handleUpdateTask(updatedTask);
+  }, [subtasks, task, handleUpdateTask]);
 
   const handleEditSubtask = useCallback((id: string, newText: string) => {
     const updatedSubtasks = subtasks.map(subtask =>
       subtask.id === id ? { ...subtask, text: newText } : subtask
     );
     setSubtasks(updatedSubtasks);
-    onTaskUpdated?.({ ...task, subtasks: updatedSubtasks });
-  }, [subtasks, task, onTaskUpdated]);
+
+    // Atualiza a tarefa com as subtasks atualizadas
+    const updatedTask = { ...task, subtasks: updatedSubtasks };
+    handleUpdateTask(updatedTask);
+  }, [subtasks, task, handleUpdateTask]);
 
   const priorityText = mapPriorityToString(task.priority);
 
   return (
     <KeyboardAvoidingView
-      style={styles.keyboardAvoidingView}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
     >
@@ -157,8 +178,8 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
         <SubtaskList
           subtasks={subtasks}
           onToggleSubtask={handleToggleSubtask}
-          checkedImage={require('../../Assets/icons/CheckSquare-2.png')}
-          uncheckedImage={require('../../Assets/icons/CheckSquare-1.png')}
+          checkedImage={CheckedIcon}
+          uncheckedImage={UncheckedIcon}
           onEditSubtask={handleEditSubtask}
         />
 
@@ -172,7 +193,7 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
               onFocus={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
             />
             <TouchableOpacity style={styles.confirmButton} onPress={handleAddSubtask}>
-              <Image source={require('../../Assets/icons/arrowConfirm.png')} />
+              <Image source={ArrowConfirmIcon} />
             </TouchableOpacity>
           </View>
         )}
@@ -188,4 +209,3 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
 };
 
 export default TaskDetailsScreen;
-

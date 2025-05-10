@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import Fonts from '../../Theme/fonts';
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
       flexGrow: 1,
       padding: 32,
@@ -104,3 +104,5 @@ export const styles = StyleSheet.create({
       height: 50
     },
   });
+
+export default styles;
