@@ -1,5 +1,4 @@
 // Home.tsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, FlatList, TouchableOpacity } from 'react-native';
 import styles from './style';
@@ -11,106 +10,46 @@ import Filter from '../../components/Filter';
 import FilterModal from '../../components/FilterModal';
 import Fonts from '../../Theme/fonts';
 import DefaultHeader from '../../components/DefaultHeader';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../Navigation/types'; // Ajuste o caminho se necessário
-import { getTasks, saveTasks } from '../../Utils/asyncStorageUtils'; // Ajuste o caminho se necessário
-
-export interface Subtask {
-  id: string;
-  text: string;
-  isCompleted: boolean;
-}
-
-export interface Task {
-  title: string;
-  description: string;
-  deadline: string;
-  id: string;
-  categories: string[];
-  isCompleted: boolean;
-  priority?: number;
-  subtasks: Subtask[];
-}
+import { RootStackParamList } from '../../Navigation/types';
+import { getTasks, saveTasks } from '../../Utils/asyncStorageUtils';
+import { Task } from '../../interfaces/task';  // Importe Task e Subtask do arquivo dedicado
 
 type PriorityType = 'lowToHigh' | 'highToLow' | null;
 type TagsType = string[];
 type DateType = Date | null;
 
+
 const Home: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
-  const [tasks, setTasks] = useState<Task[]>([
-    // Dados iniciais, serão substituídos pelos dados do AsyncStorage se existirem
-    {
-      id: '1',
-      title: 'Comprar pão',
-      description: 'Na padaria da esquina',
-      deadline: '2025-05-10',
-      categories: ['CASA', 'GASTO'],
-      isCompleted: false,
-      priority: 0,
-      subtasks: [],
-    },
-    {
-      id: '2',
-      title: 'Relatório mensal',
-      description: 'Enviar para o chefe',
-      deadline: '2025-05-08',
-      categories: ['TRABALHO'],
-      isCompleted: false,
-      priority: 2,
-      subtasks: [],
-    },
-    {
-      id: '3',
-      title: 'Ir à academia',
-      description: 'Treino de pernas',
-      deadline: '2025-05-07',
-      categories: ['ACADEMIA'],
-      isCompleted: true,
-      priority: 1,
-      subtasks: [],
-    },
-    {
-      id: '4',
-      title: 'Pagar conta de luz',
-      description: 'Vence amanhã',
-      deadline: '2025-05-08',
-      categories: ['CASA', 'FINANCEIRO'],
-      isCompleted: false,
-      priority: 2,
-      subtasks: [],
-    },
-    {
-      id: '5',
-      title: 'Bater o ponto',
-      description: 'bater o ponoto pelo site do kairos e depois tenho que sair para tomar café.',
-      deadline: '2025-05-08',
-      categories: ['TRABALHO', 'LAZER', 'COMPASS'],
-      isCompleted: false,
-      priority: 2,
-      subtasks: [],
-    },
-  ]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);
   const [allTags, setAllTags] = useState<string[]>([]);
   const [selectedPriority, setSelectedPriority] = useState<PriorityType>(null);
   const [selectedTags, setSelectedTags] = useState<TagsType>([]);
   const [selectedDate, setSelectedDate] = useState<DateType>(null);
 
+  // Carrega as tarefas do AsyncStorage no carregamento inicial
   useEffect(() => {
     const loadTasks = async () => {
-      const storedTasks = await getTasks();
-      if (storedTasks && storedTasks.length > 0) {
-        setTasks(storedTasks);
+      try {
+        const storedTasks = await getTasks();
+        if (storedTasks && storedTasks.length > 0) {
+          setTasks(storedTasks);
+        }
+        // Se não houver tarefas armazenadas, o estado `tasks` permanecerá vazio, e a tela será renderizada corretamente.
+      } catch (error) {
+        console.error('Erro ao carregar tarefas:', error);
+        // Aqui você pode querer mostrar uma mensagem de erro ao usuário
       }
-      // Se não houver tarefas armazenadas, as tarefas iniciais (hardcoded) serão usadas.
     };
     loadTasks();
   }, []);
 
+  // Atualiza a lista de tags únicas quando as tarefas mudam
   useEffect(() => {
     const uniqueTags = new Set<string>();
     tasks.forEach(task => {
@@ -119,15 +58,22 @@ const Home: React.FC = () => {
     setAllTags(Array.from(uniqueTags));
   }, [tasks]);
 
-  useEffect(() => {
-    console.log('[Home] Estado tasks atualizado:', tasks);
-  }, [tasks]);
-
   // Salva as tarefas no AsyncStorage sempre que o estado `tasks` mudar.
   useEffect(() => {
-    saveTasks(tasks);
+    const saveTasksToStorage = async () => {
+      try {
+        await saveTasks(tasks);
+      } catch (error) {
+        console.error('Erro ao salvar tarefas:', error);
+        // Aqui você pode querer mostrar uma mensagem de erro ao usuário
+      }
+    };
+    if (tasks.length > 0) {
+      saveTasksToStorage();
+    }
   }, [tasks]);
 
+  // Função para criar uma nova tarefa
   const handleCreateTask = useCallback(async (taskData: {
     title: string;
     description: string;
@@ -141,17 +87,11 @@ const Home: React.FC = () => {
       priority: 0,
       subtasks: [],
     };
-
-    setTasks(prevTasks => {
-      const updatedTasks = [...prevTasks, newTask];
-      // MODIFICAÇÃO FEITA: A chamada saveTasks(updatedTasks) foi removida daqui.
-      // O useEffect [tasks] cuidará de salvar.
-      return updatedTasks;
-    });
-
+    setTasks(prevTasks => [...prevTasks, newTask]);
     setIsModalVisible(false);
-  }, []); // setTasks é estável e não precisa estar nas dependências quando se usa a forma de callback.
+  }, [setTasks]);
 
+  // Funções para abrir/fechar modais
   const handleOpenCreateTaskModal = useCallback(() => {
     setIsModalVisible(true);
   }, []);
@@ -168,6 +108,7 @@ const Home: React.FC = () => {
     setIsFilterModalVisible(false);
   }, []);
 
+  // Funções para lidar com seleção de filtro
   const handlePrioritySelect = useCallback((priority: PriorityType) => {
     setSelectedPriority(priority);
   }, []);
@@ -180,18 +121,14 @@ const Home: React.FC = () => {
     setSelectedDate(date);
   }, []);
 
-  // MODIFICAÇÃO FEITA: Adicionado `tasks` às dependências do useCallback.
+  // Função para navegar para a tela de detalhes da tarefa
   const handleTaskDetailsNavigation = useCallback((taskItem: Task) => {
     navigation.navigate('TaskDetails', {
       task: taskItem,
-      onTaskUpdated: (updatedTask: Task) => {
-        setTasks(prevTasks =>
-          prevTasks.map(t => (t.id === updatedTask.id ? updatedTask : t))
-        );
-      },
     });
-  }, [navigation, setTasks]); // Remova 'tasks' e adicione 'setTasks' como dependência
+  }, [navigation]);
 
+  // Renderiza um item de tarefa na lista
   const renderTaskItem = useCallback(({ item }: { item: Task }) => (
     <TouchableOpacity onPress={() => handleTaskDetailsNavigation(item)}>
       <TaskItem
@@ -203,10 +140,12 @@ const Home: React.FC = () => {
         onToggleComplete={() => { /* Implementar se necessário no TaskItem */ }}
       />
     </TouchableOpacity>
-  ), [handleTaskDetailsNavigation]); // Depende de handleTaskDetailsNavigation
+  ), [handleTaskDetailsNavigation]);
 
+  // Função para extrair a chave única de um item da tarefa
   const keyExtractorTask = useCallback((item: Task) => item.id, []);
 
+  // Aplica os filtros e ordenação à lista de tarefas
   useEffect(() => {
     let tempTasks = [...tasks];
 
@@ -238,6 +177,23 @@ const Home: React.FC = () => {
 
     setFilteredTasks(tempTasks);
   }, [tasks, selectedPriority, selectedTags, selectedDate]);
+
+  // Recarrega as tarefas quando a tela volta ao foco
+  useFocusEffect(
+    useCallback(() => {
+      const loadUpdatedTasks = async () => {
+        try {
+          const storedTasks = await getTasks();
+          if (storedTasks) {
+            setTasks(storedTasks);
+          }
+        } catch (error) {
+          console.error('Erro ao recarregar tarefas ao voltar para Home:', error);
+        }
+      };
+      loadUpdatedTasks();
+    }, [setTasks])
+  );
 
   return (
     <View style={styles.container}>
