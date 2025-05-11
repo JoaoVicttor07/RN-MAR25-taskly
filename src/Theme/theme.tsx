@@ -22,6 +22,7 @@ export interface ThemeType {
   AvatarButton: string;
   ModalButtonMenu: string, // Exemplo: cor para botão de avatar
   bottomTabBarBackground: string; // Cor de fundo do BottomTabBar
+  tagTask: string; // Exemplo: cor para tag de tarefa
 }
 
 export const LightTheme: ThemeType = {
@@ -46,6 +47,7 @@ export const LightTheme: ThemeType = {
   AvatarButton: '#5B3CC4',
   ModalButtonMenu: '#E63946',
   bottomTabBarBackground: '#FFFFFF', // Cor de fundo do BottomTabBar
+  tagTask: '#E6E0F7', // Exemplo: cor para tag de tarefa
 
 };
 
@@ -71,5 +73,6 @@ export const DarkTheme: ThemeType = {
   AvatarButton: '#552DDC',
   ModalButtonMenu: '#E63946',
   bottomTabBarBackground:'#1E1E1E',
+  tagTask: '#A393D1', // Exemplo: cor para tag de tarefa
   // Exemplo: cinza mais claro para borda de card em tema escuro
 };

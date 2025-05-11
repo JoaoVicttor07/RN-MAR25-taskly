@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
 import { View, FlatList, ListRenderItem } from 'react-native';
 import TaskItem from '../index';
-import { styles } from './style';
+import { useTheme } from '../../../Theme/ThemeContext'; // Import useTheme
+import getStyles from './style'; // Import getStyles
 
 interface Task {
   id: string;
@@ -18,6 +19,10 @@ interface TaskListProps {
 }
 
 const TaskList: React.FC<TaskListProps> = ({ tasks, setTasks }) => {
+
+  const { theme } = useTheme(); // Use the theme context
+  const styles = getStyles(theme); // Get themed styles
+
   const handleToggleComplete = useCallback((taskId: string) => {
     setTasks(prevTasks =>
       prevTasks.map(task => {

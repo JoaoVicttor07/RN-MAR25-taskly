@@ -38,6 +38,7 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
     height: 100,
     textAlignVertical: 'top',
     color: theme.text,
+    backgroundColor: theme.background,
   },
   error: {
     color: '#E63946',
@@ -53,18 +54,18 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
     backgroundColor: theme.background,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: theme.primaryButton,
+    borderColor: theme.AvatarButton,
     width: 134.5,
     height: 37,
     alignItems: 'center',
     justifyContent:'center',
   },
   cancelText: {
-    color: theme.primaryButton,
+    color: theme.AvatarButton,
     ...Fonts.Roboto50018,
   },
   createButton: {
-    backgroundColor: theme.background,
+    backgroundColor: theme.AvatarButton,
     borderRadius: 8,
     width: 134.5,
     height: 37,
@@ -72,14 +73,15 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
     justifyContent:'center',
   },
   createText: {
-    color: theme.buttonText,
+    color: theme.background,
     ...Fonts.Roboto50018,
   },
-  inputContainer: { // Adicione esta definição de estilo
+  inputContainer: {
     gap: 16,
   },
-  textinputArea: { // Adicione esta definição de estilo
+  textinputArea: {
     gap: 16,
+    backgroundColor: theme.background,
   },
 });
 

@@ -1,8 +1,9 @@
 import React, { useRef, useCallback } from 'react';
 import { Text, View, TouchableOpacity, FlatList, Animated } from 'react-native';
-import { styles } from './style';
+import getStyles from './style';
+import { useTheme } from '../../Theme/ThemeContext';
 import AnimatedCheck from '../AnimatedCheck';
-//acho que feito
+
 interface TaskItemProps {
   title: string;
   description: string;
@@ -12,6 +13,9 @@ interface TaskItemProps {
 }
 
 const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isCompleted, onToggleComplete }) => {
+
+  const { theme } = useTheme();
+  const styles = getStyles(theme);
 
   const buttonScaleValue = useRef(new Animated.Value(1)).current;
 
@@ -38,7 +42,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isC
 
   const renderCategoryItem = useCallback(({ item }: { item: string }) => (
     <Text style={styles.tag}>{item}</Text>
-  ), []);
+  ), [styles.tag]);
 
   const keyExtractorCategory = useCallback((item: string, index: number) => index.toString(), []);
 
