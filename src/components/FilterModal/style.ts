@@ -61,6 +61,8 @@ const styles = StyleSheet.create({
     ...Fonts.Roboto40016,
     color: '#1E1E1E',
     marginLeft: 8,
+  },
+  tag:{
     textTransform: 'uppercase',
   },
   selectionAreaItemAccordion:{

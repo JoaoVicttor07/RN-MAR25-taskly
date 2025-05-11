@@ -176,7 +176,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                           checkedImageSource={require('../../Assets/icons/CheckSquare-2.png')}
                           uncheckedImageSource={require('../../Assets/icons/CheckSquare-1.png')}
                         />
-                        <Text style={styles.optionText}>{tag}</Text>
+                        <Text style={[styles.optionText, styles.tag]}>{tag}</Text>
                       </TouchableOpacity>
                     </View>
                   ))}
