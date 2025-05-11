@@ -97,30 +97,29 @@ export default function Register() {
   const handleRegister = async () => {
     setLoading(true);
     console.log('Iniciando cadastro...');
-    const nameValidation = validateName(name);
-    const emailValidation = validateEmail(email);
-    const numberValidation = validateNumber(number);
-    const passwordValidation = validatePassword(password);
-    const confirmPasswordValidation = validateConfirmPassword(confirmPassword);
+    const nameError = validateName(name);
+    const emailError = validateEmail(email);
+    const numberError = validateNumber(number);
+    const passwordError = validatePassword(password);
+    const confirmPasswordError = validateConfirmPassword(confirmPassword);
 
-    setNameError(nameValidation || '');
-    setEmailError(emailValidation || '');
-    setNumberError(numberValidation || '');
-    setPasswordError(passwordValidation || '');
-    setConfirmPasswordError(confirmPasswordValidation || '');
+    setNameError(nameError || '');
+    setEmailError(emailError || '');
+    setNumberError(numberError || '');
+    setPasswordError(passwordError || '');
+    setConfirmPasswordError(confirmPasswordError || '');
 
     if (
-      nameValidation ||
-      emailValidation ||
-      numberValidation ||
-      passwordValidation ||
-      confirmPasswordValidation
+      nameError ||
+      emailError ||
+      numberError ||
+      passwordError ||
+      confirmPasswordError
     ) {
       console.log('Validação falhou.');
       setLoading(false);
       return;
     }
-
 
     try {
       console.log('Enviando dados para a API...');
@@ -319,10 +318,7 @@ export default function Register() {
               transform: [{translateX: -25}, {translateY: -25}],
               zIndex: 9999,
             }}>
-            <View style={styles.centeredLoader}>
-              <ActivityIndicator size="large" color="#5B3CC4" />
-            </View>
-
+            <ActivityIndicator size="large" color="#5B3CC4" />
           </View>
         )}
 
