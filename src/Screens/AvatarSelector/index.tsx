@@ -11,7 +11,7 @@ import {
 import {useRoute, useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import type {RouteProp} from '@react-navigation/native';
-import type {RootStackParamList} from '../../Navigation';
+import type {RootStackParamList} from '../../Navigation/types';
 import Button from '../../components/button';
 import ProfileHeader from '../../components/ProfileHeader';
 import ProgressBar from '../../components/ProgressBar';
@@ -19,16 +19,20 @@ import Modal from './Modal';
 import styles from './style';
 import {API_BASE_URL} from '../../env';
 import * as Keychain from 'react-native-keychain';
+import {refreshAuthToken} from '../../Utils/authUtils';
 
-import avatar1 from '../../Assets/Images/Avatars/avatar_1.jpg';
+import avatar1 from '../../Assets/Images/Avatars/avatar_1.png';
 import avatar2 from '../../Assets/Images/Avatars/avatar_2.png';
+import avatar3 from '../../Assets/Images/Avatars/avatar_3.png';
+import avatar4 from '../../Assets/Images/Avatars/avatar_4.png';
+import avatar5 from '../../Assets/Images/Avatars/avatar_5.png';
 
 const AVATARS = [
   {id: 'avatar_1', source: avatar1, borderColor: '#6C4AE4'},
   {id: 'avatar_2', source: avatar2, borderColor: '#E4B14A'},
-  {id: 'avatar_3', source: avatar1, borderColor: '#4AE47B'},
-  {id: 'avatar_4', source: avatar1, borderColor: '#E44A4A'},
-  {id: 'avatar_5', source: avatar1, borderColor: '#B89B5B'},
+  {id: 'avatar_3', source: avatar3, borderColor: '#4AE47B'},
+  {id: 'avatar_4', source: avatar4, borderColor: '#E44A4A'},
+  {id: 'avatar_5', source: avatar5, borderColor: '#B89B5B'},
 ];
 
 const AVATAR_SIZE = 100;
@@ -62,7 +66,7 @@ export default function AvatarSelector() {
     return () => backHandler.remove();
   }, [isEditing]);
 
-  const handleConfirm = async () => {
+  const handleConfirmCadastro = async () => {
     if (!selectedId) {
       Alert.alert('Por favor, selecione um avatar antes de continuar.');
       return;
@@ -72,40 +76,130 @@ export default function AvatarSelector() {
 
     try {
       const credentials = await Keychain.getGenericPassword();
+
       if (!credentials || !credentials.password) {
-        throw new Error('Token não encontrado. Faça login novamente.');
+        Alert.alert('Erro', 'Token não encontrado. Faça login novamente.');
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        });
+        return;
       }
 
-      console.log('Enviando picture:', selectedId);
+      let token = credentials.password;
 
-      const response = await fetch(`${API_BASE_URL}/profile/avatar`, {
-        // Corrigido o endpoint
+      console.log('Token usado para atualizar avatar:', token);
+
+      // Validar o token no servidor
+      const validateResponse = await fetch(`${API_BASE_URL}/profile`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (validateResponse.status === 401) {
+        console.log('Token inválido ou expirado. Tentando renovar...');
+        try {
+          const newToken = await refreshAuthToken();
+          console.log('Token renovado com sucesso:', newToken);
+          token = newToken; // Atualizar o token para a requisição
+        } catch (refreshError) {
+          console.error('Erro ao renovar o token:', refreshError);
+          Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'Login'}],
+          });
+          return;
+        }
+      }
+
+      // Atualizar o avatar
+      const response = await fetch(`${API_BASE_URL}/profile`, {
         method: 'PUT',
         headers: {
-          Authorization: `Bearer ${credentials.password}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({picture: selectedId}), // Campo "picture" conforme esperado
+        body: JSON.stringify({
+          picture: selectedId, // Avatar selecionado
+        }),
       });
 
       console.log('Status da resposta:', response.status);
-      const responseText = await response.text(); // Lê a resposta como texto
-      console.log('Resposta da API (texto):', responseText);
+      const responseData = await response.json();
+      console.log('Resposta da API:', responseData);
 
       if (response.ok) {
         console.log('Avatar atualizado com sucesso!');
         setIsModalVisible(true);
       } else {
-        console.error(
-          'Erro ao atualizar avatar:',
-          response.status,
-          responseText,
+        console.error('Erro ao atualizar avatar:', responseData);
+        Alert.alert(
+          'Erro',
+          responseData.error || 'Não foi possível atualizar o avatar.',
         );
-        Alert.alert('Erro', 'Não foi possível atualizar o avatar.');
       }
     } catch (error) {
-      console.error('Erro ao atualizar avatar:', error);
-      Alert.alert('Erro', 'Não foi possível atualizar o avatar.');
+      console.error('Erro ao processar a requisição:', error);
+      Alert.alert('Erro', 'Ocorreu um erro ao processar sua solicitação.');
+    }
+  };
+  const handleConfirmEdicao = async () => {
+    if (!selectedId) {
+      Alert.alert('Por favor, selecione um avatar antes de continuar.');
+      return;
+    }
+
+    console.log('API_BASE_URL:', API_BASE_URL);
+
+    try {
+      const credentials = await Keychain.getGenericPassword();
+
+      if (!credentials || !credentials.password) {
+        Alert.alert('Erro', 'Token não encontrado. Faça login novamente.');
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        });
+        return;
+      }
+
+      const token = credentials.password;
+
+      const cleanedPhoneNumber = route.params?.phone_number?.replace(/\D/g, '');
+
+      const response = await fetch(`${API_BASE_URL}/profile`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: route.params?.name,
+          phone_number: cleanedPhoneNumber,
+          picture: selectedId, // Avatar selecionado
+        }),
+      });
+
+      console.log('Status da resposta:', response.status);
+      const responseData = await response.json();
+      console.log('Resposta da API:', responseData);
+
+      if (response.ok) {
+        console.log('Perfil atualizado com sucesso!');
+        setIsModalVisible(true);
+      } else {
+        console.error('Erro ao atualizar perfil:', responseData);
+        Alert.alert(
+          'Erro',
+          responseData.error || 'Não foi possível atualizar o perfil.',
+        );
+      }
+    } catch (error) {
+      console.error('Erro ao processar a requisição:', error);
+      Alert.alert('Erro', 'Ocorreu um erro ao processar sua solicitação.');
     }
   };
 
@@ -202,7 +296,7 @@ export default function AvatarSelector() {
         backgroundColor="#6C4AE4"
         width={Dimensions.get('window').width * 0.9}
         style={styles.confirmButton}
-        onPress={handleConfirm}
+        onPress={isEditing ? handleConfirmEdicao : handleConfirmCadastro}
       />
       <Modal
         visible={isModalVisible}

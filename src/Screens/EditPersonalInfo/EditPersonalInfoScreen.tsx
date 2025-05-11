@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, KeyboardAvoidingView, ScrollView, Alert } from 'react-native';
+import React, {useState, useEffect, useCallback} from 'react';
+import {View, KeyboardAvoidingView, ScrollView, Alert} from 'react-native';
 import Input from '../../components/input';
 import Button from '../../components/button';
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../../Navigation/types';
+import {useNavigation} from '@react-navigation/native';
+import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import type {RootStackParamList} from '../../Navigation/types';
 import ProfileHeader from '../../components/ProfileHeader';
 import ProgressBar from '../../components/ProgressBar';
 import styles from './style';
-import { API_BASE_URL } from '../../env';
+import {API_BASE_URL} from '../../env';
 import * as Keychain from 'react-native-keychain';
 
 type NavigationProp = NativeStackNavigationProp<
@@ -42,30 +42,27 @@ function EditPersonalInfoScreen() {
         const data = await response.json();
         setEmail(data.email);
         setName(data.name || '');
-        setPhone(data.phone || '');
+        setPhone(data.phone_number || '');
       } else if (response.status === 401) {
-        console.error('Erro ao buscar perfil: token inválido ou expirado');
         Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
         navigation.reset({
           index: 0,
-          routes: [{ name: 'Login' }],
+          routes: [{name: 'Login'}],
         });
       } else {
-        console.error('Erro ao buscar perfil:', response.status);
         Alert.alert(
           'Erro',
           'Não foi possível carregar as informações do perfil.',
         );
       }
     } catch (error) {
-      console.error('Erro ao buscar perfil:', error);
       Alert.alert(
         'Erro',
         'Não foi possível carregar as informações do perfil. Faça login novamente.',
       );
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Login' }],
+        routes: [{name: 'Login'}],
       });
     }
   }, [navigation]);
@@ -95,45 +92,27 @@ function EditPersonalInfoScreen() {
     return null;
   };
 
-  const handleContinue = async () => {
-    const localNameError = !name ? 'Campo obrigatório' : validateName(name);
-    const localPhoneError = !phone ? 'Campo obrigatório' : validatePhone(phone);
+  const handleContinue = () => {
+    const localNameError = validateName(name);
+    const localPhoneError = validatePhone(phone);
 
     setNameError(localNameError || '');
     setPhoneError(localPhoneError || '');
 
-    if (!localNameError && !localPhoneError && name && phone) {
-      try {
-        const credentials = await Keychain.getGenericPassword();
-        if (!credentials) {
-          throw new Error('Token não encontrado. Faça login novamente.');
-        }
+    if (!localNameError && !localPhoneError) {
+      const cleanedPhone = phone.replace(/\D/g, '');
 
-        const response = await fetch(`${API_BASE_URL}/profile/name`, {
-          method: 'PUT',
-          headers: {
-            Authorization: `Bearer ${credentials.password}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ name }),
-        });
-
-        if (response.ok) {
-          navigation.navigate('AvatarSelector', { isEditing: true });
-        } else {
-          console.error('Erro ao atualizar nome:', response.status);
-          Alert.alert('Erro', 'Não foi possível atualizar seu nome.');
-        }
-      } catch (error) {
-        console.error('Erro ao atualizar nome:', error);
-        Alert.alert('Erro', 'Não foi possível atualizar seu nome.');
-      }
+      navigation.navigate('AvatarSelector', {
+        name,
+        phone_number: cleanedPhone,
+        isEditing: true, // Fluxo de edição de perfil
+      });
     }
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <KeyboardAvoidingView style={{flex: 1}} behavior="height">
+      <ScrollView contentContainerStyle={{flexGrow: 1}}>
         <View style={styles.container}>
           <ProfileHeader
             title="EDIÇÃO DE PERFIL"
@@ -143,13 +122,13 @@ function EditPersonalInfoScreen() {
           <Input
             label="Nome Completo"
             value={name}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setName(text);
               if (nameError) {
-                validateName(text);
+                setNameError('');
               }
             }}
-            onBlur={() => validateName(name)}
+            onBlur={() => setNameError(validateName(name) || '')}
             error={nameError}
             placeholder="Digite seu nome"
             containerStyle={styles.inputSpacing}
@@ -165,15 +144,15 @@ function EditPersonalInfoScreen() {
           <Input
             label="Número"
             value={phone}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setPhone(text);
               if (phoneError) {
-                validatePhone(text);
+                setPhoneError('');
               }
             }}
-            onBlur={() => validatePhone(phone)}
+            onBlur={() => setPhoneError(validatePhone(phone) || '')}
             error={phoneError}
-            mask="phone"
+            //  mask="phone"
             containerStyle={styles.inputSpacing}
           />
           <Button

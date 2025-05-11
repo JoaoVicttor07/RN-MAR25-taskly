@@ -165,7 +165,7 @@ const Home: React.FC = () => {
       <View style={styles.header}>
         <Text style={styles.title}>TASKLY</Text>
         <Image
-          source={require('../../Assets/Images/Avatars/avatar_1.jpg')}
+          source={require('../../Assets/Images/Avatars/avatar_1.png')}
           style={styles.avatar}
         />
       </View>

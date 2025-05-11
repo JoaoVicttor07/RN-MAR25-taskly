@@ -40,9 +40,7 @@ export const storeToken = async (idToken: string, refreshToken: string) => {
       throw new Error('O refreshToken é obrigatório para armazenar os tokens.');
     }
 
-    await Keychain.setGenericPassword(refreshToken, idToken, {
-      accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY,
-    });
+    await Keychain.setGenericPassword(refreshToken, idToken);
     console.log('Tokens armazenados com sucesso!');
   } catch (error) {
     console.error('Erro ao salvar os tokens:', error);
@@ -53,7 +51,14 @@ export const storeToken = async (idToken: string, refreshToken: string) => {
 export const getToken = async (): Promise<string | null> => {
   try {
     const credentials = await Keychain.getGenericPassword();
-    return credentials ? credentials.password : null;
+
+    if (!credentials || typeof credentials === 'boolean') {
+      console.log('Nenhum token encontrado no Keychain.');
+      return null;
+    }
+
+    console.log('Token recuperado do Keychain:', credentials.password);
+    return credentials.password;
   } catch (error) {
     console.error('Erro ao recuperar token:', error);
     return null;
@@ -75,32 +80,50 @@ export const isTokenExpired = (token: string): boolean => {
       throw new Error('Token inválido ou malformado.');
     }
 
-    const decoded: {exp: number} = jwtDecode(token);
+    const decoded: {exp?: number} = jwtDecode(token);
+
+    if (!decoded.exp) {
+      throw new Error('Token não contém a propriedade exp.');
+    }
+
     const currentTime = Math.floor(Date.now() / 1000);
     return decoded.exp < currentTime;
   } catch (error) {
-    console.error('Erro ao verificar validade do token:', error);
-    return true;
+    console.error('Erro ao verificar validade do token:', error, token);
+    return true; // Considere o token expirado em caso de erro
   }
 };
 
-export const refreshAuthToken = async (
-  refreshToken: string,
-): Promise<string> => {
+export const refreshAuthToken = async (): Promise<string> => {
   try {
-    if (!refreshToken) {
-      throw new Error('Refresh token não fornecido.');
+    const credentials = await Keychain.getGenericPassword();
+
+    if (!credentials || typeof credentials === 'boolean') {
+      throw new Error('Nenhum token encontrado no Keychain.');
     }
 
-    const response = await api.post('/auth/refresh', {refreshToken});
+    const refreshToken = credentials.username;
+
+    if (!refreshToken) {
+      throw new Error('Refresh token não encontrado.');
+    }
+
+    const response = await api.post('/refresh', {refreshToken});
+
+    if (response.status !== 200) {
+      throw new Error('Erro ao renovar o token.');
+    }
+
     const {idToken, refreshToken: newRefreshToken} = response.data;
 
-    await storeToken(idToken, newRefreshToken);
+    console.log('Token renovado:', idToken);
+    console.log('Novo refresh token:', newRefreshToken);
+
+    // Atualizar o token no Keychain
+    await Keychain.setGenericPassword(newRefreshToken, idToken);
     return idToken;
   } catch (error) {
     console.error('Erro ao renovar o token:', error);
-
-    await removeToken();
     throw error;
   }
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {
   SafeAreaView,
   View,
@@ -7,18 +7,19 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import { CarouselActionList } from '../../../components/carouselActionList/index';
+import {CarouselActionList} from '../../../components/carouselActionList/index';
 import Modal from '../../AvatarSelector/Modal';
 import styles from './style';
-import { API_BASE_URL } from '../../../env';
-import * as Keychain from 'react-native-keychain';
+import {API_BASE_URL} from '../../../env';
+// import * as Keychain from 'react-native-keychain';
+import {getToken, removeToken, refreshAuthToken} from '../../../Utils/authUtils';
 
 type Props = {
   navigation: any;
   route: any;
 };
 
-const MenuPrincipal = ({ navigation, route }: Props) => {
+const MenuPrincipal = ({navigation, route}: Props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasShownModal, setHasShownModal] = useState(false);
   const [userData, setUserData] = useState({
@@ -30,15 +31,19 @@ const MenuPrincipal = ({ navigation, route }: Props) => {
 
   const fetchUserProfile = useCallback(async () => {
     try {
-      const credentials = await Keychain.getGenericPassword();
-      if (!credentials || !credentials.password) {
+      console.log('Tentando buscar perfil do usuário...');
+      const token = await getToken();
+
+      if (!token) {
         throw new Error('Token não encontrado. Faça login novamente.');
       }
+
+      console.log('Token usado para buscar perfil:', token);
 
       const response = await fetch(`${API_BASE_URL}/profile`, {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${credentials.password}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -52,12 +57,40 @@ const MenuPrincipal = ({ navigation, route }: Props) => {
           avatarUrl: data.avatarUrl || '', // Atualiza o avatar
         });
       } else if (response.status === 401) {
-        console.log('Erro ao buscar perfil: token inválido ou expirado');
-        Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Login' }],
-        });
+        console.log('Token inválido ou expirado. Tentando renovar...');
+        try {
+          const newToken = await refreshAuthToken();
+          console.log('Token renovado com sucesso:', newToken);
+
+          // Tentar buscar o perfil novamente com o novo token
+          const retryResponse = await fetch(`${API_BASE_URL}/profile`, {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${newToken}`,
+            },
+          });
+
+          if (retryResponse.ok) {
+            const data = await retryResponse.json();
+            console.log('Dados do perfil com novo token:', data);
+            setUserData({
+              name: data.name || 'Usuário',
+              email: data.email || 'Email não disponível',
+              phone: data.phone || 'Telefone não disponível',
+              avatarUrl: data.avatarUrl || '', // Atualiza o avatar
+            });
+          } else {
+            throw new Error('Erro ao buscar perfil com novo token.');
+          }
+        } catch (refreshError) {
+          console.error('Erro ao renovar o token:', refreshError);
+          Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
+          await removeToken();
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'Login'}],
+          });
+        }
       } else {
         console.error('Erro ao buscar perfil:', response.status);
         Alert.alert(
@@ -70,7 +103,7 @@ const MenuPrincipal = ({ navigation, route }: Props) => {
       Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Login' }],
+        routes: [{name: 'Login'}],
       });
     }
   }, [navigation]);
@@ -92,8 +125,8 @@ const MenuPrincipal = ({ navigation, route }: Props) => {
         <Image
           source={
             userData.avatarUrl
-              ? { uri: userData.avatarUrl }
-              : require('../../../Assets/Images/Ellipse1.png')
+              ? {uri: userData.avatarUrl}
+              : require('../../../Assets/Images/Avatars/avatar_5.png')
           }
           style={styles.avatar}
         />
@@ -113,8 +146,7 @@ const MenuPrincipal = ({ navigation, route }: Props) => {
       <View style={styles.containerButtons}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('PreferencesMenu')}
-        >
+          onPress={() => navigation.navigate('PreferencesMenu')}>
           <Text style={styles.buttonText}>Preferências</Text>
           <Image
             source={require('../../../Assets/icons/VectorBack.png')}
@@ -124,8 +156,7 @@ const MenuPrincipal = ({ navigation, route }: Props) => {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Regulamentos')}
-        >
+          onPress={() => navigation.navigate('Regulamentos')}>
           <Text style={styles.buttonText}>Termos e regulamentos</Text>
           <Image
             source={require('../../../Assets/icons/VectorBack.png')}
