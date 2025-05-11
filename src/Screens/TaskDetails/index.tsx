@@ -17,16 +17,16 @@ import CategoryTag from '../../components/CategoryTag';
 import SmallBackButton from '../../components/SmallBackButton';
 import Input from '../../components/input';
 import SubtaskList from '../../components/SubtaskList';
+import DateInput from '../../components/DateInput';
 import { Task, Subtask } from '../../interfaces/task';
 import { updateTask } from '../../Utils/asyncStorageUtils';
 import ArrowConfirmIcon from '../../Assets/icons/arrowConfirm.png';
 import CheckedIcon from '../../Assets/icons/CheckSquare-2.png';
 import UncheckedIcon from '../../Assets/icons/CheckSquare-1.png';
+import GoldPencilIcon from '../../Assets/icons/GoldPencil.png';
+import XCircle from '../../Assets/icons/XCircle.png'
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-
-
-
 
 
 type TaskDetailsRouteProp = RouteProp<RootStackParamList, 'TaskDetails'>;
@@ -54,10 +54,19 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
   const route = useRoute<TaskDetailsRouteProp>();
   const { task: initialTask } = route.params;
   const [task, setTask] = useState<Task>(initialTask);
+  const [newTag, setNewTag] = useState('');
   const [subtasks, setSubtasks] = useState<Subtask[]>(initialTask.subtasks || []);
   const [newSubtaskText, setNewSubtaskText] = useState('');
   const [showInput, setShowInput] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(initialTask.title);
+  const [editedDescription, setEditedDescription] = useState(initialTask.description);
+  const [editedCategories, setEditedCategories] = useState<string[]>(initialTask.categories || []);
+  const [editedPriority, setEditedPriority] = useState<number | undefined>(initialTask.priority);
+  const [editedDeadline, setEditedDeadline] = useState<Date | null>(initialTask.deadline ? new Date(initialTask.deadline) : null);
+
+
 
   useEffect(() => {
     if (initialTask) {
@@ -66,61 +75,50 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
     }
   }, [initialTask]);
 
-  const renderTagItem = useCallback(({ item }: { item: string }): React.ReactElement => (
-    <CategoryTag item={item} />
-  ), []);
-
-  const keyExtractorTag = useCallback((item: string, index: number) => index.toString(), []);
-
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'TaskDetails'>>();
 
-
-  const handleResolveTask = async () => {
+  const handleResolveTask = async (): Promise<void> => {
     const updatedTask = { ...task, isCompleted: true };
     setTask(updatedTask);
     await handleUpdateTask(updatedTask);
 
-
     navigation.navigate('MainApp', {
       screen: 'Home',
-      params: { scrollToTaskId: updatedTask.id }
+      params: { scrollToTaskId: updatedTask.id },
     });
-
   };
 
-  const handleReopenTask = async () => {
+  const handleReopenTask = async (): Promise<void> => {
     const updatedTask = { ...task, isCompleted: false };
     setTask(updatedTask);
     await handleUpdateTask(updatedTask);
 
     navigation.navigate('MainApp', {
       screen: 'Home',
-      params: { scrollToTaskId: updatedTask.id }
+      params: { scrollToTaskId: updatedTask.id },
     });
-
   };
 
-
-  const handleShowAddSubtaskInput = () => {
+  const handleShowAddSubtaskInput = (): void => {
     setShowInput(true);
     setNewSubtaskText('');
   };
 
   const handleUpdateTask = useCallback(
-    async (updatedTask: Task) => {
+    async (updatedTask: Task): Promise<void> => {
       try {
         await updateTask(updatedTask.id, () => updatedTask);
         if (onTaskUpdated) {
           onTaskUpdated(updatedTask);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Erro ao atualizar a tarefa:', error);
       }
     },
     [onTaskUpdated]
   );
 
-  const handleAddSubtask = useCallback(() => {
+  const handleAddSubtask = useCallback((): void => {
     const text = newSubtaskText.trim();
     if (text) {
       const newSubtask: Subtask = {
@@ -132,35 +130,81 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
       setSubtasks(updatedSubtasks);
 
       const updatedTask = { ...task, subtasks: updatedSubtasks };
-      handleUpdateTask(updatedTask); // Atualiza a tarefa no AsyncStorage
+      handleUpdateTask(updatedTask);
       setNewSubtaskText('');
       setShowInput(false);
     }
   }, [newSubtaskText, subtasks, task, handleUpdateTask]);
 
-  const handleToggleSubtask = useCallback((id: string) => {
-    const updatedSubtasks = subtasks.map(subtask =>
+  const handleToggleSubtask = useCallback((id: string): void => {
+    const updatedSubtasks = subtasks.map((subtask) =>
       subtask.id === id ? { ...subtask, isCompleted: !subtask.isCompleted } : subtask
     );
     setSubtasks(updatedSubtasks);
 
-    // Atualiza a tarefa com as subtasks atualizadas
     const updatedTask = { ...task, subtasks: updatedSubtasks };
     handleUpdateTask(updatedTask);
   }, [subtasks, task, handleUpdateTask]);
 
-  const handleEditSubtask = useCallback((id: string, newText: string) => {
-    const updatedSubtasks = subtasks.map(subtask =>
+  const handleEditSubtask = useCallback((id: string, newText: string): void => {
+    const updatedSubtasks = subtasks.map((subtask) =>
       subtask.id === id ? { ...subtask, text: newText } : subtask
     );
     setSubtasks(updatedSubtasks);
 
-    // Atualiza a tarefa com as subtasks atualizadas
     const updatedTask = { ...task, subtasks: updatedSubtasks };
     handleUpdateTask(updatedTask);
   }, [subtasks, task, handleUpdateTask]);
 
   const priorityText = mapPriorityToString(task.priority);
+
+  const handleEditTask = (): void => {
+    setIsEditing(true);
+    setEditedTitle(task.title);
+    setEditedDescription(task.description);
+    setEditedCategories(task.categories || []);
+    setEditedPriority(task.priority);
+    setEditedDeadline(task.deadline ? new Date(task.deadline) : null);
+  };
+
+  const handleCancelEdit = (): void => {
+    setIsEditing(false);
+  };
+
+  const handleConfirmEdit = async (): Promise<void> => {
+    const updatedTask: Task = {
+      ...task,
+      title: editedTitle,
+      description: editedDescription,
+      categories: editedCategories,
+      priority: editedPriority,
+      deadline: editedDeadline?.toISOString(),
+    };
+
+    const finalUpdatedTask = {
+      ...updatedTask,
+      deadline: updatedTask.deadline === undefined ? null : updatedTask.deadline,
+    };
+
+    setTask(finalUpdatedTask);
+    await handleUpdateTask(finalUpdatedTask);
+    setIsEditing(false);
+  };
+
+  const handleAddTag = (tag: string) => {
+    if (!tag.trim()) return;
+    if (editedCategories.includes(tag.trim())) return;
+
+    const updatedTags = [...editedCategories, tag.trim()];
+    setEditedCategories(updatedTags);
+    setNewTag('');
+  };
+
+
+
+  const handleRemoveTag = (tagToRemove: string): void => {
+    setEditedCategories(editedCategories.filter((tag) => tag !== tagToRemove));
+  };
 
   return (
     <KeyboardAvoidingView
@@ -176,66 +220,186 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
       >
         <DefaultHeader leftComponent={<SmallBackButton />} />
         <View style={styles.taskDetailsContainer}>
-          <View>
-            <Text style={styles.title}>Título</Text>
-            <Text style={styles.titleTag}>{task.title}</Text>
-          </View>
-          <View>
-            <Text style={styles.title}>Descrição</Text>
-            <Text style={styles.description}>{task.description}</Text>
-          </View>
-          <View>
-            <Text style={styles.title}>Tags</Text>
-            <FlatList
-              data={task.categories}
-              renderItem={renderTagItem}
-              keyExtractor={keyExtractorTag}
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.carousel}
-            />
-          </View>
-          <View>
-            <Text style={styles.title}>Prioridade</Text>
-            <Text style={styles.priority}>{priorityText}</Text>
-          </View>
-          <TouchableOpacity
-            style={task.isCompleted ? styles.reopenButton : styles.resolveButton}
-            onPress={task.isCompleted ? handleReopenTask : handleResolveTask}
-          >
-            <Text style={task.isCompleted ? styles.reopenButtonText : styles.resolveButtonText}>
-              {task.isCompleted ? 'Reabrir Tarefa' : 'Resolver Tarefa'}
-            </Text>
-          </TouchableOpacity>
+          {!isEditing ? (
+            <>
+              <View>
+                <TouchableOpacity style={styles.editButton} onPress={handleEditTask}>
+                  <Image source={GoldPencilIcon} />
+                </TouchableOpacity>
+              </View>
+              <View>
+                <Text style={styles.title}>Título</Text>
+                <Text style={styles.titleTag}>{task.title}</Text>
+              </View>
+              <View>
+                <Text style={styles.title}>Descrição</Text>
+                <Text style={styles.description}>{task.description}</Text>
+              </View>
+              <View>
+                <View>
+                  <Text style={styles.title}>Tags</Text>
+                  <View style={styles.carousel}>
+                    {task.categories && task.categories.length > 0 ? (
+                      task.categories.map((tag, index) => (
+                        <CategoryTag key={index} item={tag} />
+                      ))
+                    ) : (
+                      <Text>No tags available</Text> // Caso não haja categorias
+                    )}
+                  </View>
+                </View>
 
+              </View>
+              <View>
+                <Text style={styles.title}>Prioridade</Text>
+                <Text style={styles.priority}>{priorityText}</Text>
+              </View>
+              <TouchableOpacity
+                style={task.isCompleted ? styles.reopenButton : styles.resolveButton}
+                onPress={task.isCompleted ? handleReopenTask : handleResolveTask}
+              >
+                <Text style={task.isCompleted ? styles.reopenButtonText : styles.resolveButtonText}>
+                  {task.isCompleted ? 'Reabrir Tarefa' : 'Resolver Tarefa'}
+                </Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <View style={styles.containerEdit}>
+              <View>
+                <Text style={styles.title}>Título</Text>
+                <Input
+                  value={editedTitle}
+                  onChangeText={setEditedTitle}
+                />
+              </View>
+              <View>
+                <Text style={styles.title}>Descrição</Text>
+                <Input
+                  value={editedDescription}
+                  multiline={true}
+                  height={81}
+                  textAlignVertical="top"
+                  onChangeText={setEditedDescription}
+                />
+              </View>
+
+              <View>
+                <View>
+                  <Text style={styles.title}>Tags</Text>
+                  <View>
+                    <Input
+                      placeholder="Adicionar tag"
+                      value={newTag}
+                      onChangeText={setNewTag}
+                      onSubmitEditing={(event) => {
+                        handleAddTag(event.nativeEvent.text);
+                        setNewTag('');
+                      }}
+                    />
+
+                    <TouchableOpacity
+                      style={styles.confirmButtonCircle}
+                      onPress={() => handleAddTag(newTag)}
+                    >
+                      <Image source={ArrowConfirmIcon} />
+                    </TouchableOpacity>
+
+                  </View>
+                </View>
+                <View>
+                <FlatList
+                  data={editedCategories}
+                  renderItem={({ item }) => (
+                    <View style={styles.tagItem}>
+                      <Text style={styles.tagText}>{item}</Text>
+                      <TouchableOpacity onPress={() => handleRemoveTag(item)}>
+                        <Image source={XCircle} />
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                  keyExtractor={(item, index) => index.toString()}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                />
+                </View>
+
+              </View>
+
+              <View>
+                <Text style={styles.title}>Prioridade</Text>
+                <View style={styles.priorityContainer}>
+                  <TouchableOpacity
+                    style={[styles.priorityButton, editedPriority === 2 && styles.priorityButtonActive]}
+                    onPress={() => setEditedPriority(2)}
+                  >
+                    <Text style={[styles.priorityText, editedPriority === 2 && styles.priorityTextActive]}>Alta</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.priorityButton, editedPriority === 1 && styles.priorityButtonActive]}
+                    onPress={() => setEditedPriority(1)}
+                  >
+                    <Text style={[styles.priorityText, editedPriority === 1 && styles.priorityTextActive]}>Média</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.priorityButton, editedPriority === 0 && styles.priorityButtonActive]}
+                    onPress={() => setEditedPriority(0)}
+                  >
+                    <Text style={[styles.priorityText, editedPriority === 0 && styles.priorityTextActive]}>Baixa</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View>
+                <Text style={styles.title}>Prazo</Text>
+                <DateInput
+                  initialDate={editedDeadline}
+                  onDateChange={setEditedDeadline}
+                />
+              </View>
+            </View>
+          )}
         </View>
-
-        <SubtaskList
-          subtasks={subtasks}
-          onToggleSubtask={handleToggleSubtask}
-          checkedImage={CheckedIcon}
-          uncheckedImage={UncheckedIcon}
-          onEditSubtask={handleEditSubtask}
-        />
-
-        {showInput && (
-          <View style={styles.addSubtaskInputContainer}>
-            <Input
-              style={styles.input}
-              placeholder="Escreva sua subtarefa..."
-              value={newSubtaskText}
-              onChangeText={setNewSubtaskText}
-              onFocus={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+        {!isEditing ? (
+          <>
+            <SubtaskList
+              subtasks={subtasks}
+              onToggleSubtask={handleToggleSubtask}
+              checkedImage={CheckedIcon}
+              uncheckedImage={UncheckedIcon}
+              onEditSubtask={handleEditSubtask}
             />
-            <TouchableOpacity style={styles.confirmButton} onPress={handleAddSubtask}>
-              <Image source={ArrowConfirmIcon} />
+
+            {showInput && (
+              <View style={styles.addSubtaskInputContainer}>
+                <Input
+                  placeholder="Escreva sua subtarefa..."
+                  value={newSubtaskText}
+                  onChangeText={setNewSubtaskText}
+                  onFocus={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+                />
+                <TouchableOpacity style={styles.confirmButtonCircle} onPress={handleAddSubtask}>
+                  <Image source={ArrowConfirmIcon} />
+                </TouchableOpacity>
+              </View>
+            )}
+
+            <TouchableOpacity style={styles.addButton} onPress={handleShowAddSubtaskInput}>
+              <Text style={styles.addButtonText}>ADICIONAR SUBTASK</Text>
+            </TouchableOpacity>
+          </>
+
+        ) : (
+
+          <View style={styles.editButtonsContainer}>
+            <TouchableOpacity style={styles.cancelButton} onPress={handleCancelEdit}>
+              <Text style={styles.cancelButtonText}>Cancelar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.confirmButton} onPress={handleConfirmEdit}>
+              <Text style={styles.confirmButtonText}>Confirmar</Text>
             </TouchableOpacity>
           </View>
-        )}
 
-        <TouchableOpacity style={styles.addButton} onPress={handleShowAddSubtaskInput}>
-          <Text style={styles.addButtonText}>ADICIONAR SUBTASK</Text>
-        </TouchableOpacity>
+        )}
 
         <View style={styles.bottomSpace} />
       </ScrollView>

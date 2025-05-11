@@ -5,12 +5,13 @@ export interface Subtask {
   }
 
   export interface Task {
-    title: string;
-    description: string;
-    deadline: string;
     id: string;
-    categories: string[];
+    title: string;
+    description?: string;
     isCompleted: boolean;
+    categories?: string[];
     priority?: number;
-    subtasks: Subtask[];
+    deadline?: string | null | undefined;
+    subtasks?: Subtask[];
+    createdAt: number;
   }

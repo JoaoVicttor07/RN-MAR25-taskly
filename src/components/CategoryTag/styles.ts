@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 8,
     alignSelf: 'flex-start',
+    textTransform: 'uppercase',
   },
 });
 
