@@ -64,6 +64,7 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
   const [editedCategories, setEditedCategories] = useState<string[]>(initialTask.categories || []);
   const [editedPriority, setEditedPriority] = useState<number | undefined>(initialTask.priority);
   const [editedDeadline, setEditedDeadline] = useState<Date | null>(initialTask.deadline ? new Date(initialTask.deadline) : null);
+  const [tagError, setTagError] = useState('');
 
 
 
@@ -191,12 +192,27 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
   };
 
   const handleAddTag = (tag: string) => {
-    if (!tag.trim()) return;
-    if (editedCategories.includes(tag.trim())) return;
+    const trimmedTag = tag.trim();
 
-    const updatedTags = [...editedCategories, tag.trim()];
+    if (!trimmedTag) {
+      setTagError('');
+      return;
+    }
+
+    if (trimmedTag.includes(' ')) {
+      setTagError('Por favor, insira apenas uma palavra por tag.');
+      return;
+    }
+
+    if (editedCategories.includes(trimmedTag)) {
+      setTagError('Tag já adicionada.');
+      return;
+    }
+
+    const updatedTags = [...editedCategories, trimmedTag];
     setEditedCategories(updatedTags);
     setNewTag('');
+    setTagError(''); // limpa erro ao adicionar com sucesso
   };
 
 
@@ -291,13 +307,17 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
                     <Input
                       placeholder="Adicionar tag"
                       value={newTag}
-                      onChangeText={setNewTag}
+                      onChangeText={(text) => {
+                        setNewTag(text);
+                        setTagError('');
+                      }}
                       onSubmitEditing={(event) => {
                         handleAddTag(event.nativeEvent.text);
-                        setNewTag('');
                       }}
-                      containerStyle={styles.tagsInput}
+                      containerStyle={tagError ? styles.tagsInputError : styles.tagsInput }
+                      error={tagError}
                     />
+
 
                     <TouchableOpacity
                       style={styles.confirmButtonCircle}
@@ -309,14 +329,14 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
                   </View>
                 </View>
                 <View style={styles.carousel}>
-                    {editedCategories.map((item, index) => (
-                      <View key={index.toString()} style={styles.tagItem}>
-                        <Text style={styles.tagText}>{item}</Text>
-                        <TouchableOpacity onPress={() => handleRemoveTag(item)}>
-                          <Image source={XCircle} />
-                        </TouchableOpacity>
-                      </View>
-                    ))}
+                  {editedCategories.map((item, index) => (
+                    <View key={index.toString()} style={styles.tagItem}>
+                      <Text style={styles.tagText}>{item}</Text>
+                      <TouchableOpacity onPress={() => handleRemoveTag(item)}>
+                        <Image source={XCircle} />
+                      </TouchableOpacity>
+                    </View>
+                  ))}
                 </View>
 
 

@@ -199,6 +199,9 @@ const styles = StyleSheet.create({
   tagsInput:{
     marginBottom: 12,
   },
+  tagsInputError:{
+    marginBottom: 20,
+  },
   descriptionInput:{
     marginBottom: 32,
   },
