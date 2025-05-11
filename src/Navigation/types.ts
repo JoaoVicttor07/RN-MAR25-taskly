@@ -1,5 +1,5 @@
 export type RootStackParamList = {
-  
+  InitialScreen: undefined;
   Home: undefined;
   Register: undefined;
   Menu: undefined;
@@ -9,6 +9,5 @@ export type RootStackParamList = {
   EditPersonalInfo: undefined;
   Login: undefined; 
   MainApp: undefined;
-  SplashScreen: undefined;
 };
 
