@@ -17,6 +17,7 @@ import Button from '../../components/button';
 import ProfileHeader from '../../components/ProfileHeader';
 import ProgressBar from '../../components/ProgressBar';
 import Modal from './Modal';
+
 import { useTheme } from '../../Theme/ThemeContext';
 import { ThemeType } from '../../Theme/theme';
 
