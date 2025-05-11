@@ -39,7 +39,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
       setIsSortOpen(false);
       setIsTagsOpen(false);
       setIsDateOpen(false);
-      
     }
   }, [visible]);
 
