@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   leftContainer: {
-    marginRight: 16,
+    alignSelf: 'center',
   },
 });
 
