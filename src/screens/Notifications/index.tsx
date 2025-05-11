@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text } from 'react-native';
 import styles from './style';
 
 export default function Notifications() {
@@ -6,5 +6,5 @@ export default function Notifications() {
         <View style={styles.area}>
             <Text style={styles.areaText}>Tela Notificações</Text>
         </View>
-    )
+    );
 }

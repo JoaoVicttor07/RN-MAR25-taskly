@@ -18,7 +18,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap:12,
   },
-  
+  ActivityIndicator: {
+    marginVertical: 20,
+  },
   title: {
     ...Fonts.Roboto50018,
     color:'#1E1E1E',
@@ -60,7 +62,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     ...Fonts.Roboto50018,
     textAlign: 'center',
-  }
+  },
 });
 
 export default styles;

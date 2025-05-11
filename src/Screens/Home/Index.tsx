@@ -4,7 +4,6 @@ import {
   Text,
   Image,
 } from 'react-native';
-import styles from './style';
 import Button from '../../components/button';
 import CreateTaskModal from '../../components/ModalCreateTask/Index';
 import EmptyState from '../../components/EmptyState';
@@ -12,6 +11,8 @@ import TaskList from '../../components/TaskItem/TaskList';
 import Filter from '../../components/Filter';
 import FilterModal from '../../components/FilterModal';
 import Fonts from '../../Theme/fonts';
+import getStyles from './style';
+import { useTheme } from '../../Theme/ThemeContext';
 
 type PriorityType = 'lowToHigh' | 'highToLow' | null;
 type TagsType = string[];
@@ -30,6 +31,8 @@ interface Task {
 const Home: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
+  const { theme } = useTheme();
+  const themedStyles = getStyles(theme);
   const [tasks, setTasks] = useState<Task[]>([
     {
       id: '1',
@@ -161,21 +164,21 @@ const Home: React.FC = () => {
   }, [tasks, selectedPriority, selectedTags, selectedDate]);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>TASKLY</Text>
+    <View style={themedStyles.container}>
+      <View style={themedStyles.header}>
+        <Text style={themedStyles.title}>TASKLY</Text>
         <Image
           source={require('../../Assets/Images/Avatars/avatar-1.jpg')}
-          style={styles.avatar}
+          style={themedStyles.avatar}
         />
       </View>
 
       {tasks.length === 0 ? (
-        <View style={styles.containerNoTask}>
+        <View style={themedStyles.containerNoTask}>
           <EmptyState />
         </View>
       ) : (
-        <View style={styles.taskListContainer}>
+        <View style={themedStyles.taskListContainer}>
           <Filter onPress={handleOpenFilterModal} />
           <TaskList tasks={filteredTasks} setTasks={setTasks} />
         </View>

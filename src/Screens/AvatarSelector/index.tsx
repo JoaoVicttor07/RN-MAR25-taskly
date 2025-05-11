@@ -17,7 +17,6 @@ import Button from '../../components/button';
 import ProfileHeader from '../../components/ProfileHeader';
 import ProgressBar from '../../components/ProgressBar';
 import Modal from './Modal';
-
 import { useTheme } from '../../Theme/ThemeContext';
 import { ThemeType } from '../../Theme/theme';
 
@@ -57,7 +56,7 @@ const avatarTouchableStyle = StyleSheet.create({
 export default function AvatarSelector() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const { theme } = useTheme();
-  const styles = getStyles(theme);
+  const themedStyles = getStyles(theme);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const route = useRoute<RouteProp<RootStackParamList, 'AvatarSelector'>>();
   const navigation =
@@ -123,9 +122,9 @@ export default function AvatarSelector() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={themedStyles.container}>
       {isEditing && (
-        <View style={styles.headerContainer}>
+        <View style={themedStyles.headerContainer}>
           <ProfileHeader
             title="EDIÇÃO DE PERFIL"
             onBackPress={() => navigation.goBack()}
@@ -133,11 +132,11 @@ export default function AvatarSelector() {
           <ProgressBar progress={1} />
         </View>
       )}
-      <View style={styles.content}>
-        <Text style={styles.textAvatar}>SELECIONE SEU AVATAR</Text>
-        <Text style={styles.textPick}>(Escolha somente um.)</Text>
+      <View style={themedStyles.content}>
+        <Text style={themedStyles.textAvatar}>SELECIONE SEU AVATAR</Text>
+        <Text style={themedStyles.textPick}>(Escolha somente um.)</Text>
       </View>
-      <View style={styles.avatarsRow}>
+      <View style={themedStyles.avatarsRow}>
         {AVATARS.map((avatar) => {
           const isSelected = selectedId === avatar.id;
           const isDimmed = selectedId && !isSelected;
@@ -175,7 +174,7 @@ export default function AvatarSelector() {
         title={isEditing ? 'CONFIRMAR EDIÇÃO' : 'CONFIRMAR SELEÇÃO'}
         fontFamily="Roboto60020"
         width={Dimensions.get('window').width * 0.9}
-        style={styles.confirmButton}
+        style={themedStyles.confirmButton}
         backgroundColor={theme.confirmButton}
         onPress={handleConfirm}
       />

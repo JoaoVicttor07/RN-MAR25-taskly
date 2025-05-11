@@ -18,7 +18,7 @@ import Button from '../../components/button';
 import Fonts from '../../Theme/fonts';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../navigation/types';
+import { RootStackParamList } from '../../Navigation/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Definindo os ícones fora do componente
@@ -58,7 +58,7 @@ const Login: React.FC = () => {
         console.error('Erro ao carregar e-mail salvo:', error);
       }
     };
-  
+
     loadRememberedEmail();
   }, []);
 
@@ -118,11 +118,11 @@ const Login: React.FC = () => {
       console.log('Inputs inválidos:', errors);
       return;
     }
-  
+
     setIsSubmitting(true);
     try {
       const biometryEnabled = await isBiometryEnabled();
-  
+
       if (biometryEnabled) {
         console.log('Biometria está ativada. Verificando credenciais...');
         const credentials = await Keychain.getGenericPassword();
@@ -134,30 +134,30 @@ const Login: React.FC = () => {
       } else {
         console.log('Biometria desativada. Usuário deve fazer login manual.');
       }
-  
+
       const response = await axios.post(`${API_BASE_URL}/auth/login`, {
         email,
         password,
       });
-  
+
       if (response.status === 200) {
         console.log('Login bem-sucedido:', response.data);
-  
+
         // Armazena o idToken e o refreshToken
         await storeToken(response.data.id_token, response.data.refresh_token);
-  
+
         // Salva o estado de ativação da biometria
         if (biometryEnabled) {
           await setBiometryEnabled(true);
         }
-  
+
         // Salva ou remove o email no AsyncStorage com base no estado de "Lembrar de Mim"
         if (rememberMe) {
           await AsyncStorage.setItem('rememberedEmail', email);
         } else {
           await AsyncStorage.removeItem('rememberedEmail');
         }
-  
+
         // Redireciona para o BottomTabNavigator
         navigation.reset({
           index: 0,

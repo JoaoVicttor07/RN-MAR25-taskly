@@ -1,7 +1,8 @@
 import { StyleSheet } from 'react-native';
 import Fonts from '../../Theme/fonts';
+import { ThemeType } from '../../Theme/theme';
 
-const styles = StyleSheet.create({
+const getStyles = (theme: ThemeType) => StyleSheet.create({
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -10,7 +11,7 @@ const styles = StyleSheet.create({
     padding: 32,
   },
   modalContent: {
-    backgroundColor: '#F4F4F4',
+    backgroundColor: theme.modalBackground,
     padding: 24,
     borderRadius: 8,
     minHeight: 382,
@@ -37,29 +38,29 @@ const styles = StyleSheet.create({
   },
   accordionTitle: {
     ...Fonts.Roboto50018,
-    color: '#1E1E1E',
+    color: theme.text,
   },
   accordionArea: {
     marginBottom: 32,
   },
   lineTop: {
     borderTopWidth: 1,
-    borderColor: '#D3D3D3',
+    borderColor: theme.cardBorder,
   },
   lineDown: {
     borderBottomWidth: 1,
-    borderColor: '#D3D3D3',
+    borderColor: theme.cardBorder,
   },
   itemAccordion: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 14.5,
     paddingHorizontal: 8,
-    backgroundColor: '#E6E0F7',
+    backgroundColor: theme.modalBackground,
   },
   optionText: {
     ...Fonts.Roboto40016,
-    color: '#1E1E1E',
+    color: theme.text,
     marginLeft: 8,
   },
   selectionAreaItemAccordion:{
@@ -84,11 +85,11 @@ const styles = StyleSheet.create({
   },
   dateText: {
     ...Fonts.Roboto40016,
-    color: '#1E1E1E',
+    color: theme.text,
   },
   tagsScrollView: {
-    maxHeight: 105
-  }
+    maxHeight: 105,
+  },
 });
 
-export default styles
+export default getStyles;

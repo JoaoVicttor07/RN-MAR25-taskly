@@ -1,6 +1,6 @@
 import React, { useRef, useCallback } from 'react';
 import { TouchableOpacity, Image, Animated, ImageSourcePropType } from 'react-native';
-
+//feito
 interface AnimatedCheckProps {
   isCompleted: boolean;
   onToggle: () => void;

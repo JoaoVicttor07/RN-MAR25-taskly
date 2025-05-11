@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {
@@ -13,11 +14,13 @@ import Button from '../../components/button';
 import Input from '../../components/input';
 import BiometryModal from './BiometryResgister';
 import { registerUser } from '../../hooks/useApi';
-import styles from './style';
+import getStyles from './style';
 import * as Keychain from 'react-native-keychain';
 import ReactNativeBiometrics from 'react-native-biometrics';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../Navigation/types';
+import { useTheme } from '../../Theme/ThemeContext';
+
 
 export default function Register() {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -34,6 +37,8 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [showBiometryModal, setShowBiometryModal] = useState(false);
   const [biometryApiLoading, setBiometryApiLoading] = useState(false);
+  const { theme } = useTheme();
+  const styles = getStyles(theme);
 
   const storeToken = async (token: string) => {
     try {
@@ -98,19 +103,19 @@ export default function Register() {
   const handleRegister = async () => {
     setLoading(true);
     console.log('Iniciando cadastro...');
-    const nameError = validateName(name);
-    const emailError = validateEmail(email);
-    const numberError = validateNumber(number);
-    const passwordError = validatePassword(password);
-    const confirmPasswordError = validateConfirmPassword(confirmPassword);
+    const nameErrorValidation = validateName(name);
+    const emailErrorValidation = validateEmail(email);
+    const numberErrorValidation = validateNumber(number);
+    const passwordErrorValidation = validatePassword(password);
+    const confirmPasswordErrorValidation = validateConfirmPassword(confirmPassword);
 
-    setNameError(nameError || '');
-    setEmailError(emailError || '');
-    setNumberError(numberError || '');
-    setPasswordError(passwordError || '');
-    setConfirmPasswordError(confirmPasswordError || '');
+    setNameError(nameErrorValidation || '');
+    setEmailError(emailErrorValidation || '');
+    setNumberError(numberErrorValidation || '');
+    setPasswordError(passwordErrorValidation || '');
+    setConfirmPasswordError(confirmPasswordErrorValidation || '');
 
-    if (nameError || emailError || numberError || passwordError || confirmPasswordError) {
+     if (nameErrorValidation || emailErrorValidation || numberErrorValidation || passwordErrorValidation || confirmPasswordErrorValidation) {
       console.log('Validação falhou.');
       setLoading(false);
       return;
@@ -155,24 +160,24 @@ export default function Register() {
   const handleBiometryActivate = async () => {
     setBiometryApiLoading(true);
     console.log('Iniciando autenticação biométrica...');
-  
+
     const rnBiometrics = new ReactNativeBiometrics();
-  
+
     try {
       const { available, biometryType } = await rnBiometrics.isSensorAvailable();
-  
+
       if (!available) {
         Alert.alert('Erro', 'Biometria não disponível neste dispositivo.');
         setBiometryApiLoading(false);
         return;
       }
-  
+
       console.log(`Tipo de biometria disponível: ${biometryType}`);
-  
+
       const { success } = await rnBiometrics.simplePrompt({
         promptMessage: 'Confirme sua identidade',
       });
-  
+
       if (success) {
         console.log('Autenticação biométrica bem-sucedida!');
         setShowBiometryModal(false);
@@ -222,7 +227,7 @@ export default function Register() {
             value={email}
             onChangeText={(text) => {
               setEmail(text);
-              if (emailError) validateEmail(text);
+              if (emailError) {validateEmail(text);}
             }}
             onBlur={() => {
               const error = validateEmail(email);
@@ -254,7 +259,7 @@ export default function Register() {
             value={password}
             onChangeText={(text) => {
               setPassword(text);
-              if (passwordError) validatePassword(text);
+              if (passwordError) {validatePassword(text);}
             }}
             onBlur={() => {
               const error = validatePassword(password);
@@ -269,7 +274,7 @@ export default function Register() {
             value={confirmPassword}
             onChangeText={(text) => {
               setConfirmPassword(text);
-              if (confirmPasswordError) validateConfirmPassword(text);
+              if (confirmPasswordError) {validateConfirmPassword(text);}
             }}
             onBlur={() => {
               const error = validateConfirmPassword(confirmPassword);
@@ -283,13 +288,7 @@ export default function Register() {
 
         {loading && (
           <View
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: [{ translateX: -25 }, { translateY: -25 }],
-              zIndex: 9999,
-            }}>
+            style={styles.loading}>
             <ActivityIndicator size="large" color="#5B3CC4" />
           </View>
         )}

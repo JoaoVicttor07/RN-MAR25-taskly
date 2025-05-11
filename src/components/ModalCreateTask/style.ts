@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native';
 import Fonts from '../../Theme/fonts';
+import { ThemeType } from '../../Theme/theme';
 
-
-const styles = (theme: any) => StyleSheet.create({
+const getStyles = (theme: ThemeType) => StyleSheet.create({
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(17, 24, 39, 0.7)',
@@ -32,7 +32,7 @@ const styles = (theme: any) => StyleSheet.create({
     padding: 10,
     marginTop: 5,
     color: theme.text,
-    backgroundColor: theme.inputBackground || theme.background,
+    backgroundColor: theme.background,
   },
   textArea: {
     height: 100,
@@ -75,6 +75,12 @@ const styles = (theme: any) => StyleSheet.create({
     color: theme.buttonText,
     ...Fonts.Roboto50018,
   },
+  inputContainer: { // Adicione esta definição de estilo
+    gap: 16,
+  },
+  textinputArea: { // Adicione esta definição de estilo
+    gap: 16,
+  },
 });
 
-export default styles;
+export default getStyles;

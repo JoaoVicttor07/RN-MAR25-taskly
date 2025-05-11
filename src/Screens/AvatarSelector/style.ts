@@ -5,7 +5,7 @@ import { ThemeType } from '../../Theme/theme';
 const AVATAR_SIZE = 100;
 const AVATAR_MARGIN = 12;
 
-const styles = (theme: ThemeType) => StyleSheet.create({
+const getStyles = (theme: ThemeType) => StyleSheet.create({
   headerContainer: {
     width: '100%',
     paddingHorizontal: 20,
@@ -13,7 +13,7 @@ const styles = (theme: ThemeType) => StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#F4F4F4',
+    backgroundColor: theme.background,
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingTop: 25,
@@ -23,13 +23,13 @@ const styles = (theme: ThemeType) => StyleSheet.create({
     marginBottom: 24,
   },
   textAvatar: {
-    color: '#000000',
+    color: theme.text,
     marginBottom: 4,
     textAlign: 'center',
     ...Fonts.Roboto70024,
   },
   textPick: {
-    color: '#000000',
+    color: theme.secondaryText,
     marginBottom: 12,
     textAlign: 'center',
     ...Fonts.Roboto40016,
@@ -59,4 +59,4 @@ export const avatarStyles = StyleSheet.create({ // Estilos específicos para a s
   },
 });
 
-export default styles;
+export default getStyles;

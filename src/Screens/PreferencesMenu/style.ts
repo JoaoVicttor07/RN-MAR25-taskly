@@ -1,15 +1,20 @@
 import { StyleSheet } from 'react-native';
 import Fonts from '../../Theme/fonts';
+import { ThemeType } from '../../Theme/theme';
 
-const styles = (theme: any) => StyleSheet.create({
+
+const getStyles = (theme: ThemeType) => StyleSheet.create({
     container: {
         paddingHorizontal: 30,
+        backgroundColor: theme.background,
+        flex: 1,
     },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingBottom: 30,
+
 
 
     },
@@ -21,4 +26,4 @@ const styles = (theme: any) => StyleSheet.create({
     },
 });
 
-export default styles;
+export default getStyles;

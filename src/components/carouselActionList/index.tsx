@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import { useState } from 'react';
 import { FlatList, View, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -157,5 +158,5 @@ export function CarouselActionList() {
         />
       )}
     </View>
-  );
+  );//feito
 }

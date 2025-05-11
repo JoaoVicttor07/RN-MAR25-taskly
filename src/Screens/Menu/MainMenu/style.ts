@@ -1,12 +1,12 @@
 //Estilos do Menu Principal
-
 import { StyleSheet } from 'react-native';
 import Fonts from '../../../Theme/fonts';
+import { ThemeType } from '../../../Theme/theme';
 
-const styles = (theme: any) => StyleSheet.create({
+const getStyles = (theme: ThemeType) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F4F4F4',
+    backgroundColor: theme.background,
     paddingHorizontal: 32,
   },
 
@@ -79,4 +79,4 @@ const styles = (theme: any) => StyleSheet.create({
   },
 });
 
-export default styles;
+export default getStyles;

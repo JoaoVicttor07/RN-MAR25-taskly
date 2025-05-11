@@ -6,7 +6,7 @@ type ProfileHeaderProps = {
   title: string;
   onBackPress: () => void;
 };
-
+//feito?
 export default function ProfileHeader({ title, onBackPress }: ProfileHeaderProps) {
   return (
     <View style={styles.container}>

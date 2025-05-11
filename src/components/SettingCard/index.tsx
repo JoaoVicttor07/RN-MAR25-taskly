@@ -13,5 +13,5 @@ export default function ({ onPress }: { onPress?: () => void }) {
             <Text style={themedStyles.text}>Alterar tema </Text>
             <Image source={require('../../Assets/icons/VectorBack.png')} style={themedStyles.icon}/>
         </TouchableOpacity>
-    );
+    );//feito
 }

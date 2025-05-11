@@ -2,7 +2,7 @@ import React, { useRef, useCallback } from 'react';
 import { Text, View, TouchableOpacity, FlatList, Animated } from 'react-native';
 import { styles } from './style';
 import AnimatedCheck from '../AnimatedCheck';
-
+//acho que feito
 interface TaskItemProps {
   title: string;
   description: string;

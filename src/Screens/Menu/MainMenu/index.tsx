@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView, View, Text, Image, TouchableOpacity, Alert } from 'react-native';
 import { CarouselActionList } from '../../../components/carouselActionList/index';
 import Modal from '../../AvatarSelector/Modal';
-import styles from './style';
+import getStyles from './style';
 import { API_BASE_URL } from '../../../env';
 import * as Keychain from 'react-native-keychain';
+import { useTheme } from '../../../Theme/ThemeContext';
 
 type Props = {
   navigation: any;
@@ -19,6 +20,9 @@ const MenuPrincipal = ({ navigation, route }: Props) => {
     email: '',
     phone: '',
   }); // Estado para armazenar os dados do usuário
+
+  const { theme } = useTheme(); // Obtenha o tema
+  const themedStyles = getStyles(theme);
 
   // Função para buscar o perfil do usuário
   const fetchUserProfile = async () => {
@@ -65,43 +69,43 @@ const MenuPrincipal = ({ navigation, route }: Props) => {
   }, [route.params, hasShownModal]);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.profileSection}>
+    <SafeAreaView style={themedStyles.safeArea}>
+      <View style={themedStyles.profileSection}>
         <Image
           source={require('../../../Assets/Images/Ellipse1.png')}
-          style={styles.avatar}
+          style={themedStyles.avatar}
         />
-        <View style={styles.containerInfo}>
-          <Text style={[styles.profileText, styles.profileNome]}>
+        <View style={themedStyles.containerInfo}>
+          <Text style={[themedStyles.profileText, themedStyles.profileNome]}>
             {userData.name}
           </Text>
-          <Text style={styles.profileText}>{userData.email}</Text>
-          <Text style={styles.profileText}>{userData.phone}</Text>
+          <Text style={themedStyles.profileText}>{userData.email}</Text>
+          <Text style={themedStyles.profileText}>{userData.phone}</Text>
         </View>
       </View>
 
-      <View style={styles.carouselContainer}>
+      <View style={themedStyles.carouselContainer}>
         <CarouselActionList />
       </View>
 
-      <View style={styles.containerButtons}>
+      <View style={themedStyles.containerButtons}>
         <TouchableOpacity
-          style={styles.button}
+          style={themedStyles.button}
           onPress={() => navigation.navigate('PreferencesMenu')}>
-          <Text style={styles.buttonText}>Preferências</Text>
+          <Text style={themedStyles.buttonText}>Preferências</Text>
           <Image
             source={require('../../../Assets/icons/VectorBack.png')}
-            style={styles.icon}
+            style={themedStyles.icon}
           />
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.button}
+          style={themedStyles.button}
           onPress={() => navigation.navigate('Regulamentos')}>
-          <Text style={styles.buttonText}>Termos e regulamentos</Text>
+          <Text style={themedStyles.buttonText}>Termos e regulamentos</Text>
           <Image
             source={require('../../../Assets/icons/VectorBack.png')}
-            style={styles.icon}
+            style={themedStyles.icon}
           />
         </TouchableOpacity>
       </View>

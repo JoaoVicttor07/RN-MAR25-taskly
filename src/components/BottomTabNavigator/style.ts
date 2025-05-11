@@ -1,4 +1,5 @@
 import { ViewStyle } from 'react-native';
+import { ThemeType } from '../../Theme/theme';
 
 interface TabNavigatorStyles {
   tabBarStyle: ViewStyle;
@@ -9,21 +10,22 @@ interface TabNavigatorStyles {
   tabBarIconStyle: ViewStyle;
 }
 
-const bottomTabNavigatorStyles: TabNavigatorStyles = {
+const getStyles = (theme: ThemeType): TabNavigatorStyles => ({
   tabBarStyle: {
     position: 'absolute',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.bottomTabBarBackground, // Cor de fundo do BottomTabBar
     borderTopWidth: 0,
+    borderTopColor: 'transparent',
     elevation: 0,
     height: 80,
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
   },
-  tabBarActiveTintColor: '#FFFFFF',
-  tabBarInactiveTintColor: '#5B3CC4',
+  tabBarActiveTintColor: theme.background, // Cor do ícone ativo
+  tabBarInactiveTintColor: theme.primaryButton, // Cor do ícone inativo,
   tabBarHideOnKeyboard: true,
   tabBarShowLabel: false,
   tabBarIconStyle: { marginTop: 20 },
-};
+});
 
-export default bottomTabNavigatorStyles;
+export default getStyles;

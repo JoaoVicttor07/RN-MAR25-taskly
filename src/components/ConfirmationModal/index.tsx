@@ -12,6 +12,7 @@ type Props = {
   cancelText?: string;
   onCancel: () => void;
   onConfirm: () => void;
+  confirmColor: string;
 };
 
 export default function ConfirmationModal({

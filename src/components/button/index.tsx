@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import styles from './style';
 import Fonts from '../../Theme/fonts';
-
+//
 interface ButtonProps {
   title?: string;
   backgroundColor?: string;
@@ -45,7 +45,7 @@ export default function Button({
   style,
   onPress,
   loading = false,
-  
+
 }: ButtonProps) {
   return (
     <View>

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View } from "react-native";
+import React, { useState } from 'react';
+import { View } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import BackButton from '../../components/BackButton';
 import SettingCard from '../../components/SettingCard';

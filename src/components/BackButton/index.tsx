@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View, Image } from 'react-native';
 import Fonts from '../../Theme/fonts';
 import { useTheme } from '../../Theme/ThemeContext';
-
+//feito
 interface BackButtonProps {
   onPress: () => void;
   rightText?: string; // Texto opcional ao lado do botão

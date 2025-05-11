@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useState } from 'react';
 import {
   View,
@@ -10,7 +11,7 @@ import {
 } from 'react-native';
 import getStyles from './style';
 import { useTheme } from '../../Theme/ThemeContext';
-
+//feito
 
 interface InputProps extends TextInputProps {
   label?: string
@@ -81,7 +82,7 @@ export default function Input({
   const displayValue = textInputProps.value ?? internalValue;
 
   return (
-    // eslint-disable-next-line react-native/no-inline-styles
+
     <View style={[styles.container, { width: '100%' }, containerStyle]}>
       {label != null && (
         <Text style={[styles.label, labelStyle, { fontFamily, fontWeight }]}>

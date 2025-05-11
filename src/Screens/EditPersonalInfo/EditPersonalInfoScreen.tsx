@@ -7,9 +7,11 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../navigation';
 import ProfileHeader from '../../components/ProfileHeader';
 import ProgressBar from '../../components/ProgressBar';
-import styles from './style';
+import getStyles from './style';
 import { API_BASE_URL } from '../../env';
 import * as Keychain from 'react-native-keychain';
+import { useTheme } from '../../Theme/ThemeContext';
+
 
 type NavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -23,6 +25,9 @@ function EditPersonalInfoScreen() {
   const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [email, setEmail] = useState(''); // Estado para armazenar o e-mail do usuário
+  const { theme } = useTheme();
+  const styles = getStyles(theme);
+
 
   // Função para buscar o perfil do usuário
   const fetchUserProfile = async () => {
@@ -82,17 +87,17 @@ function EditPersonalInfoScreen() {
   const handleContinue = async () => {
     const localNameError = !name ? 'Campo obrigatório' : validateName(name);
     const localPhoneError = !phone ? 'Campo obrigatório' : validatePhone(phone);
-  
+
     setNameError(localNameError || '');
     setPhoneError(localPhoneError || '');
-  
+
     if (!localNameError && !localPhoneError && name && phone) {
       try {
         const credentials = await Keychain.getGenericPassword();
         if (!credentials) {
           throw new Error('Token não encontrado. Faça login novamente.');
         }
-  
+
         // Atualiza o nome do usuário na API
         const response = await fetch(`${API_BASE_URL}/profile/name`, {
           method: 'PUT',
@@ -102,7 +107,7 @@ function EditPersonalInfoScreen() {
           },
           body: JSON.stringify({ name }),
         });
-  
+
         if (response.ok) {
 
           navigation.navigate('AvatarSelector', { isEditing: true });
@@ -118,8 +123,8 @@ function EditPersonalInfoScreen() {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <KeyboardAvoidingView style={styles.KeyboardAvoidingView} behavior="height">
+      <ScrollView contentContainerStyle={styles.contentContainerStyle}>
         <View style={styles.container}>
           <ProfileHeader
             title="EDIÇÃO DE PERFIL"
