@@ -1,5 +1,4 @@
-// Home.tsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, FlatList, TouchableOpacity } from 'react-native';
 import styles from './style';
 import Button from '../../components/button';
@@ -10,29 +9,32 @@ import Filter from '../../components/Filter';
 import FilterModal from '../../components/FilterModal';
 import Fonts from '../../Theme/fonts';
 import DefaultHeader from '../../components/DefaultHeader';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation, useFocusEffect, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../Navigation/types';
+import { RootStackParamList, BottomTabParamList } from '../../Navigation/types';
 import { getTasks, saveTasks } from '../../Utils/asyncStorageUtils';
-import { Task } from '../../interfaces/task';  // Importa Task e Subtask do arquivo dedicado
+import { Task } from '../../interfaces/task';
 
 type PriorityType = 'lowToHigh' | 'highToLow' | null;
 type TagsType = string[];
 type DateType = Date | null;
 
+type HomeRouteProp = RouteProp<BottomTabParamList, 'Home'>;
 
 const Home: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const route = useRoute<HomeRouteProp>();
+  const flatListRef = useRef<FlatList<Task>>(null);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);
+  const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
   const [allTags, setAllTags] = useState<string[]>([]);
   const [selectedPriority, setSelectedPriority] = useState<PriorityType>(null);
   const [selectedTags, setSelectedTags] = useState<TagsType>([]);
   const [selectedDate, setSelectedDate] = useState<DateType>(null);
 
-  // Carrega as tarefas do AsyncStorage no carregamento inicial
   useEffect(() => {
     const loadTasks = async () => {
       try {
@@ -40,16 +42,13 @@ const Home: React.FC = () => {
         if (storedTasks && storedTasks.length > 0) {
           setTasks(storedTasks);
         }
-        // Se não houver tarefas armazenadas, o estado `tasks` permanecerá vazio, e a tela será renderizada corretamente.
       } catch (error) {
         console.error('Erro ao carregar tarefas:', error);
-        // Aqui você pode querer mostrar uma mensagem de erro ao usuário
       }
     };
     loadTasks();
   }, []);
 
-  // Atualiza a lista de tags únicas quando as tarefas mudam
   useEffect(() => {
     const uniqueTags = new Set<string>();
     tasks.forEach(task => {
@@ -58,14 +57,12 @@ const Home: React.FC = () => {
     setAllTags(Array.from(uniqueTags));
   }, [tasks]);
 
-  // Salva as tarefas no AsyncStorage sempre que o estado `tasks` mudar.
   useEffect(() => {
     const saveTasksToStorage = async () => {
       try {
         await saveTasks(tasks);
       } catch (error) {
         console.error('Erro ao salvar tarefas:', error);
-        // Aqui você pode querer mostrar uma mensagem de erro ao usuário
       }
     };
     if (tasks.length > 0) {
@@ -73,7 +70,18 @@ const Home: React.FC = () => {
     }
   }, [tasks]);
 
-  // Função para criar uma nova tarefa
+  useEffect(() => {
+    const scrollToTaskId = route.params?.scrollToTaskId;
+    if (scrollToTaskId && filteredTasks.length > 0) {
+      const index = filteredTasks.findIndex(task => task.id === scrollToTaskId);
+      if (index !== -1 && flatListRef.current) {
+        setTimeout(() => {
+          flatListRef.current?.scrollToIndex({ index, animated: true });
+        }, 500);
+      }
+    }
+  }, [route.params?.scrollToTaskId, filteredTasks]);
+
   const handleCreateTask = useCallback(async (taskData: {
     title: string;
     description: string;
@@ -89,55 +97,30 @@ const Home: React.FC = () => {
     };
     setTasks(prevTasks => [...prevTasks, newTask]);
     setIsModalVisible(false);
-  }, [setTasks]);
-
-  // Funções para abrir/fechar modais
-  const handleOpenCreateTaskModal = useCallback(() => {
-    setIsModalVisible(true);
   }, []);
 
-  const handleCloseCreateTaskModal = useCallback(() => {
-    setIsModalVisible(false);
-  }, []);
+  const handleOpenCreateTaskModal = () => setIsModalVisible(true);
+  const handleCloseCreateTaskModal = () => setIsModalVisible(false);
+  const handleOpenFilterModal = () => setIsFilterModalVisible(true);
+  const handleCloseFilterModal = () => setIsFilterModalVisible(false);
 
-  const handleOpenFilterModal = useCallback(() => {
-    setIsFilterModalVisible(true);
-  }, []);
+  const handlePrioritySelect = (priority: PriorityType) => setSelectedPriority(priority);
+  const handleTagSelect = (tags: TagsType) => setSelectedTags(tags);
+  const handleDateSelect = (date: DateType) => setSelectedDate(date);
 
-  const handleCloseFilterModal = useCallback(() => {
-    setIsFilterModalVisible(false);
-  }, []);
+  const handleTaskDetailsNavigation = (taskItem: Task) => {
+    navigation.navigate('TaskDetails', { task: taskItem });
+  };
 
-  // Funções para lidar com seleção de filtro
-  const handlePrioritySelect = useCallback((priority: PriorityType) => {
-    setSelectedPriority(priority);
-  }, []);
-
-  const handleTagSelect = useCallback((tags: TagsType) => {
-    setSelectedTags(tags);
-  }, []);
-
-  const handleDateSelect = useCallback((date: DateType) => {
-    setSelectedDate(date);
-  }, []);
-
-  // Função para navegar para a tela de detalhes da tarefa
-  const handleTaskDetailsNavigation = useCallback((taskItem: Task) => {
-    navigation.navigate('TaskDetails', {
-      task: taskItem,
-    });
-  }, [navigation]);
-
-  const handleToggleTaskComplete = useCallback((taskId: string) => {
+  const handleToggleTaskComplete = (taskId: string) => {
     setTasks(prevTasks =>
       prevTasks.map(task =>
         task.id === taskId ? { ...task, isCompleted: !task.isCompleted } : task
       )
     );
-  }, [setTasks]);
+  };
 
-  // Renderiza um item de tarefa na lista
-  const renderTaskItem = useCallback(({ item }: { item: Task }) => (
+  const renderTaskItem = ({ item }: { item: Task }) => (
     <TouchableOpacity onPress={() => handleTaskDetailsNavigation(item)}>
       <TaskItem
         title={item.title}
@@ -148,12 +131,10 @@ const Home: React.FC = () => {
         onToggleComplete={() => handleToggleTaskComplete(item.id)}
       />
     </TouchableOpacity>
-  ), [handleTaskDetailsNavigation, handleToggleTaskComplete]);
+  );
 
-  // Função para extrair a chave única de um item da tarefa
-  const keyExtractorTask = useCallback((item: Task) => item.id, []);
+  const keyExtractorTask = (item: Task) => item.id;
 
-  // Aplica os filtros e ordenação à lista de tarefas
   useEffect(() => {
     let tempTasks = [...tasks];
 
@@ -174,9 +155,8 @@ const Home: React.FC = () => {
 
     if (selectedPriority) {
       tempTasks.sort((a, b) => {
-        const priorityA = a.priority !== undefined ? a.priority : -1;
-        const priorityB = b.priority !== undefined ? b.priority : -1;
-
+        const priorityA = a.priority ?? -1;
+        const priorityB = b.priority ?? -1;
         return selectedPriority === 'lowToHigh'
           ? priorityA - priorityB
           : priorityB - priorityA;
@@ -186,7 +166,6 @@ const Home: React.FC = () => {
     setFilteredTasks(tempTasks);
   }, [tasks, selectedPriority, selectedTags, selectedDate]);
 
-  // Recarrega as tarefas quando a tela volta ao foco
   useFocusEffect(
     useCallback(() => {
       const loadUpdatedTasks = async () => {
@@ -196,11 +175,11 @@ const Home: React.FC = () => {
             setTasks(storedTasks);
           }
         } catch (error) {
-          console.error('Erro ao recarregar tarefas ao voltar para Home:', error);
+          console.error('Erro ao recarregar tarefas:', error);
         }
       };
       loadUpdatedTasks();
-    }, [setTasks])
+    }, [])
   );
 
   return (
@@ -215,9 +194,11 @@ const Home: React.FC = () => {
         <View style={styles.taskListContainer}>
           <Filter onPress={handleOpenFilterModal} />
           <FlatList
+            ref={flatListRef}
             data={filteredTasks}
             renderItem={renderTaskItem}
             keyExtractor={keyExtractorTask}
+            showsVerticalScrollIndicator={false}
           />
         </View>
       )}

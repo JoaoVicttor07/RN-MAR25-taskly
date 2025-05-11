@@ -80,14 +80,24 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
     setTask(updatedTask);
     await handleUpdateTask(updatedTask);
 
-    navigation.navigate('Home'); // redireciona para Home após resolver
+
+    navigation.navigate('MainApp', {
+      screen: 'Home',
+      params: { scrollToTaskId: updatedTask.id }
+    });
+
   };
 
   const handleReopenTask = async () => {
     const updatedTask = { ...task, isCompleted: false };
     setTask(updatedTask);
     await handleUpdateTask(updatedTask);
-    navigation.navigate('Home'); // também pode redirecionar se quiser
+
+    navigation.navigate('MainApp', {
+      screen: 'Home',
+      params: { scrollToTaskId: updatedTask.id }
+    });
+
   };
 
 
