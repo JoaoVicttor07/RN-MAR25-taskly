@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
     maxWidth: 190,
     flexWrap: 'wrap',
     gap: 4,
-    marginBottom: 16,
   },
   resolveButton: {
     alignItems: 'center',
@@ -158,6 +157,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 4,
     gap: 4,
+    marginRight: 4
   },
   tagText: {
     ...Fonts.Roboto40016,
@@ -193,7 +193,15 @@ const styles = StyleSheet.create({
   priorityTextActive:{
     color: '#FFFFFf',
   },
-
+  zeroedBottomInput:{
+    marginBottom: 0,
+  },
+  tagsInput:{
+    marginBottom: 12,
+  },
+  descriptionInput:{
+    marginBottom: 32,
+  },
 
 });
 

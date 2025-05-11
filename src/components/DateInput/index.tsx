@@ -1,28 +1,38 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, TextInputProps, ViewStyle, TextStyle } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import Input from '../input';
 
-interface DateInputProps {
+
+interface DateInputProps extends TextInputProps {
   label?: string;
+  error?: string;
+  containerStyle?: ViewStyle;
+  labelStyle?: TextStyle;
+  inputStyle?: TextStyle;
+  errorStyle?: TextStyle;
   initialDate?: Date | null;
   onDateChange: (date: Date | null) => void;
-  error?: string;
 }
 
-const DateInput: React.FC<DateInputProps> = ({ label, initialDate, onDateChange, error }) => {
+const DateInput: React.FC<DateInputProps> = ({
+  label,
+  error,
+  containerStyle,
+  labelStyle,
+  inputStyle,
+  errorStyle,
+  initialDate,
+  onDateChange,
+  ...rest
+}) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [date, setDate] = useState<Date | null>(initialDate || null);
 
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
+  const showDatePicker = () => setDatePickerVisibility(true);
+  const hideDatePicker = () => setDatePickerVisibility(false);
 
   const handleConfirm = (selectedDate: Date) => {
     hideDatePicker();
@@ -41,6 +51,11 @@ const DateInput: React.FC<DateInputProps> = ({ label, initialDate, onDateChange,
           editable={false}
           placeholder="28/04/2025"
           error={error}
+          containerStyle={containerStyle}
+          labelStyle={labelStyle}
+          inputStyle={inputStyle}
+          errorStyle={errorStyle}
+          {...rest}
         />
 
         <DatePicker

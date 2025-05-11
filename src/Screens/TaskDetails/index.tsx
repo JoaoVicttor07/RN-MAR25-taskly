@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  FlatList,
   Image,
   ScrollView,
   KeyboardAvoidingView,
@@ -270,6 +269,7 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
                 <Input
                   value={editedTitle}
                   onChangeText={setEditedTitle}
+                  containerStyle={styles.zeroedBottomInput}
                 />
               </View>
               <View>
@@ -280,6 +280,7 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
                   height={81}
                   textAlignVertical="top"
                   onChangeText={setEditedDescription}
+                  containerStyle={styles.descriptionInput}
                 />
               </View>
 
@@ -295,6 +296,7 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
                         handleAddTag(event.nativeEvent.text);
                         setNewTag('');
                       }}
+                      containerStyle={styles.tagsInput}
                     />
 
                     <TouchableOpacity
@@ -306,22 +308,17 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
 
                   </View>
                 </View>
-                <View>
-                <FlatList
-                  data={editedCategories}
-                  renderItem={({ item }) => (
-                    <View style={styles.tagItem}>
-                      <Text style={styles.tagText}>{item}</Text>
-                      <TouchableOpacity onPress={() => handleRemoveTag(item)}>
-                        <Image source={XCircle} />
-                      </TouchableOpacity>
-                    </View>
-                  )}
-                  keyExtractor={(item, index) => index.toString()}
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                />
+                <View style={styles.carousel}>
+                    {editedCategories.map((item, index) => (
+                      <View key={index.toString()} style={styles.tagItem}>
+                        <Text style={styles.tagText}>{item}</Text>
+                        <TouchableOpacity onPress={() => handleRemoveTag(item)}>
+                          <Image source={XCircle} />
+                        </TouchableOpacity>
+                      </View>
+                    ))}
                 </View>
+
 
               </View>
 
@@ -354,6 +351,7 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
                 <DateInput
                   initialDate={editedDeadline}
                   onDateChange={setEditedDeadline}
+                  containerStyle={styles.zeroedBottomInput}
                 />
               </View>
             </View>
