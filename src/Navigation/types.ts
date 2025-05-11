@@ -14,5 +14,4 @@ export type RootStackParamList = {
   EditPersonalInfo: undefined;
   Login: undefined;
   MainApp: undefined;
-  SplashScreen: undefined;
 };
