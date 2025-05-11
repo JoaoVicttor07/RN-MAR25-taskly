@@ -21,7 +21,7 @@ import Modal from './Modal';
 import { useTheme } from '../../Theme/ThemeContext';
 import { ThemeType } from '../../Theme/theme';
 
-import avatar1 from '../../Assets/Images/Avatars/avatar1.jpg';
+import avatar1 from '../../Assets/Images/Avatars/avatar-1.jpg';
 
 const AVATARS = [
   { id: '1', source: avatar1, borderColor: '#6C4AE4' },

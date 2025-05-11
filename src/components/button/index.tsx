@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import styles from './style';
 import Fonts from '../../Theme/fonts';
-import React from 'react';
 
 interface ButtonProps {
   title?: string;

@@ -97,7 +97,7 @@ export default function Input({
           styles.input,
           inputStyle,
           (error || emailError) && styles.inputError,
-          { width, height, fontFamily, fontWeight, color: textColor, backgroundColor: editable ? '#FFFFFF' : '#F0F0F0' },
+          { width, height, fontFamily, fontWeight, color: theme.buttonText, backgroundColor: editable ? '#FFFFFF' : '#F0F0F0' },
         ]}
         keyboardType={
           validateEmail ? 'email-address' : textInputProps.keyboardType ?? 'default'
