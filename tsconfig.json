@@ -1,18 +1,3 @@
 {
-  "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "jsx": "react-native",
-    "esModuleInterop": true,
-    "strict": true,
-    "moduleResolution": "node",
-    "baseUrl": "./",
-    "paths": {
-      "*": ["./src/*"]
-    },
-    "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true
-  },
-  "include": ["./src/**/*", "./declarations.d.ts"], // Adicione aqui, se necessário
-  "exclude": ["node_modules"]
+  "extends": "./node_modules/@react-native/typescript-config/tsconfig.json"
 }

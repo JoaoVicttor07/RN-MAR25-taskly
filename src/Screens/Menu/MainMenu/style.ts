@@ -15,12 +15,12 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
     marginTop: 40,
     marginBottom: 32,
   },
-
   avatar: {
     width: 150,
     height: 150,
     resizeMode: 'contain',
     marginBottom: 12,
+    borderRadius: 100,
   },
 
   containerInfo: {

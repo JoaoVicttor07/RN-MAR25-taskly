@@ -20,8 +20,8 @@ interface TaskListProps {
 
 const TaskList: React.FC<TaskListProps> = ({ tasks, setTasks }) => {
 
-  const { theme } = useTheme(); // Use the theme context
-  const styles = getStyles(theme); // Get themed styles
+  const { theme } = useTheme(); 
+  const styles = getStyles(theme);
 
   const handleToggleComplete = useCallback((taskId: string) => {
     setTasks(prevTasks =>

@@ -9,4 +9,3 @@ export default function ProgressBar({ progress }: { progress: number }) {
     </View>
   );
 }
-//feito?

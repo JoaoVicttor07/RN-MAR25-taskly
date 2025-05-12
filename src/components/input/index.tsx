@@ -11,25 +11,25 @@ import {
 } from 'react-native';
 import getStyles from './style';
 import { useTheme } from '../../Theme/ThemeContext';
-//feito
+
 
 interface InputProps extends TextInputProps {
-  label?: string
-  error?: string
-  containerStyle?: ViewStyle
-  labelStyle?: TextStyle
-  inputStyle?: TextStyle
-  errorStyle?: TextStyle
-  width?: DimensionValue
-  height?: DimensionValue
-  fontFamily?: string
-  fontWeight?: TextStyle['fontWeight']
-  textColor?: string
-  mask?: 'phone' | 'none'
-  validateEmail?: boolean
-  editable?: boolean
-  multiline?: boolean
-  maxHeight?: DimensionValue
+  label?: string;
+  error?: string;
+  containerStyle?: ViewStyle;
+  labelStyle?: TextStyle;
+  inputStyle?: TextStyle;
+  errorStyle?: TextStyle;
+  width?: DimensionValue;
+  height?: DimensionValue;
+  fontFamily?: string;
+  fontWeight?: TextStyle['fontWeight'];
+  textColor?: string;
+  mask?: 'phone' | 'none';
+  validateEmail?: boolean;
+  editable?: boolean;
+  multiline?: boolean;
+  maxHeight?: DimensionValue;
 }
 
 export default function Input({
@@ -50,8 +50,8 @@ export default function Input({
 }: InputProps) {
   const [internalValue, setInternalValue] = useState('');
   const [emailError, setEmailError] = useState<string | null>(null);
-  const { theme } = useTheme(); // Obtenha o tema
-  const styles = getStyles(theme); // Aplique o tema aos estilos
+  const { theme } = useTheme(); 
+  const styles = getStyles(theme); 
 
   const formatPhone = (text: string) => {
     const cleaned = text.replace(/\D/g, '');
@@ -82,10 +82,9 @@ export default function Input({
   const displayValue = textInputProps.value ?? internalValue;
 
   return (
-
-    <View style={[styles.container, { width: '100%' }, containerStyle]}>
+    <View style={[styles.container, {width: '100%'}, containerStyle]}>
       {label != null && (
-        <Text style={[styles.label, labelStyle, { fontFamily, fontWeight }]}>
+        <Text style={[styles.label, labelStyle, {fontFamily, fontWeight}]}>
           {label}
         </Text>
       )}
@@ -101,22 +100,22 @@ export default function Input({
           { width, height, fontFamily, fontWeight, color: theme.text, backgroundColor: theme.background },
         ]}
         keyboardType={
-          validateEmail ? 'email-address' : textInputProps.keyboardType ?? 'default'
+          validateEmail
+            ? 'email-address'
+            : textInputProps.keyboardType ?? 'default'
         }
         autoCapitalize={
           validateEmail ? 'none' : textInputProps.autoCapitalize ?? 'sentences'
         }
-        autoCorrect={
-          validateEmail ? false : textInputProps.autoCorrect ?? true
-        }
+        autoCorrect={validateEmail ? false : textInputProps.autoCorrect ?? true}
       />
       {error != null && (
-        <Text style={[styles.error, errorStyle, { fontFamily, fontWeight }]}>
+        <Text style={[styles.error, errorStyle, {fontFamily, fontWeight}]}>
           {error}
         </Text>
       )}
       {emailError && (
-        <Text style={[styles.error, errorStyle, { fontFamily, fontWeight }]}>
+        <Text style={[styles.error, errorStyle, {fontFamily, fontWeight}]}>
           {emailError}
         </Text>
       )}

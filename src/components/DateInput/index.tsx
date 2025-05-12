@@ -4,7 +4,7 @@ import DatePicker from 'react-native-date-picker';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import Input from '../input';
-//feito
+
 interface DateInputProps {
   label?: string;
   initialDate?: Date | null;

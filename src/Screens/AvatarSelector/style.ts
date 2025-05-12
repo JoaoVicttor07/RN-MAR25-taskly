@@ -55,7 +55,12 @@ export const avatarStyles = StyleSheet.create({ // Estilos específicos para a s
     justifyContent: 'center',
     width: AVATAR_SIZE + AVATAR_MARGIN,
     height: AVATAR_SIZE + AVATAR_MARGIN,
-    backgroundColor: '#fff', // Cor de fundo fixa para os avatares
+    backgroundColor: '#fff',
+  },
+  confirmButton: {
+    alignSelf: 'center',
+    marginTop: 16,
+    height: 48,
   },
 });
 

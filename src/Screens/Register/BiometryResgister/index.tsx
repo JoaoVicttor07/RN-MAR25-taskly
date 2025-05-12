@@ -35,7 +35,7 @@ const BiometryModal: React.FC<BiometryModalProps> = ({
       transparent
       animationType="fade"
       onRequestClose={() => {
-        if (!loading) {onPressLeft();}
+        if (!loading) onPressLeft();
       }}>
       <View style={styles.overlay}>
         <View style={styles.modalContent}>
@@ -46,7 +46,7 @@ const BiometryModal: React.FC<BiometryModalProps> = ({
             <ActivityIndicator
               size="large"
               color="#5B3CC4"
-              style={styles.ActivityIndicator}
+              style={{ marginVertical: 20 }}
             />
           ) : (
             <View style={styles.buttonRow}>

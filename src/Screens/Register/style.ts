@@ -45,6 +45,7 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
     },
     title: {
       ...Fonts.Roboto70024,
+      ...Fonts.Roboto70024,
       fontWeight: 'bold',
       alignSelf: 'center',
       marginVertical: 20,

@@ -32,7 +32,7 @@ const Home: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const { theme } = useTheme();
-  const themedStyles = getStyles(theme);
+  const styles = getStyles(theme);
   const [tasks, setTasks] = useState<Task[]>([
     {
       id: '1',
@@ -164,21 +164,21 @@ const Home: React.FC = () => {
   }, [tasks, selectedPriority, selectedTags, selectedDate]);
 
   return (
-    <View style={themedStyles.container}>
-      <View style={themedStyles.header}>
-        <Text style={themedStyles.title}>TASKLY</Text>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>TASKLY</Text>
         <Image
-          source={require('../../Assets/Images/Avatars/avatar-1.jpg')}
-          style={themedStyles.avatar}
+          source={require('../../Assets/Images/Avatars/avatar_1.png')}
+          style={styles.avatar}
         />
       </View>
 
       {tasks.length === 0 ? (
-        <View style={themedStyles.containerNoTask}>
+        <View style={styles.containerNoTask}>
           <EmptyState />
         </View>
       ) : (
-        <View style={themedStyles.taskListContainer}>
+        <View style={styles.taskListContainer}>
           <Filter onPress={handleOpenFilterModal} />
           <TaskList tasks={filteredTasks} setTasks={setTasks} />
         </View>
