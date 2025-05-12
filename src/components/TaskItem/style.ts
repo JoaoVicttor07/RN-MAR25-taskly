@@ -1,7 +1,10 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import Fonts from '../../Theme/fonts';
 
 export const styles = StyleSheet.create({
+  taskListContainer: {
+    overflow: 'visible', // Permite que a sombra se estenda para fora do contêiner
+  },
   itemArea: {
     backgroundColor: '#FFFFFF',
     paddingVertical: 24,
@@ -9,7 +12,8 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     gap: 12,
     marginVertical: 8,
-    width: 342,
+    marginHorizontal: 10,
+    width: 329,
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,

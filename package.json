@@ -21,12 +21,15 @@
     "axios": "^1.9.0",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
+    "jwt-decode": "^4.0.0",
     "react": "19.0.0",
     "react-native": "0.79.1",
     "react-native-biometrics": "^3.0.1",
     "react-native-collapsible": "^1.6.2",
     "jwt-decode": "^4.0.0",    
+
     "react-native-biometrics": "^3.0.1",
+    "react-native-collapsible": "^1.6.2",
     "react-native-date-picker": "^5.0.12",
 
     "react-native-gesture-handler": "^2.25.0",

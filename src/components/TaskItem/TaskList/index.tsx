@@ -1,34 +1,16 @@
+// src/compoenents/TaskItem/TaskList/index.tsx
 import React, { useCallback } from 'react';
 import { View, FlatList, ListRenderItem } from 'react-native';
 import TaskItem from '../index';
 import { styles } from './style';
-
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  categories: string[];
-  isCompleted: boolean;
-  deadline: string;
-}
+import { Task } from '../../../interfaces/task';
 
 interface TaskListProps {
   tasks: Task[];
-  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+  onToggleComplete: (taskId: string) => void; // Recebe a função do Home
 }
 
-const TaskList: React.FC<TaskListProps> = ({ tasks, setTasks }) => {
-  const handleToggleComplete = useCallback((taskId: string) => {
-    setTasks(prevTasks =>
-      prevTasks.map(task => {
-        if (task.id === taskId) {
-          return { ...task, isCompleted: !task.isCompleted };
-        }
-        return task;
-      })
-    );
-  }, [setTasks]);
-
+const TaskList: React.FC<TaskListProps> = ({ tasks, onToggleComplete }) => {
   const renderItem: ListRenderItem<Task> = useCallback(({ item }) => {
     return (
       <TaskItem
@@ -36,10 +18,11 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, setTasks }) => {
         description={item.description}
         categories={item.categories || []}
         isCompleted={item.isCompleted}
-        onToggleComplete={() => handleToggleComplete(item.id)}
+        onToggleComplete={() => onToggleComplete(item.id)} // Chama a função recebida
+        task={item}
       />
     );
-  }, [handleToggleComplete]);
+  }, [onToggleComplete]);
 
   const keyExtractor = useCallback((item: Task) => item.id, []);
 

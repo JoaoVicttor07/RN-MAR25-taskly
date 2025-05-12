@@ -2,6 +2,13 @@ import React, { useRef, useCallback } from 'react';
 import { Text, View, TouchableOpacity, FlatList, Animated } from 'react-native';
 import { styles } from './style';
 import AnimatedCheck from '../AnimatedCheck';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../../Navigation/types';
+import { Task } from '../../interfaces/task';
+import CategoryTag from '../CategoryTag';
+import Fonts from '../../Theme/fonts';
+import CheckedIcon from '../../Assets/icons/checked-input.png';
+import UncheckedIcon from '../../Assets/icons/uncheck-input.png';
 
 interface TaskItemProps {
   title: string;
@@ -9,10 +16,11 @@ interface TaskItemProps {
   categories: string[];
   isCompleted: boolean;
   onToggleComplete: () => void;
+  task: Task;
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isCompleted, onToggleComplete }) => {
-
+const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isCompleted, onToggleComplete, task }) => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const buttonScaleValue = useRef(new Animated.Value(1)).current;
 
   const animateScale = useCallback(
@@ -28,7 +36,9 @@ const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isC
 
   const handleButtonPress = () => {
     animateScale(buttonScaleValue, 0.9, 50, () => {
-      animateScale(buttonScaleValue, 1, 100);
+      animateScale(buttonScaleValue, 1, 100, () => {
+        navigation.navigate('TaskDetails', { task });
+      });
     });
   };
 
@@ -37,10 +47,12 @@ const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isC
   };
 
   const renderCategoryItem = useCallback(({ item }: { item: string }) => (
-    <Text style={styles.tag}>{item}</Text>
+    <CategoryTag item={item} fontStyle={{...Fonts.Roboto40012}}/>
   ), []);
 
   const keyExtractorCategory = useCallback((item: string, index: number) => index.toString(), []);
+
+  console.log('TaskItem rendered:', title, isCompleted);
 
   return (
     <View style={styles.itemArea}>
@@ -48,9 +60,12 @@ const TaskItem: React.FC<TaskItemProps> = ({ title, description, categories, isC
         <Text style={styles.title}>{title}</Text>
         <AnimatedCheck
           isCompleted={isCompleted}
-          onToggle={onToggleComplete}
-          checkedImageSource={require('../../Assets/icons/checked-input.png')}
-          uncheckedImageSource={require('../../Assets/icons/uncheck-input.png')}
+          onToggle={() => {
+            console.log('onToggleComplete called'); // Debug
+            onToggleComplete();
+          }}
+          checkedImageSource={CheckedIcon}
+          uncheckedImageSource={UncheckedIcon}
         />
       </View>
       <Text style={styles.description}>{description}</Text>
