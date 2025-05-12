@@ -74,8 +74,7 @@ Taskly is a mobile task management application developed to help users organize 
 
 ## 🛠️ Technologies Used
 
-- [React Native](https://reactnative.dev/) - Framework for native mobile development with JavaScript.(https://reactnative.dev/img/header_logo.svg)
-
+- [React Native](https://reactnative.dev/) - Framework for native mobile development with JavaScript.
 - [React Navigation](https://reactnavigation.org/) - Navigation between screens.
 - [Async Storage](https://react-native-async-storage.github.io/async-storage/) - Asynchronous local storage.
 - [TypeScript](https://www.typescriptlang.org/pt/docs/)
@@ -121,52 +120,51 @@ npm run android
 ## 📂 Project Structure
 The file and folder structure of the project is organized as follows:
 ```
+📁 src                         # Main source code
+├── 📁 Assets                  # Static files
+│   ├── 📁 Images              # Image files
+│   ├── 📁 fonts               # Font files
+│   └── 📁 icons               # Icon files
+│
+├── 📁 Navigation              # Application navigation logic
+│       ├── index.tsx
+│       └── types.ts
+│
+├── 📁 Screens                  # Application screens
+│   ├── 📁 Home                 # Main application screen
+│   │   ├── Index.tsx            # Home screen component
+│   │   └── style.ts             # Styles for the Home screen
+│   └── 📁 Login                 # Login screen
+│       ├── 📁 Modal             # Specific modal component for the Login screen
+│       │   ├── Index.tsx         # Login modal component
+│       │   └── style.ts          # Styles for the Login modal
+│       ├── Index.tsx             # Login screen component
+│       └── style.ts              # Styles for the Login screen
+│
+├── 📁 Theme                     # Theme definitions for the application
+│   └── fonts.ts                  # Font styles and configurations
+│
+├── 📁 Utils                     # Reusable utility functions
+│   ├── authUtils.ts              # Functions related to authentication
+│   └── validateDate.ts           # Functions to validate dates
+│
+├── 📁 components                # Reusable React components
+│   ├── 📁 button                # Custom button component
+│   │   ├── index.tsx             # Button component
+│   │   └── style.ts              # Styles for the button component
+│   └── 📁 input                 # Custom input component
+│       ├── index.tsx             # Input component
+│       └── style.ts              # Styles for the input component
+│
+├── 📁 hooks                     # Custom React hooks
+│   └── useApi.ts                 # Hook to interact with an API
+│
+├── 📁 screens/Notifications     # Notifications screen
+│   ├── index.tsx                 # Notifications screen component
+│   └── style.ts                  # Styles for the notifications screen
+│
+└── App.tsx                       # Main entry point of the React Native application
 
-📁 src                         # Código-fonte principal
-├── 📁 Assets                  # Arquivos estáticos 
-│   ├── 📁 Images              # Arquivos de imagem
-│   ├── 📁 fonts               # Arquivos de fontes
-│   └── 📁 icons               # Arquivos de ícones
-│
-├── 📁 Navigation              # Lógica de navegação da aplicação
-│       ├── index.tsx       
-│       └── types.ts            
-│
-├── 📁 Screens                 # Telas da aplicação
-│   ├── 📁 Home                # Tela principal do aplicativo
-│   │   ├── Index.tsx           # Componente da tela Home
-│   │   └── style.ts            # Estilos para a tela Home
-│   └── 📁 Login               # Tela de login
-│       ├── 📁 Modal           # Componente modal específico para a tela de Login
-│       │   ├── Index.tsx       # Componente do modal de Login 
-│       │   └── style.ts        # Estilos para o modal de Login
-│       ├── Index.tsx           # Componente da tela de Login
-│       └── style.ts            # Estilos para a tela de Login
-│
-├── 📁 Theme                   # Definições de temas para a aplicação
-│   └── fonts.ts                # Estilos e configurações de fontes
-│
-├── 📁 Utils                   # Funções utilitárias reutilizáveis
-│   ├── authUtils.ts            # Funções relacionadas à autenticação
-│   └── validateDate.ts         # Funções para validar datas
-│
-├── 📁 components              # Componentes React reutilizáveis
-│   ├── 📁 button              # Componente de botão personalizado
-│   │   ├── index.tsx           # Componente do botão  
-│   │   └── style.ts            # Estilos para o componente de botão 
-│   └── 📁 input               # Componente de input  personalizado 
-│       ├── index.tsx           # Componente do input
-│       └── style.ts            # Estilos para o componente de input
-│
-├── 📁 hooks                   # Hooks personalizados do React
-│   └── useApi.ts               # Hook para interagir com uma API
-│
-├── 📁 screens/Notifications   # Tela de notificações
-│   ├── index.tsx               # Componente da tela de notificações
-│   └── style.ts                # Estilos para a tela de notificações
-│
-└── App.tsx                     # Ponto de entrada principal da aplicação React Native
- 
 ```
 
 ## 🧩 Organization
