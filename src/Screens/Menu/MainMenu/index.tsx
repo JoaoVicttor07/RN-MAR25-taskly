@@ -11,7 +11,6 @@ import {CarouselActionList} from '../../../components/carouselActionList/index';
 import Modal from '../../AvatarSelector/Modal';
 import styles from './style';
 import {API_BASE_URL} from '../../../env';
-// import * as Keychain from 'react-native-keychain';
 import {
   getToken,
   removeToken,
@@ -39,7 +38,7 @@ const MenuPrincipal = ({navigation, route}: Props) => {
     name: '',
     email: '',
     phone: '',
-    avatarUrl: '', // Adicionado para armazenar o avatar
+    avatarUrl: '',
   });
 
   const fetchUserProfile = useCallback(async () => {
@@ -66,8 +65,8 @@ const MenuPrincipal = ({navigation, route}: Props) => {
         setUserData({
           name: data.name || 'Usuário',
           email: data.email || 'Email não disponível',
-          phone: data.phone_number || 'Telefone não disponível', // Atualizado para usar phone_number
-          avatarUrl: data.picture || '', // Atualizado para usar picture
+          phone: data.phone_number || 'Telefone não disponível',
+          avatarUrl: data.picture || '',
         });
       } else if (response.status === 401) {
         console.log('Token inválido ou expirado. Tentando renovar...');
@@ -75,7 +74,6 @@ const MenuPrincipal = ({navigation, route}: Props) => {
           const newToken = await refreshAuthToken();
           console.log('Token renovado com sucesso:', newToken);
 
-          // Tentar buscar o perfil novamente com o novo token
           const retryResponse = await fetch(`${API_BASE_URL}/profile`, {
             method: 'GET',
             headers: {

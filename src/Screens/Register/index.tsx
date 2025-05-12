@@ -18,7 +18,7 @@ import * as Keychain from 'react-native-keychain';
 import ReactNativeBiometrics from 'react-native-biometrics';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../../Navigation/types';
-import {} from '../../Utils/authUtils'
+import {} from '../../Utils/authUtils';
 
 export const storeToken = async (idToken: string, refreshToken?: string) => {
   try {
@@ -26,7 +26,6 @@ export const storeToken = async (idToken: string, refreshToken?: string) => {
       throw new Error('O idToken é obrigatório para armazenar os tokens.');
     }
 
-    // Armazenar os tokens como um objeto JSON
     const tokenData = JSON.stringify({idToken, refreshToken});
     await Keychain.setGenericPassword('auth', tokenData);
   } catch (error) {
@@ -48,7 +47,6 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [showBiometryModal, setShowBiometryModal] = useState(false);
   const [biometryApiLoading, setBiometryApiLoading] = useState(false);
-
 
   const validateName = (value: string): string | null => {
     if (!value) {

@@ -105,7 +105,7 @@ function EditPersonalInfoScreen() {
       navigation.navigate('AvatarSelector', {
         name,
         phone_number: cleanedPhone,
-        isEditing: true, // Fluxo de edição de perfil
+        isEditing: true,
       });
     }
   };
