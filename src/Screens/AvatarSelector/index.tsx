@@ -19,7 +19,6 @@ import Modal from './Modal';
 import styles from './style';
 import {API_BASE_URL} from '../../env';
 import * as Keychain from 'react-native-keychain';
-// import {refreshAuthToken} from '../../Utils/authUtils';
 
 import avatar1 from '../../Assets/Images/Avatars/avatar_1.png';
 import avatar2 from '../../Assets/Images/Avatars/avatar_2.png';
@@ -52,7 +51,7 @@ export default function AvatarSelector() {
   useEffect(() => {
     const backAction = () => {
       if (!isEditing) {
-        BackHandler.exitApp(); // Fecha o aplicativo
+        BackHandler.exitApp();
         return true;
       }
       return false;
@@ -86,42 +85,24 @@ export default function AvatarSelector() {
         return;
       }
 
-      let token = credentials.password;
+      const token = credentials.password;
 
-      console.log('Token usado para atualizar avatar:', token);
+      console.log('Token usado para armazenar avatar:', token);
 
-      // Atualizar o avatar
-      const response = await fetch(`${API_BASE_URL}/profile`, {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          picture: selectedId, // Avatar selecionado
-          phone_number: route.params?.phone_number?.replace(/\D/g, ''), // Número formatado
-        }),
-      });
+      await Keychain.setGenericPassword(
+        'auth',
+        JSON.stringify({idToken: token, avatar: selectedId}),
+      );
 
-      console.log('Status da resposta:', response.status);
-      const responseData = await response.json();
-      console.log('Resposta da API:', responseData);
+      console.log('Avatar armazenado com sucesso!');
 
-      if (response.ok) {
-        console.log('Avatar atualizado com sucesso!');
-        setIsModalVisible(true);
-      } else {
-        console.error('Erro ao atualizar avatar:', responseData);
-        Alert.alert(
-          'Erro',
-          responseData.error || 'Não foi possível atualizar o avatar.',
-        );
-      }
+      setIsModalVisible(true);
     } catch (error) {
       console.error('Erro ao processar a requisição:', error);
       Alert.alert('Erro', 'Ocorreu um erro ao processar sua solicitação.');
     }
   };
+
   const handleConfirmEdicao = async () => {
     if (!selectedId) {
       Alert.alert('Por favor, selecione um avatar antes de continuar.');
@@ -155,20 +136,19 @@ export default function AvatarSelector() {
         body: JSON.stringify({
           name: route.params?.name,
           phone_number: cleanedPhoneNumber,
-          picture: selectedId, // Avatar selecionado
+          picture: selectedId,
         }),
       });
 
       console.log('Status da resposta:', response.status);
 
-      // Verificar o tipo de resposta antes de fazer o parsing
       const contentType = response.headers.get('Content-Type');
       let responseData;
 
       if (contentType && contentType.includes('application/json')) {
         responseData = await response.json();
       } else {
-        responseData = await response.text(); // Fallback para texto puro
+        responseData = await response.text();
       }
 
       console.log('Resposta da API:', responseData);
@@ -196,7 +176,7 @@ export default function AvatarSelector() {
 
     navigation.reset({
       index: 0,
-      routes: [{name: 'Menu'}],
+      routes: [{name: isEditing ? 'MainApp' : 'Login'}],
     });
   };
 
@@ -292,7 +272,7 @@ export default function AvatarSelector() {
         description={
           isEditing
             ? 'Suas informações foram salvas com sucesso.'
-            : 'Você será direcionado para a tela principal.'
+            : 'Você será direcionado para a tela de login!'
         }
         confirmText="OK"
         confirmColor="#32C25B"

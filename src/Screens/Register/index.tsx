@@ -21,24 +21,18 @@ import {RootStackParamList} from '../../Navigation/types';
 import {} from '../../Utils/authUtils'
 
 export const storeToken = async (idToken: string, refreshToken?: string) => {
-    try {
-      if (!idToken) {
-        throw new Error('O idToken é obrigatório para armazenar os tokens.');
-      }
-
-      if (refreshToken) {
-        await Keychain.setGenericPassword(refreshToken, idToken);
-        console.log('Tokens armazenados com sucesso!');
-      } else {
-        await Keychain.setGenericPassword('idToken', idToken);
-        console.log('Apenas o idToken foi armazenado com sucesso!');
-      }
-    } catch (error) {
-      console.error('Erro ao salvar os tokens:', error);
-      throw error;
+  try {
+    if (!idToken) {
+      throw new Error('O idToken é obrigatório para armazenar os tokens.');
     }
-  };
 
+    // Armazenar os tokens como um objeto JSON
+    const tokenData = JSON.stringify({idToken, refreshToken});
+    await Keychain.setGenericPassword('auth', tokenData);
+  } catch (error) {
+    throw new Error('Erro ao salvar os tokens no Keychain.');
+  }
+};
 export default function Register() {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [email, setEmail] = useState('');
@@ -108,7 +102,7 @@ export default function Register() {
   const handleRegister = async () => {
     setLoading(true);
     console.log('Iniciando cadastro...');
-    const cleanedPhoneNumber = number.replace(/\D/g, ''); // Remove caracteres não numéricos
+    const cleanedPhoneNumber = number.replace(/\D/g, '');
     console.log(
       'Número de telefone formatado para registro:',
       cleanedPhoneNumber,
@@ -119,17 +113,16 @@ export default function Register() {
         email,
         password,
         name,
-        phone_number: cleanedPhoneNumber, // Número formatado
+        phone_number: cleanedPhoneNumber,
       });
 
       console.log('Token retornado no registro:', response.data.idToken);
       console.log('UID retornado no registro:', response.data.uid);
 
       if (response.status === 200 || response.status === 201) {
-        await storeToken(response.data.idToken); // Armazena apenas o idToken
+        await storeToken(response.data.idToken);
         console.log('Cadastro concluído!');
 
-        // Exibir o modal de biometria
         setShowBiometryModal(true);
       } else {
         console.error('Erro no cadastro:', response.data);
@@ -171,7 +164,7 @@ export default function Register() {
           email,
           password,
           name,
-          phone_number: number.replace(/\D/g, ''), // Passar o número formatado
+          phone_number: number.replace(/\D/g, ''),
         });
       } else {
         console.log('Autenticação biométrica cancelada pelo usuário.');
