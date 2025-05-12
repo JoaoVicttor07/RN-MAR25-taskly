@@ -49,6 +49,7 @@ const Login: React.FC = () => {
     const loadRememberedEmail = async () => {
       try {
         const savedEmail = await AsyncStorage.getItem('rememberedEmail');
+        console.log('E-mail salvo carregado:', savedEmail);
         if (savedEmail) {
           setEmail(savedEmail);
           setRememberMe(true);
@@ -65,6 +66,7 @@ const Login: React.FC = () => {
 
   const handleEmailChange = useCallback(
     (text: string) => {
+      console.log('Alterando e-mail:', text);
       setEmail(text);
       setErrors(prevErrors => ({...prevErrors, email: undefined}));
     },
@@ -73,6 +75,7 @@ const Login: React.FC = () => {
 
   const handlePasswordChange = useCallback(
     (text: string) => {
+      console.log('Alterando senha:', text);
       setPassword(text);
       setErrors(prevErrors => ({...prevErrors, password: undefined}));
     },
@@ -81,28 +84,34 @@ const Login: React.FC = () => {
 
   const handleRememberMe = (): void => {
     const newState = !rememberMe;
+    console.log('Alterando estado de "Lembrar de mim":', newState);
     setRememberMe(newState);
     setCheckboxImage(newState ? checkedIcon : uncheckedIcon);
   };
 
   const validateInputs = (): boolean => {
+    console.log('Validando inputs...');
     let isValid = true;
 
     if (!email) {
+      console.log('Erro: E-mail é obrigatório.');
       setErrors(prevErrors => ({...prevErrors, email: 'Campo obrigatório'}));
       isValid = false;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      console.log('Erro: E-mail inválido.');
       setErrors(prevErrors => ({...prevErrors, email: 'E-mail inválido'}));
       isValid = false;
     }
 
     if (!password) {
+      console.log('Erro: Senha é obrigatória.');
       setErrors(prevErrors => ({
         ...prevErrors,
         password: 'Campo obrigatório',
       }));
       isValid = false;
     } else if (password.length < 8) {
+      console.log('Erro: Senha deve ter no mínimo 8 caracteres.');
       setErrors(prevErrors => ({
         ...prevErrors,
         password: 'A senha deve ter no mínimo 8 caracteres',
@@ -110,6 +119,7 @@ const Login: React.FC = () => {
       isValid = false;
     }
 
+    console.log('Inputs válidos:', isValid);
     return isValid;
   };
 
@@ -123,45 +133,117 @@ const Login: React.FC = () => {
     setIsSubmitting(true);
     try {
       const biometryEnabled = await isBiometryEnabled();
+      console.log('Biometria ativada:', biometryEnabled);
 
       if (biometryEnabled) {
-        console.log('Biometria está ativada. Verificando credenciais...');
+        console.log('Verificando credenciais biométricas...');
         const credentials = await Keychain.getGenericPassword();
         if (!credentials) {
-          console.log(
-            'Nenhuma credencial encontrada para autenticação biométrica.',
-          );
+          console.log('Nenhuma credencial encontrada para biometria.');
         } else {
-          console.log('Credenciais encontradas:', credentials);
+          console.log('Credenciais biométricas encontradas:', credentials);
         }
       } else {
         console.log('Biometria desativada. Usuário deve fazer login manual.');
       }
+
+      console.log('Enviando requisição para:', `${API_BASE_URL}/auth/login`);
+      console.log('Corpo da requisição:', {email, password});
 
       const response = await axios.post(`${API_BASE_URL}/auth/login`, {
         email,
         password,
       });
 
-      if (response.status === 200) {
-        console.log('Login bem-sucedido:', response.data);
+      console.log('Resposta da API de login:', response.data);
 
-        await storeToken(response.data.id_token, response.data.refresh_token);
+      if (response.status === 200) {
+        const {id_token, refresh_token} = response.data;
+
+        console.log('Tokens recebidos:', {id_token, refresh_token});
+
+        await storeToken(id_token, refresh_token);
+        console.log('Tokens armazenados com sucesso!');
 
         if (biometryEnabled) {
           await setBiometryEnabled(true);
+          console.log('Biometria ativada com sucesso!');
         }
 
         if (rememberMe) {
           await AsyncStorage.setItem('rememberedEmail', email);
+          console.log('E-mail salvo para lembrar-me:', email);
         } else {
           await AsyncStorage.removeItem('rememberedEmail');
+          console.log('E-mail removido do lembrar-me.');
         }
 
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'MainApp'}],
-        });
+        const storedCredentials = await Keychain.getGenericPassword();
+
+        if (storedCredentials) {
+          console.log(
+            'Credenciais armazenadas no Keychain:',
+            storedCredentials,
+          );
+          let parsedCredentials;
+          try {
+            parsedCredentials = JSON.parse(storedCredentials.password);
+          } catch (error) {
+            console.error(
+              'Erro ao fazer parse das credenciais do Keychain:',
+              error,
+            );
+            parsedCredentials = {
+              idToken: storedCredentials.password,
+              refreshToken: storedCredentials.username,
+            };
+          }
+
+          const {avatar} = parsedCredentials;
+          console.log('Avatar armazenado:', avatar);
+
+          if (avatar) {
+            console.log('Atualizando avatar após login...');
+            const response = await fetch(`${API_BASE_URL}/profile`, {
+              method: 'PUT',
+              headers: {
+                Authorization: `Bearer ${id_token}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({picture: avatar}),
+            });
+
+            console.log(
+              'Status da resposta ao atualizar avatar:',
+              response.status,
+            );
+
+            const contentType = response.headers.get('Content-Type');
+            let responseData;
+
+            if (contentType && contentType.includes('application/json')) {
+              responseData = await response.json();
+            } else {
+              responseData = await response.text();
+            }
+
+            console.log('Resposta da API ao atualizar avatar:', responseData);
+
+            if (response.ok) {
+              console.log('Avatar atualizado com sucesso!');
+            } else {
+              console.error('Erro ao atualizar avatar:', responseData);
+              throw new Error('Não foi possível atualizar o avatar.');
+            }
+          }
+        }
+
+        console.log('Redirecionando para a tela principal...');
+        navigation.reset({index: 0, routes: [{name: 'MainApp'}]});
+      } else {
+        console.error('Erro no login: status', response.status);
+        setErrorMessage('E-mail e/ou senha incorretos');
+        setIsErrorModalVisible(true);
       }
     } catch (error) {
       console.error('Erro ao fazer login:', error);
@@ -173,6 +255,7 @@ const Login: React.FC = () => {
   };
 
   const handleCreateAccount = () => {
+    console.log('Navegando para a tela de registro...');
     navigation.navigate('Register');
   };
 

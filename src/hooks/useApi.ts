@@ -1,13 +1,12 @@
 import axios from 'axios';
-import { API_BASE_URL } from '../env';
-import { getToken } from '../Utils/authUtils';
+import {API_BASE_URL} from '../env';
+import {getToken} from '../Utils/authUtils';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-api.interceptors.request.use(async (config) => {
-
+api.interceptors.request.use(async config => {
   if (config.url === '/auth/register') {
     return config;
   }
@@ -36,29 +35,12 @@ export const registerUser = async (data: {
 };
 
 // Função para realizar login de um usuário
-export const loginUser = async (data: { email: string; password: string }) => {
+export const loginUser = async (data: {email: string; password: string}) => {
   try {
     const response = await api.post('/auth/login', data);
     return response;
   } catch (error) {
     console.error('Erro ao realizar login:', error);
-    throw error;
-  }
-};
-
-// Função para renovar o token de autenticação
-export const refreshAuthToken = async (refreshToken: string): Promise<string> => {
-  try {
-    const response = await api.post('/auth/refresh', { refreshToken });
-
-    if (response.status === 200) {
-      console.log('Token renovado com sucesso:', response.data);
-      return response.data.idToken;
-    } else {
-      throw new Error('Erro ao renovar o token.');
-    }
-  } catch (error) {
-    console.error('Erro ao renovar o token:', error);
     throw error;
   }
 };
