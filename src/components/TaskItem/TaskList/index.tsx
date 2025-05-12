@@ -1,6 +1,7 @@
-import React, { useState, useCallback } from 'react';
-import { StyleSheet, View, FlatList, ListRenderItem } from 'react-native';
+import React, { useCallback } from 'react';
+import { View, FlatList, ListRenderItem } from 'react-native';
 import TaskItem from '../index';
+import { styles } from './style';
 
 interface Task {
   id: string;
@@ -8,21 +9,15 @@ interface Task {
   description: string;
   categories: string[];
   isCompleted: boolean;
+  deadline: string;
 }
 
-const taskData: Task[] = [
-  {
-    id: '1',
-    title: 'Bater o ponto',
-    description: 'bater o ponto pelo site do kairos e depois tenho que sair para tomar café.',
-    categories: ['TRABALHO', 'CASA', 'ESPORTE', 'ACADEMIA', 'LAZER'],
-    isCompleted: false,
-  },
-];
+interface TaskListProps {
+  tasks: Task[];
+  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+}
 
-const TaskList: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>(taskData);
-
+const TaskList: React.FC<TaskListProps> = ({ tasks, setTasks }) => {
   const handleToggleComplete = useCallback((taskId: string) => {
     setTasks(prevTasks =>
       prevTasks.map(task => {
@@ -32,14 +27,14 @@ const TaskList: React.FC = () => {
         return task;
       })
     );
-  }, []);
+  }, [setTasks]);
 
   const renderItem: ListRenderItem<Task> = useCallback(({ item }) => {
     return (
       <TaskItem
         title={item.title}
         description={item.description}
-        categories={item.categories}
+        categories={item.categories || []}
         isCompleted={item.isCompleted}
         onToggleComplete={() => handleToggleComplete(item.id)}
       />
@@ -59,12 +54,5 @@ const TaskList: React.FC = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    maxWidth: 329
-  },
-});
 
 export default TaskList;

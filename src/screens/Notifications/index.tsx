@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import styles from "./style.ts";
+import styles from './style';
 
 export default function Notifications() {
     return (
@@ -8,4 +8,3 @@ export default function Notifications() {
         </View>
     )
 }
-

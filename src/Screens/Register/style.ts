@@ -1,11 +1,11 @@
-import { StyleSheet } from "react-native";
-import Fonts from "../../Theme/fonts";
+import { StyleSheet } from 'react-native';
+import Fonts from '../../Theme/fonts';
 
 const styles = StyleSheet.create({
     container: {
       padding: 30,
       backgroundColor: '#F4F4F4',
-      alignItems: 'stretch',
+      alignItems: 'center',
     },
     form: {
       flex: 1,
@@ -26,6 +26,8 @@ const styles = StyleSheet.create({
     },
     inputSpacing: {
       marginBottom: 40,
+      width:329,
+      height:47,
     },
     buttonSpacing: {
       marginTop: 16,
@@ -37,6 +39,14 @@ const styles = StyleSheet.create({
       marginVertical: 20,
       color: '#222',
     },
+
+    createButton: {
+      backgroundColor: '#5B3CC4',
+      width: 329,
+      height:47,
+      marginTop:8,
+    },
+    
   });
 
 export default styles;

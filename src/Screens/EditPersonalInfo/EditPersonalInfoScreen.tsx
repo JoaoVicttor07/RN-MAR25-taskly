@@ -1,13 +1,15 @@
-import React, {useState} from 'react';
-import {View, KeyboardAvoidingView, ScrollView} from 'react-native';
+import React, {useState, useEffect, useCallback} from 'react';
+import {View, KeyboardAvoidingView, ScrollView, Alert} from 'react-native';
 import Input from '../../components/input';
 import Button from '../../components/button';
 import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import type {RootStackParamList} from '../../navigation';
+import type {RootStackParamList} from '../../Navigation/types';
 import ProfileHeader from '../../components/ProfileHeader';
 import ProgressBar from '../../components/ProgressBar';
 import styles from './style';
+import {API_BASE_URL} from '../../env';
+import * as Keychain from 'react-native-keychain';
 
 type NavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -20,7 +22,54 @@ function EditPersonalInfoScreen() {
   const [nameError, setNameError] = useState('');
   const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState('');
-  const email = 'example@example.com';
+  const [email, setEmail] = useState('');
+
+  const fetchUserProfile = useCallback(async () => {
+    try {
+      const credentials = await Keychain.getGenericPassword();
+      if (!credentials || !credentials.password) {
+        throw new Error('Token não encontrado. Faça login novamente.');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/profile`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${credentials.password}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setEmail(data.email);
+        setName(data.name || '');
+        setPhone(data.phone_number || '');
+      } else if (response.status === 401) {
+        Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        });
+      } else {
+        Alert.alert(
+          'Erro',
+          'Não foi possível carregar as informações do perfil.',
+        );
+      }
+    } catch (error) {
+      Alert.alert(
+        'Erro',
+        'Não foi possível carregar as informações do perfil. Faça login novamente.',
+      );
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Login'}],
+      });
+    }
+  }, [navigation]);
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, [fetchUserProfile]);
 
   const validateName = (value: string): string | null => {
     if (!value) {
@@ -44,14 +93,20 @@ function EditPersonalInfoScreen() {
   };
 
   const handleContinue = () => {
-    const localNameError = !name ? 'Campo obrigatório' : validateName(name);
-    const localPhoneError = !phone ? 'Campo obrigatório' : validatePhone(phone);
+    const localNameError = validateName(name);
+    const localPhoneError = validatePhone(phone);
 
     setNameError(localNameError || '');
     setPhoneError(localPhoneError || '');
 
-    if (!localNameError && !localPhoneError && name && phone) {
-      navigation.navigate('AvatarSelector', {isEditing: true});
+    if (!localNameError && !localPhoneError) {
+      const cleanedPhone = phone.replace(/\D/g, '');
+
+      navigation.navigate('AvatarSelector', {
+        name,
+        phone_number: cleanedPhone,
+        isEditing: true, // Fluxo de edição de perfil
+      });
     }
   };
 
@@ -69,9 +124,11 @@ function EditPersonalInfoScreen() {
             value={name}
             onChangeText={text => {
               setName(text);
-              if (nameError) validateName(text);
+              if (nameError) {
+                setNameError('');
+              }
             }}
-            onBlur={() => validateName(name)}
+            onBlur={() => setNameError(validateName(name) || '')}
             error={nameError}
             placeholder="Digite seu nome"
             containerStyle={styles.inputSpacing}
@@ -89,11 +146,13 @@ function EditPersonalInfoScreen() {
             value={phone}
             onChangeText={text => {
               setPhone(text);
-              if (phoneError) validatePhone(text);
+              if (phoneError) {
+                setPhoneError('');
+              }
             }}
-            onBlur={() => validatePhone(phone)}
+            onBlur={() => setPhoneError(validatePhone(phone) || '')}
             error={phoneError}
-            mask="phone"
+            //  mask="phone"
             containerStyle={styles.inputSpacing}
           />
           <Button
