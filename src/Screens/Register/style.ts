@@ -7,6 +7,7 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
       padding: 30,
       backgroundColor: theme.background,
       alignItems: 'center',
+      flex: 1,
     },
     form: {
       flex: 1,
@@ -24,13 +25,13 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'space-between',
       paddingHorizontal: 13,
-      backgroundColor: theme.buttonBackground,
+      backgroundColor: theme.backButton,
       height: 50,
       width: 110,
       borderRadius: 10,
     },
     backText: {
-      color: theme.text,
+      color: theme.buttonText,
       ...Fonts.Roboto50018,
     },
     inputSpacing: {
@@ -51,7 +52,7 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
     },
 
     createButton: {
-      backgroundColor: theme.buttonBackground,
+      backgroundColor: theme.AvatarButton,
       width: 329,
       height:47,
       marginTop:8,
