@@ -74,7 +74,8 @@ Taskly is a mobile task management application developed to help users organize 
 
 ## 🛠️ Technologies Used
 
-- [React Native](https://reactnative.dev/) - Framework for native mobile development with JavaScript.
+- [React Native](https://reactnative.dev/) - Framework for native mobile development with JavaScript.(https://reactnative.dev/img/header_logo.svg)
+
 - [React Navigation](https://reactnavigation.org/) - Navigation between screens.
 - [Async Storage](https://react-native-async-storage.github.io/async-storage/) - Asynchronous local storage.
 - [TypeScript](https://www.typescriptlang.org/pt/docs/)
@@ -121,50 +122,50 @@ npm run android
 The file and folder structure of the project is organized as follows:
 ```
 
-📁 src
-├── 📁 Assets
-│   ├── 📁 Images
-│   ├── 📁 fonts
-│   └── 📁 icons
+📁 src                         # Código-fonte principal
+├── 📁 Assets                  # Arquivos estáticos 
+│   ├── 📁 Images              # Arquivos de imagem
+│   ├── 📁 fonts               # Arquivos de fontes
+│   └── 📁 icons               # Arquivos de ícones
 │
-├── 📁 Navigation
-│       ├── index.tsx
-│       └── types.ts  
+├── 📁 Navigation              # Lógica de navegação da aplicação
+│       ├── index.tsx       
+│       └── types.ts            
 │
-├── 📁 Screens
-│   ├── 📁 Home
-│   │   ├── Index.tsx
-│   │   └── style.ts
-│   └── 📁 Login
-│       ├── 📁 Modal
-│       │   ├── Index.tsx
-│       │   └── style.ts
-│       ├── Index.tsx
-│       └── style.ts
+├── 📁 Screens                 # Telas da aplicação
+│   ├── 📁 Home                # Tela principal do aplicativo
+│   │   ├── Index.tsx           # Componente da tela Home
+│   │   └── style.ts            # Estilos para a tela Home
+│   └── 📁 Login               # Tela de login
+│       ├── 📁 Modal           # Componente modal específico para a tela de Login
+│       │   ├── Index.tsx       # Componente do modal de Login 
+│       │   └── style.ts        # Estilos para o modal de Login
+│       ├── Index.tsx           # Componente da tela de Login
+│       └── style.ts            # Estilos para a tela de Login
 │
-├── 📁 Theme
-│   └── fonts.ts
+├── 📁 Theme                   # Definições de temas para a aplicação
+│   └── fonts.ts                # Estilos e configurações de fontes
 │
-├── 📁 Utils
-│   ├── authUtils.ts
-│   └── validateDate.ts
+├── 📁 Utils                   # Funções utilitárias reutilizáveis
+│   ├── authUtils.ts            # Funções relacionadas à autenticação
+│   └── validateDate.ts         # Funções para validar datas
 │
-├── 📁 components
-│   ├── 📁 button
-│   │   ├── index.tsx
-│   │   └── style.ts
-│   └── 📁 input
-│       ├── index.tsx
-│       └── style.ts
+├── 📁 components              # Componentes React reutilizáveis
+│   ├── 📁 button              # Componente de botão personalizado
+│   │   ├── index.tsx           # Componente do botão  
+│   │   └── style.ts            # Estilos para o componente de botão 
+│   └── 📁 input               # Componente de input  personalizado 
+│       ├── index.tsx           # Componente do input
+│       └── style.ts            # Estilos para o componente de input
 │
-├── 📁 hooks
-│   └── useApi.ts
+├── 📁 hooks                   # Hooks personalizados do React
+│   └── useApi.ts               # Hook para interagir com uma API
 │
-├── 📁 screens/Notifications
-│   ├── index.tsx
-│   └── style.ts
+├── 📁 screens/Notifications   # Tela de notificações
+│   ├── index.tsx               # Componente da tela de notificações
+│   └── style.ts                # Estilos para a tela de notificações
 │
-└── App.tsx
+└── App.tsx                     # Ponto de entrada principal da aplicação React Native
  
 ```
 
