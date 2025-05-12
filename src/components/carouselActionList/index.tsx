@@ -16,10 +16,7 @@ import {
   setBiometryEnabled,
   isBiometryEnabled,
 } from '../../Utils/authUtils';
-import getStyles from './style'; // Importe a função getStyles
-import React from 'react';
-import { useTheme } from '../../Theme/ThemeContext'; // Importe o hook
-
+import styles from './style';
 
 const actions = [
   {id: '1', title: 'Editar Informações Pessoais', icon: userIcon},
@@ -66,8 +63,6 @@ export function CarouselActionList() {
   const [currentModal, setCurrentModal] = useState<
     null | keyof typeof modalConfigs
   >(null);
-  const { theme } = useTheme();
-  const styles = getStyles(theme);
 
   const handleAction = async (title: string) => {
     if (title === 'Editar Informações Pessoais') {
@@ -165,7 +160,7 @@ export function CarouselActionList() {
   };
 
   return (
-    <View style={[styles.wrapper, { backgroundColor: theme.background }]}>
+    <View style={styles.wrapper}>
       <FlatList
         data={actions}
         horizontal
@@ -192,5 +187,5 @@ export function CarouselActionList() {
         />
       )}
     </View>
-  );//feito
+  );
 }

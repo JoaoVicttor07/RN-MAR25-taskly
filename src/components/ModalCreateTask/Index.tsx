@@ -7,13 +7,12 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-import getStyles from './style';
+import styles from './style';
 import { isValidDate } from '../../Utils/validateDate';
 import Input from '../input';
 import DateInput from '../DateInput';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { useTheme } from '../../Theme/ThemeContext';
 
 interface CreateTaskModalProps {
   visible: boolean;
@@ -38,9 +37,6 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
     description?: string;
     deadline?: string;
   }>({});
-
-  const { theme } = useTheme(); // Obtém o tema
-  const styles = getStyles(theme); // Obtém os estilos themificados
 
   const resetModalInputs = () => {
     setTitle('');

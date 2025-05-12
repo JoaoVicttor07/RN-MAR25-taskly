@@ -1,7 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import getStyles from './style';
-import { useTheme } from '../../Theme/ThemeContext';
+
 import Home from '../../Screens/Home/Index';
 import Notifications from '../../Screens/Notifications';
 import Menu from '../../Screens/Menu/MainMenu/index';
@@ -29,14 +28,9 @@ const createIcon = (iconSource: ImageSourcePropType) => {
 };
 
 export default function BottomTabNavigator() {
-
-  const { theme } = useTheme(); // Obtenha o tema atual
-  const styles = getStyles(theme); // Obtenha os estilos temáticos
-
   return (
     <Tab.Navigator
       screenOptions={{
-        ...styles,
         ...bottomTabNavigatorStyles,
         tabBarButton: TabBarButton,
         headerShown: false,

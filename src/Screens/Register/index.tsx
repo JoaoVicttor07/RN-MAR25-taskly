@@ -13,13 +13,12 @@ import Button from '../../components/button';
 import Input from '../../components/input';
 import BiometryModal from './BiometryResgister';
 import {registerUser} from '../../hooks/useApi';
-import getStyles from './style';
+import styles from './style';
 import * as Keychain from 'react-native-keychain';
 import ReactNativeBiometrics from 'react-native-biometrics';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../../Navigation/types';
 import {} from '../../Utils/authUtils'
-import { useTheme } from '../../Theme/ThemeContext';
 
 export const storeToken = async (idToken: string, refreshToken?: string) => {
   try {
@@ -49,8 +48,6 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [showBiometryModal, setShowBiometryModal] = useState(false);
   const [biometryApiLoading, setBiometryApiLoading] = useState(false);
-  const { theme } = useTheme();
-  const styles = getStyles(theme);
 
 
   const validateName = (value: string): string | null => {

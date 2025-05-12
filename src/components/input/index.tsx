@@ -1,5 +1,4 @@
-/* eslint-disable react-native/no-inline-styles */
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -9,9 +8,7 @@ import {
   ViewStyle,
   DimensionValue,
 } from 'react-native';
-import getStyles from './style';
-import { useTheme } from '../../Theme/ThemeContext';
-
+import styles from './style';
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -43,6 +40,7 @@ export default function Input({
   height,
   fontFamily,
   fontWeight = 'normal',
+  textColor = '#000000',
   mask = 'none',
   validateEmail = false,
   editable = true,
@@ -50,21 +48,10 @@ export default function Input({
 }: InputProps) {
   const [internalValue, setInternalValue] = useState('');
   const [emailError, setEmailError] = useState<string | null>(null);
-  const { theme } = useTheme(); 
-  const styles = getStyles(theme); 
 
   const formatPhone = (text: string) => {
-    const cleaned = text.replace(/\D/g, '');
-    const match = cleaned.match(/^(\d{0,2})(\d{0,1})(\d{0,4})(\d{0,4})$/);
-    if (!match) {return text;}
-
-    let result = '';
-    if (match[1]) {result += `(${match[1]}`;}
-    if (match[1]?.length === 2) {result += ') ';}
-    if (match[2]) {result += match[2];}
-    if (match[3]) {result += ` ${match[3]}`;}
-    if (match[4]) {result += `-${match[4]}`;}
-    return result;
+    const cleaned = text.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+    return cleaned; // Retorna apenas os números
   };
 
   const handleChange = (text: string) => {
@@ -97,7 +84,14 @@ export default function Input({
           styles.input,
           inputStyle,
           (error || emailError) && styles.inputError,
-          { width, height, fontFamily, fontWeight, color: theme.text, backgroundColor: theme.background },
+          {
+            width,
+            height,
+            fontFamily,
+            fontWeight,
+            color: textColor,
+            backgroundColor: editable ? '#FFFFFF' : '#F0F0F0',
+          },
         ]}
         keyboardType={
           validateEmail

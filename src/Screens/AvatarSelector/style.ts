@@ -1,11 +1,10 @@
 import { StyleSheet } from 'react-native';
 import Fonts from '../../Theme/fonts';
-import { ThemeType } from '../../Theme/theme';
 
-const AVATAR_SIZE = 100;
+const AVATAR_SIZE = 90;
 const AVATAR_MARGIN = 12;
 
-const getStyles = (theme: ThemeType) => StyleSheet.create({
+export default StyleSheet.create({
   headerContainer: {
     width: '100%',
     paddingHorizontal: 20,
@@ -13,7 +12,7 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: theme.background,
+    backgroundColor: '#F4F4F4',
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingTop: 25,
@@ -23,13 +22,13 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
     marginBottom: 24,
   },
   textAvatar: {
-    color: theme.text,
+    color: '#000000',
     marginBottom: 4,
     textAlign: 'center',
     ...Fonts.Roboto70024,
   },
   textPick: {
-    color: theme.secondaryText,
+    color: '#000000',
     marginBottom: 12,
     textAlign: 'center',
     ...Fonts.Roboto40016,
@@ -41,15 +40,6 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
     marginBottom: 40,
     width: '100%',
   },
-  confirmButton: {
-    alignSelf: 'center',
-    marginTop: 16,
-    height: 48,
-    backgroundColor: theme.AvatarButton, // Cor de fundo do botão (dependente do tema)
-  },
-});
-
-export const avatarStyles = StyleSheet.create({ // Estilos específicos para a seção de avatares
   avatarTouchable: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -63,5 +53,3 @@ export const avatarStyles = StyleSheet.create({ // Estilos específicos para a s
     height: 48,
   },
 });
-
-export default getStyles;

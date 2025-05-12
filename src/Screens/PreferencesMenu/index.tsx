@@ -1,23 +1,18 @@
-import React, { useState } from 'react';
-import { View } from 'react-native';
+import React, { useState } from "react";
+import { View } from "react-native";
 import {useNavigation} from '@react-navigation/native';
 import BackButton from '../../components/BackButton';
-import SettingCard from '../../components/SettingCard';
-import ThemeModal from './Modal';
-import getStyles from './style';
-import { useTheme } from '../../Theme/ThemeContext';
+import SettingCard from "../../components/SettingCard";
+import ThemeModal from "./Modal";
+import styles from "./style";
 
 export default function PreferencesMenu() {
 
     const navigation = useNavigation();
-    const [modalVisible, setModalVisible] = useState(false);
-    const { theme } = useTheme(); // Obtenha o tema
-    const themedStyles = getStyles(theme); // Aplique o tema aos estilos
-
+    const [modalVisible, setModalVisible] = useState(false)
     return(
-        <View style={themedStyles.container}>
-            <View style={themedStyles.header}>
-
+        <View style={styles.container}>
+            <View style={styles.header}>
                 <BackButton
                 onPress={() => navigation.goBack()}
                 rightText="Preferências"
@@ -26,5 +21,5 @@ export default function PreferencesMenu() {
             <SettingCard onPress={() => setModalVisible(true)} />
             <ThemeModal visible={modalVisible} onClose={() => setModalVisible(false)} />
         </View>
-    );
+    )
 }
