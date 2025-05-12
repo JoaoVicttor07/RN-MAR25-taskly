@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, FlatList, TouchableOpacity } from 'react-native';
+import { View, FlatList, TouchableOpacity, Text, Image } from 'react-native';
 import styles from './style';
 import Button from '../../components/button';
 import CreateTaskModal from '../../components/ModalCreateTask/Index';
@@ -8,7 +8,6 @@ import TaskItem from '../../components/TaskItem';
 import Filter from '../../components/Filter';
 import FilterModal from '../../components/FilterModal';
 import Fonts from '../../Theme/fonts';
-import DefaultHeader from '../../components/DefaultHeader';
 import { useNavigation, useFocusEffect, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList, BottomTabParamList } from '../../Navigation/types';
@@ -196,7 +195,13 @@ const Home: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <DefaultHeader />
+      <View style={styles.header}>
+        <Text style={styles.title}>TASKLY</Text>
+        <Image
+          source={require('../../Assets/Images/Avatars/avatar_1.png')}
+          style={styles.avatar}
+        />
+      </View>
 
       {tasks.length === 0 ? (
         <View style={styles.containerNoTask}>

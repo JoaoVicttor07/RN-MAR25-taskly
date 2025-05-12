@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import React, {useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
 import {
   Text,
   ScrollView,
@@ -12,13 +12,27 @@ import {
 import Button from '../../components/button';
 import Input from '../../components/input';
 import BiometryModal from './BiometryResgister';
-import { registerUser } from '../../hooks/useApi';
+import {registerUser} from '../../hooks/useApi';
 import styles from './style';
 import * as Keychain from 'react-native-keychain';
 import ReactNativeBiometrics from 'react-native-biometrics';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../Navigation/types';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParamList} from '../../Navigation/types';
+import {} from '../../Utils/authUtils'
 
+export const storeToken = async (idToken: string, refreshToken?: string) => {
+  try {
+    if (!idToken) {
+      throw new Error('O idToken é obrigatório para armazenar os tokens.');
+    }
+
+    // Armazenar os tokens como um objeto JSON
+    const tokenData = JSON.stringify({idToken, refreshToken});
+    await Keychain.setGenericPassword('auth', tokenData);
+  } catch (error) {
+    throw new Error('Erro ao salvar os tokens no Keychain.');
+  }
+};
 export default function Register() {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [email, setEmail] = useState('');
@@ -35,17 +49,7 @@ export default function Register() {
   const [showBiometryModal, setShowBiometryModal] = useState(false);
   const [biometryApiLoading, setBiometryApiLoading] = useState(false);
 
-  const storeToken = async (token: string) => {
-    try {
-      console.log('Tentando salvar token...');
-      await Keychain.setGenericPassword('authToken', token);
-      console.log('Token salvo com segurança!');
-    } catch (error) {
-      console.error('Erro ao salvar token:', error);
-    }
-  };
 
-  // Funções de validação
   const validateName = (value: string): string | null => {
     if (!value) {
       return 'O nome é obrigatório.';
@@ -68,7 +72,7 @@ export default function Register() {
   };
 
   const validateNumber = (value: string): string | null => {
-    const cleaned = value.replace(/\D/g, ''); // Remove caracteres não numéricos
+    const cleaned = value.replace(/\D/g, '');
     if (!cleaned) {
       return 'O número é obrigatório.';
     } else if (cleaned.length !== 11) {
@@ -98,55 +102,35 @@ export default function Register() {
   const handleRegister = async () => {
     setLoading(true);
     console.log('Iniciando cadastro...');
-    const nameError = validateName(name);
-    const emailError = validateEmail(email);
-    const numberError = validateNumber(number);
-    const passwordError = validatePassword(password);
-    const confirmPasswordError = validateConfirmPassword(confirmPassword);
-
-    setNameError(nameError || '');
-    setEmailError(emailError || '');
-    setNumberError(numberError || '');
-    setPasswordError(passwordError || '');
-    setConfirmPasswordError(confirmPasswordError || '');
-
-    if (nameError || emailError || numberError || passwordError || confirmPasswordError) {
-      console.log('Validação falhou.');
-      setLoading(false);
-      return;
-    }
+    const cleanedPhoneNumber = number.replace(/\D/g, '');
+    console.log(
+      'Número de telefone formatado para registro:',
+      cleanedPhoneNumber,
+    );
 
     try {
-      console.log('Enviando dados para a API...');
       const response = await registerUser({
         email,
         password,
         name,
-        phone_number: number,
+        phone_number: cleanedPhoneNumber,
       });
-      console.log('Resposta da API:', response);
 
-      if (
-        (response.status === 200 || response.status === 201) &&
-        response.data.idToken
-      ) {
+      console.log('Token retornado no registro:', response.data.idToken);
+      console.log('UID retornado no registro:', response.data.uid);
+
+      if (response.status === 200 || response.status === 201) {
         await storeToken(response.data.idToken);
         console.log('Cadastro concluído!');
-        setShowBiometryModal(true); // Exibe o modal de biometria
+
+        setShowBiometryModal(true);
       } else {
-        console.log('Resposta inesperada da API:', response);
+        console.error('Erro no cadastro:', response.data);
+        Alert.alert('Erro', 'Não foi possível realizar o cadastro.');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Erro ao registrar usuário:', error);
-      if (
-        error.response?.data?.error === 'O email está em uso por outra conta.'
-      ) {
-        Alert.alert('Erro', 'Este e-mail já está cadastrado.');
-      } else if (error.response) {
-        Alert.alert('Erro', error.response.data?.error || 'Erro no cadastro.');
-      } else {
-        Alert.alert('Erro', 'Erro inesperado. Verifique sua internet.');
-      }
+      Alert.alert('Erro', 'Não foi possível realizar o cadastro.');
     } finally {
       setLoading(false);
     }
@@ -155,28 +139,33 @@ export default function Register() {
   const handleBiometryActivate = async () => {
     setBiometryApiLoading(true);
     console.log('Iniciando autenticação biométrica...');
-  
     const rnBiometrics = new ReactNativeBiometrics();
-  
+
     try {
-      const { available, biometryType } = await rnBiometrics.isSensorAvailable();
-  
+      const {available, biometryType} = await rnBiometrics.isSensorAvailable();
+
       if (!available) {
         Alert.alert('Erro', 'Biometria não disponível neste dispositivo.');
         setBiometryApiLoading(false);
         return;
       }
-  
+
       console.log(`Tipo de biometria disponível: ${biometryType}`);
-  
-      const { success } = await rnBiometrics.simplePrompt({
+
+      const {success} = await rnBiometrics.simplePrompt({
         promptMessage: 'Confirme sua identidade',
       });
-  
+
       if (success) {
         console.log('Autenticação biométrica bem-sucedida!');
         setShowBiometryModal(false);
-        navigation.navigate('AvatarSelector');
+        navigation.navigate('AvatarSelector', {
+          isEditing: false,
+          email,
+          password,
+          name,
+          phone_number: number.replace(/\D/g, ''),
+        });
       } else {
         console.log('Autenticação biométrica cancelada pelo usuário.');
       }
@@ -203,7 +192,7 @@ export default function Register() {
           <Input
             label="Nome Completo"
             value={name}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setName(text);
               if (nameError) {
                 const error = validateName(text);
@@ -220,7 +209,7 @@ export default function Register() {
           <Input
             label="E-mail"
             value={email}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setEmail(text);
               if (emailError) validateEmail(text);
             }}
@@ -234,7 +223,7 @@ export default function Register() {
           <Input
             label="Número"
             value={number}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setNumber(text);
               if (numberError) {
                 const error = validateNumber(text);
@@ -252,7 +241,7 @@ export default function Register() {
           <Input
             label="Senha"
             value={password}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setPassword(text);
               if (passwordError) validatePassword(text);
             }}
@@ -267,7 +256,7 @@ export default function Register() {
           <Input
             label="Confirmar senha"
             value={confirmPassword}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setConfirmPassword(text);
               if (confirmPasswordError) validateConfirmPassword(text);
             }}
@@ -287,7 +276,7 @@ export default function Register() {
               position: 'absolute',
               top: '50%',
               left: '50%',
-              transform: [{ translateX: -25 }, { translateY: -25 }],
+              transform: [{translateX: -25}, {translateY: -25}],
               zIndex: 9999,
             }}>
             <ActivityIndicator size="large" color="#5B3CC4" />
@@ -296,6 +285,7 @@ export default function Register() {
 
         <Button
           title="CRIAR CONTA"
+          fontFamily="Roboto60020"
           style={styles.createButton}
           onPress={handleRegister}
           disabled={loading}
@@ -312,7 +302,13 @@ export default function Register() {
         onPressLeft={() => {
           if (!biometryApiLoading) {
             setShowBiometryModal(false);
-            navigation.navigate('AvatarSelector');
+            navigation.navigate('AvatarSelector', {
+              isEditing: false,
+              email,
+              password,
+              name,
+              phone_number: number.replace(/\D/g, ''), // Passar o número formatado
+            });
           }
         }}
         onPressRight={handleBiometryActivate}
