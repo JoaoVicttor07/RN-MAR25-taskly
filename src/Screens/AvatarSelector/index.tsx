@@ -19,7 +19,7 @@ import Modal from './Modal';
 import styles from './style';
 import {API_BASE_URL} from '../../env';
 import * as Keychain from 'react-native-keychain';
-import {refreshAuthToken} from '../../Utils/authUtils';
+// import {refreshAuthToken} from '../../Utils/authUtils';
 
 import avatar1 from '../../Assets/Images/Avatars/avatar_1.png';
 import avatar2 from '../../Assets/Images/Avatars/avatar_2.png';
@@ -90,31 +90,6 @@ export default function AvatarSelector() {
 
       console.log('Token usado para atualizar avatar:', token);
 
-      // Validar o token no servidor
-      const validateResponse = await fetch(`${API_BASE_URL}/profile`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (validateResponse.status === 401) {
-        console.log('Token inválido ou expirado. Tentando renovar...');
-        try {
-          const newToken = await refreshAuthToken();
-          console.log('Token renovado com sucesso:', newToken);
-          token = newToken; // Atualizar o token para a requisição
-        } catch (refreshError) {
-          console.error('Erro ao renovar o token:', refreshError);
-          Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
-          navigation.reset({
-            index: 0,
-            routes: [{name: 'Login'}],
-          });
-          return;
-        }
-      }
-
       // Atualizar o avatar
       const response = await fetch(`${API_BASE_URL}/profile`, {
         method: 'PUT',
@@ -124,6 +99,7 @@ export default function AvatarSelector() {
         },
         body: JSON.stringify({
           picture: selectedId, // Avatar selecionado
+          phone_number: route.params?.phone_number?.replace(/\D/g, ''), // Número formatado
         }),
       });
 
@@ -184,7 +160,17 @@ export default function AvatarSelector() {
       });
 
       console.log('Status da resposta:', response.status);
-      const responseData = await response.json();
+
+      // Verificar o tipo de resposta antes de fazer o parsing
+      const contentType = response.headers.get('Content-Type');
+      let responseData;
+
+      if (contentType && contentType.includes('application/json')) {
+        responseData = await response.json();
+      } else {
+        responseData = await response.text(); // Fallback para texto puro
+      }
+
       console.log('Resposta da API:', responseData);
 
       if (response.ok) {
@@ -210,7 +196,7 @@ export default function AvatarSelector() {
 
     navigation.reset({
       index: 0,
-      routes: [{name: 'MainApp'}],
+      routes: [{name: 'Menu'}],
     });
   };
 

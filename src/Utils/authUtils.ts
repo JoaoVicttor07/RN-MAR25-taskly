@@ -104,9 +104,11 @@ export const refreshAuthToken = async (): Promise<string> => {
 
     const refreshToken = credentials.username;
 
-    if (!refreshToken) {
-      throw new Error('Refresh token não encontrado.');
+    if (!refreshToken || refreshToken === 'idToken') {
+      throw new Error('Refresh token inválido ou não encontrado.');
     }
+
+    console.log('Refresh token usado para renovar o token:', refreshToken);
 
     const response = await api.post('/refresh', {refreshToken});
 

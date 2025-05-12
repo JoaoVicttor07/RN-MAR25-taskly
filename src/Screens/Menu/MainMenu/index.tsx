@@ -12,7 +12,20 @@ import Modal from '../../AvatarSelector/Modal';
 import styles from './style';
 import {API_BASE_URL} from '../../../env';
 // import * as Keychain from 'react-native-keychain';
-import {getToken, removeToken, refreshAuthToken} from '../../../Utils/authUtils';
+import {
+  getToken,
+  removeToken,
+  refreshAuthToken,
+} from '../../../Utils/authUtils';
+
+const avatarMap: Record<string, any> = {
+  avatar_1: require('../../../Assets/Images/Avatars/avatar_1.png'),
+  avatar_2: require('../../../Assets/Images/Avatars/avatar_2.png'),
+  avatar_3: require('../../../Assets/Images/Avatars/avatar_3.png'),
+  avatar_4: require('../../../Assets/Images/Avatars/avatar_4.png'),
+  avatar_5: require('../../../Assets/Images/Avatars/avatar_5.png'),
+};
+
 
 type Props = {
   navigation: any;
@@ -53,8 +66,8 @@ const MenuPrincipal = ({navigation, route}: Props) => {
         setUserData({
           name: data.name || 'Usuário',
           email: data.email || 'Email não disponível',
-          phone: data.phone || 'Telefone não disponível',
-          avatarUrl: data.avatarUrl || '', // Atualiza o avatar
+          phone: data.phone_number || 'Telefone não disponível', // Atualizado para usar phone_number
+          avatarUrl: data.picture || '', // Atualizado para usar picture
         });
       } else if (response.status === 401) {
         console.log('Token inválido ou expirado. Tentando renovar...');
@@ -76,8 +89,8 @@ const MenuPrincipal = ({navigation, route}: Props) => {
             setUserData({
               name: data.name || 'Usuário',
               email: data.email || 'Email não disponível',
-              phone: data.phone || 'Telefone não disponível',
-              avatarUrl: data.avatarUrl || '', // Atualiza o avatar
+              phone: data.phone_number || 'Telefone não disponível',
+              avatarUrl: data.picture || '',
             });
           } else {
             throw new Error('Erro ao buscar perfil com novo token.');
@@ -124,8 +137,8 @@ const MenuPrincipal = ({navigation, route}: Props) => {
       <View style={styles.profileSection}>
         <Image
           source={
-            userData.avatarUrl
-              ? {uri: userData.avatarUrl}
+            userData.avatarUrl && avatarMap[userData.avatarUrl]
+              ? avatarMap[userData.avatarUrl]
               : require('../../../Assets/Images/Avatars/avatar_5.png')
           }
           style={styles.avatar}

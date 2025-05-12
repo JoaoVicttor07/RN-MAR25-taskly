@@ -146,7 +146,10 @@ const Login: React.FC = () => {
       if (response.status === 200) {
         console.log('Login bem-sucedido:', response.data);
 
-        await storeToken(response.data.id_token, response.data.refresh_token);
+        const {id_token, refresh_token} = response.data;
+
+        // Certifique-se de armazenar ambos os tokens
+        await storeToken(id_token, refresh_token);
 
         if (biometryEnabled) {
           await setBiometryEnabled(true);
@@ -158,21 +161,21 @@ const Login: React.FC = () => {
           await AsyncStorage.removeItem('rememberedEmail');
         }
 
-      console.log('Redirecionando para a tela principal...');
-      navigation.reset({ index: 0, routes: [{ name: 'MainApp' }] });
-    } else {
-      console.error('Erro no login: status', response.status);
+        console.log('Redirecionando para a tela principal...');
+        navigation.reset({index: 0, routes: [{name: 'MainApp'}]});
+      } else {
+        console.error('Erro no login: status', response.status);
+        setErrorMessage('E-mail e/ou senha incorretos');
+        setIsErrorModalVisible(true);
+      }
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
       setErrorMessage('E-mail e/ou senha incorretos');
       setIsErrorModalVisible(true);
+    } finally {
+      setIsSubmitting(false);
     }
-  } catch (error) {
-    console.error('Erro ao fazer login:', error);
-    setErrorMessage('E-mail e/ou senha incorretos');
-    setIsErrorModalVisible(true);
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
 
   const handleCreateAccount = () => {
     navigation.navigate('Register');
