@@ -1,97 +1,190 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# 📱 Taskly - Task App
 
-# Getting Started
+Taskly is a mobile task management application developed to help users organize their activities, offering a range of features including biometric authentication, setting deadlines and priorities, and profile customization. The interface of this application was developed following the design specified in the provided Figma link.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+---
 
-## Step 1: Start Metro
+## 📑 Table of Contents
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+- [⚙️ Features](#-features)
+- [✍️ Mandatory Validations](#mandatory-validations)
+- [🛠️ Technologies Used](#️-technologies-used)
+- [📦 Installation](#-installation)
+- [📂 Project Structure](#️-project-structure)
+- [🧩 Organization](#️-organization)
+- [🧑‍💻 Developers](#-developers)
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## ⚙️ Features
 
-```sh
-# Using npm
+#### 🔐 Authentication
+- Login with `Remember me` option and complete registration with validations, integrated with the proposed API.
+
+#### 🧑‍🎨 Initial Customization
+- Avatar selection upon registration and in profile editing.
+
+#### 🗂️ Task Management
+- Add, edit, and remove tasks with title, description, due date, tags, and priority.
+
+#### ✅ Detailed Subtasks
+- Divide tasks into subtasks (checklist) for detailed tracking.
+
+#### 🔍 Filtering
+- View tasks by priority (high or low).
+
+#### 📅 Organization
+- Sort tasks by due date, tags, and priority.
+
+#### 👤 Profile Editing
+- View and edit information, choose avatar, and preferences for theme selection.
+
+---
+
+## ✍️ Mandatory Validations
+
+#### 🔐 Login
+
+- **Email:** Valid format (regex)
+- **Password:** Minimum 8 characters
+- **Error:** "Incorrect email and/or password"
+
+#### ✍️ Sign Up
+
+- **Full Name:** Minimum two names, up to 120 characters
+- **Email:** Valid format
+- **Phone:** Format (DDD) 9 dddd-dddd
+- **Password:**
+    - 8 to 20 characters
+    - At least: 1 uppercase letter, 1 lowercase letter, 1 special character
+- **Confirmation:** Passwords must match
+
+#### 📌 Tasks
+
+- **Title:** Text only, up to 100 characters, no emojis
+- **Description:** Up to 500 characters, no emojis
+- **Due Date:** Valid date
+- **Tags:** Maximum 5, no spaces
+- **Subtasks:** Text up to 200 characters
+
+#### 👤 Profile
+
+- **Full Name:** Compound name required
+- **Phone:** (DD) 9 dddd-dddd
+
+---
+
+## 🛠️ Technologies Used
+
+- [React Native](https://reactnative.dev/) - Framework for native mobile development with JavaScript.
+- [React Navigation](https://reactnavigation.org/) - Navigation between screens.
+- [Async Storage](https://react-native-async-storage.github.io/async-storage/) - Asynchronous local storage.
+- [TypeScript](https://www.typescriptlang.org/pt/docs/)
+- [Axios](https://axios-http.com/ptbr/docs/intro) - For making HTTP requests.
+- [Date-fns](https://date-fns.org/) and [Date-fns-tz](https://date-fns.org/tz) - For date and timezone manipulation.
+- [React Native Collapsible](https://github.com/oblador/react-native-collapsible) - For collapsible sections.
+- [JWT Decode](https://www.npmjs.com/package/jwt-decode) - For decoding JWT tokens.
+- [React Native Biometrics](https://github.com/fingerprintjs/react-native-biometrics) - For biometric authentication.
+- [React Native Date Picker](https://github.com/mmazzarolo/react-native-date-picker) - For date selection.
+- [React Native Keychain](https://github.com/oblador/react-native-keychain) - For secure credential storage.
+- [React Native Webview](https://github.com/react-native-webview/react-native-webview) - For displaying web content.
+- [AppCenter](https://appcenter.ms/) and its modules (Analytics, Crashes) - For app monitoring and analytics.
+
+---
+
+## 📦 Installation
+
+#### Clone the repository
+
+
+```bash
+git clone https://github.com/JoaoVicttor07/RN-MAR25-taskly.git
+cd RN-MAR25-taskly
+```
+
+#### Install dependencies
+```bash
+npm install
+```
+
+#### Start the Server
+```bash
 npm start
-
-# OR using Yarn
-yarn start
 ```
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
+#### Run the application
+```bash
 npm run android
-
-# OR using Yarn
-yarn android
 ```
 
-### iOS
+---
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+## 📂 Project Structure
+The file and folder structure of the project is organized as follows:
+```
+📁 src                         # Main source code
+├── 📁 Assets                  # Static files
+│   ├── 📁 Images              # Image files
+│   ├── 📁 fonts               # Font files
+│   └── 📁 icons               # Icon files
+│
+├── 📁 Navigation              # Application navigation logic
+│       ├── index.tsx
+│       └── types.ts
+│
+├── 📁 Screens                  # Application screens
+│   ├── 📁 Home                 # Main application screen
+│   │   ├── Index.tsx            # Home screen component
+│   │   └── style.ts             # Styles for the Home screen
+│   └── 📁 Login                 # Login screen
+│       ├── 📁 Modal             # Specific modal component for the Login screen
+│       │   ├── Index.tsx         # Login modal component
+│       │   └── style.ts          # Styles for the Login modal
+│       ├── Index.tsx             # Login screen component
+│       └── style.ts              # Styles for the Login screen
+│
+├── 📁 Theme                     # Theme definitions for the application
+│   └── fonts.ts                  # Font styles and configurations
+│
+├── 📁 Utils                     # Reusable utility functions
+│   ├── authUtils.ts              # Functions related to authentication
+│   └── validateDate.ts           # Functions to validate dates
+│
+├── 📁 components                # Reusable React components
+│   ├── 📁 button                # Custom button component
+│   │   ├── index.tsx             # Button component
+│   │   └── style.ts              # Styles for the button component
+│   └── 📁 input                 # Custom input component
+│       ├── index.tsx             # Input component
+│       └── style.ts              # Styles for the input component
+│
+├── 📁 hooks                     # Custom React hooks
+│   └── useApi.ts                 # Hook to interact with an API
+│
+├── 📁 screens/Notifications     # Notifications screen
+│   ├── index.tsx                 # Notifications screen component
+│   └── style.ts                  # Styles for the notifications screen
+│
+└── App.tsx                       # Main entry point of the React Native application
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
 ```
 
-Then, and every time you update your native dependencies, run:
+## 🧩 Organization
 
-```sh
-bundle exec pod install
-```
+The development team for this project is organized as follows:
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+- **Presenter (P.O):** Amanda Duarte Meneghini do Carmo
+- **Developer (Dev):** Diogo da Silva Souza
+- **Developer (Dev):** Jailson Rodrigues de Neiva
+- **Quality Assurance (QA):** João Victor Santos da Costa
+- **Scrum Master:** Camila Cardozo Rocha
 
-```sh
-# Using npm
-npm run ios
 
-# OR using Yarn
-yarn ios
-```
+## 🧑‍💻 Developers
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+This project was developed by a team of dedicated collaborators:
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+- Amanda Duarte Meneghini do Carmo
+- Camila Cardozo Rocha
+- Diogo da Silva Souza
+- Jailson Rodrigues de Neiva
+- João Victor Santos da Costa
 
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
