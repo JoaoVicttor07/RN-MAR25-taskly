@@ -1,91 +1,90 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  Image,
-} from 'react-native';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { View, FlatList, TouchableOpacity, Text, Image } from 'react-native';
 import styles from './style';
 import Button from '../../components/button';
 import CreateTaskModal from '../../components/ModalCreateTask/Index';
 import EmptyState from '../../components/EmptyState';
-import TaskList from '../../components/TaskItem/TaskList';
+import TaskItem from '../../components/TaskItem';
 import Filter from '../../components/Filter';
 import FilterModal from '../../components/FilterModal';
 import Fonts from '../../Theme/fonts';
+import { useNavigation, useFocusEffect, useRoute, RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList, BottomTabParamList } from '../../Navigation/types';
+import { getTasks, saveTasks } from '../../Utils/asyncStorageUtils';
+import { Task } from '../../interfaces/task';
 
 type PriorityType = 'lowToHigh' | 'highToLow' | null;
 type TagsType = string[];
 type DateType = Date | null;
 
-interface Task {
-  title: string;
-  description: string;
-  deadline: string;
-  id: string;
-  categories: string[];
-  isCompleted: boolean;
-  priority?: number;
-}
+type HomeRouteProp = RouteProp<BottomTabParamList, 'Home'>;
 
 const Home: React.FC = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const route = useRoute<HomeRouteProp>();
+  const flatListRef = useRef<FlatList<Task>>(null);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
-  const [tasks, setTasks] = useState<Task[]>([
-    {
-      id: '1',
-      title: 'Comprar pão',
-      description: 'Na padaria da esquina',
-      deadline: '2025-05-10',
-      categories: ['CASA', 'GASTO'],
-      isCompleted: false,
-      priority: 0,
-    },
-    {
-      id: '2',
-      title: 'Relatório mensal',
-      description: 'Enviar para o chefe',
-      deadline: '2025-05-08',
-      categories: ['TRABALHO'],
-      isCompleted: false,
-      priority: 2,
-    },
-    {
-      id: '3',
-      title: 'Ir à academia',
-      description: 'Treino de pernas',
-      deadline: '2025-05-07',
-      categories: ['ACADEMIA'],
-      isCompleted: true,
-      priority: 1,
-    },
-    {
-      id: '4',
-      title: 'Pagar conta de luz',
-      description: 'Vence amanhã',
-      deadline: '2025-05-08',
-      categories: ['CASA', 'FINANCEIRO'],
-      isCompleted: false,
-      priority: 2,
-    },
-  ]);
-  const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
   const [allTags, setAllTags] = useState<string[]>([]);
   const [selectedPriority, setSelectedPriority] = useState<PriorityType>(null);
   const [selectedTags, setSelectedTags] = useState<TagsType>([]);
   const [selectedDate, setSelectedDate] = useState<DateType>(null);
 
   useEffect(() => {
+    const loadTasks = async () => {
+      try {
+        const storedTasks = await getTasks();
+        if (storedTasks && storedTasks.length > 0) {
+          setTasks(storedTasks);
+        }
+      } catch (error) {
+        console.error('Erro ao carregar tarefas:', error);
+      }
+    };
+    loadTasks();
+  }, []);
+
+  useEffect(() => {
     const uniqueTags = new Set<string>();
     tasks.forEach(task => {
-      task.categories.forEach(tag => uniqueTags.add(tag));
+      (task.categories ?? []).forEach(tag => uniqueTags.add(tag));
     });
     setAllTags(Array.from(uniqueTags));
   }, [tasks]);
 
-  const handleCreateTask = (taskData: {
+  useEffect(() => {
+    const saveTasksToStorage = async () => {
+      try {
+        await saveTasks(tasks);
+      } catch (error) {
+        console.error('Erro ao salvar tarefas:', error);
+      }
+    };
+    if (tasks.length > 0) {
+      saveTasksToStorage();
+    }
+  }, [tasks]);
+
+  useEffect(() => {
+    const scrollToTaskId = route.params?.scrollToTaskId;
+    if (scrollToTaskId && filteredTasks.length > 0) {
+      const index = filteredTasks.findIndex(task => task.id === scrollToTaskId);
+      if (index !== -1 && flatListRef.current) {
+        setTimeout(() => {
+          flatListRef.current?.scrollToIndex({ index, animated: true });
+        }, 500);
+      }
+    }
+  }, [route.params?.scrollToTaskId, filteredTasks]);
+
+  const handleCreateTask = useCallback(async (taskData: {
     title: string;
     description: string;
-    deadline: string;
+    deadline: string | null | undefined;
   }) => {
     const newTask: Task = {
       ...taskData,
@@ -93,72 +92,106 @@ const Home: React.FC = () => {
       categories: [],
       isCompleted: false,
       priority: 0,
+      subtasks: [],
+      createdAt: Date.now(),
     };
     setTasks(prevTasks => [...prevTasks, newTask]);
     setIsModalVisible(false);
+  }, []);
+
+
+  const handleOpenCreateTaskModal = () => setIsModalVisible(true);
+  const handleCloseCreateTaskModal = () => setIsModalVisible(false);
+  const handleOpenFilterModal = () => setIsFilterModalVisible(true);
+  const handleCloseFilterModal = () => setIsFilterModalVisible(false);
+
+  const handlePrioritySelect = (priority: PriorityType) => setSelectedPriority(priority);
+  const handleTagSelect = (tags: TagsType) => setSelectedTags(tags);
+  const handleDateSelect = (date: DateType) => setSelectedDate(date);
+
+  const handleTaskDetailsNavigation = (taskItem: Task) => {
+    navigation.navigate('TaskDetails', { task: taskItem });
   };
 
-  const handleOpenCreateTaskModal = () => {
-    setIsModalVisible(true);
+  const handleToggleTaskComplete = (taskId: string) => {
+    setTasks(prevTasks =>
+      prevTasks.map(task =>
+        task.id === taskId ? { ...task, isCompleted: !task.isCompleted } : task
+      )
+    );
   };
 
-  const handleCloseCreateTaskModal = () => {
-    setIsModalVisible(false);
-  };
+  const renderTaskItem = ({ item }: { item: Task }) => (
+    <TouchableOpacity onPress={() => handleTaskDetailsNavigation(item)}>
+      <TaskItem
+        title={item.title}
+        description={item.description ?? ''}
+        categories={item.categories ?? []}
+        isCompleted={item.isCompleted}
+        task={item}
+        onToggleComplete={() => handleToggleTaskComplete(item.id)}
+      />
+    </TouchableOpacity>
+  );
 
-  const handleOpenFilterModal = () => {
-    setIsFilterModalVisible(true);
-  };
-
-  const handleCloseFilterModal = () => {
-    setIsFilterModalVisible(false);
-  };
-
-  const handlePrioritySelect = (priority: PriorityType) => {
-    setSelectedPriority(priority);
-  };
-
-  const handleTagSelect = (tags: TagsType) => {
-    setSelectedTags(tags);
-  };
-
-  const handleDateSelect = (date: DateType) => {
-    setSelectedDate(date);
-  };
+  const keyExtractorTask = (item: Task) => item.id;
 
   useEffect(() => {
     let tempTasks = [...tasks];
 
+    // Filtra por tags selecionadas
     if (selectedTags.length > 0) {
       tempTasks = tempTasks.filter(task =>
-        selectedTags.every(tag => task.categories.includes(tag)),
+        selectedTags.every(tag => (task.categories ?? []).includes(tag))
       );
     }
 
+    // Filtra por data selecionada
     if (selectedDate) {
       const filterDateString = selectedDate.toISOString().split('T')[0];
+
       tempTasks = tempTasks.filter(task => {
+        if (!task.deadline) return false;
+
         const taskDate = new Date(task.deadline);
+        if (isNaN(taskDate.getTime())) return false;
+
         const taskDateString = taskDate.toISOString().split('T')[0];
         return taskDateString === filterDateString;
       });
     }
 
+    // Ordena por prioridade
     if (selectedPriority) {
       tempTasks.sort((a, b) => {
-        const priorityA = a.priority !== undefined ? a.priority : -1;
-        const priorityB = b.priority !== undefined ? b.priority : -1;
+        const priorityA = a.priority ?? -1;
+        const priorityB = b.priority ?? -1;
 
-        if (selectedPriority === 'lowToHigh') {
-          return priorityA - priorityB;
-        } else {
-          return priorityB - priorityA;
-        }
+        return selectedPriority === 'lowToHigh'
+          ? priorityA - priorityB
+          : priorityB - priorityA;
       });
     }
 
     setFilteredTasks(tempTasks);
-  }, [tasks, selectedPriority, selectedTags, selectedDate]);
+  }, [tasks, selectedTags, selectedDate, selectedPriority]);
+
+
+  useFocusEffect(
+    useCallback(() => {
+      const loadUpdatedTasks = async () => {
+        try {
+          const storedTasks = await getTasks();
+          if (storedTasks) {
+            setTasks(storedTasks);
+          }
+        } catch (error) {
+          console.error('Erro ao recarregar tarefas:', error);
+        }
+      };
+      loadUpdatedTasks();
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
@@ -177,7 +210,13 @@ const Home: React.FC = () => {
       ) : (
         <View style={styles.taskListContainer}>
           <Filter onPress={handleOpenFilterModal} />
-          <TaskList tasks={filteredTasks} setTasks={setTasks} />
+          <FlatList
+            ref={flatListRef}
+            data={filteredTasks}
+            renderItem={renderTaskItem}
+            keyExtractor={keyExtractorTask}
+            showsVerticalScrollIndicator={false}
+          />
         </View>
       )}
 

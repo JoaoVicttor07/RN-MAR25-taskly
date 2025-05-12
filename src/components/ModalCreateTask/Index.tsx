@@ -8,7 +8,6 @@ import {
   Keyboard,
 } from 'react-native';
 import styles from './style';
-import { isValidDate } from '../../Utils/validateDate';
 import Input from '../input';
 import DateInput from '../DateInput';
 import { format } from 'date-fns';
@@ -20,7 +19,7 @@ interface CreateTaskModalProps {
   onCreate: (task: {
     title: string;
     description: string;
-    deadline: string;
+    deadline: string | null | undefined;
   }) => void;
 }
 
@@ -31,7 +30,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
 }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [deadline, setDeadline] = useState('');
+  const [deadlineDate, setDeadlineDate] = useState<Date | null>(null);
   const [errors, setErrors] = useState<{
     title?: string;
     description?: string;
@@ -41,7 +40,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   const resetModalInputs = () => {
     setTitle('');
     setDescription('');
-    setDeadline('');
+    setDeadlineDate(null);
     setErrors({});
   };
 
@@ -53,62 +52,53 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
 
   const validateTitle = (text: string) => {
     if (!text.trim()) {
-      setErrors(prevErrors => ({ ...prevErrors, title: 'Título é obrigatório' }));
+      setErrors((prevErrors) => ({ ...prevErrors, title: 'Título é obrigatório' }));
     } else if (errors.title) {
-      setErrors(prevErrors => ({ ...prevErrors, title: undefined }));
+      setErrors((prevErrors) => ({ ...prevErrors, title: undefined }));
     }
     setTitle(text);
   };
 
   const validateDescription = (text: string) => {
     if (!text.trim()) {
-      setErrors(prevErrors => ({ ...prevErrors, description: 'Descrição é obrigatória' }));
+      setErrors((prevErrors) => ({ ...prevErrors, description: 'Descrição é obrigatória' }));
     } else if (errors.description) {
-      setErrors(prevErrors => ({ ...prevErrors, description: undefined }));
+      setErrors((prevErrors) => ({ ...prevErrors, description: undefined }));
     }
     setDescription(text);
   };
 
   const handleDeadlineChange = (selectedDate: Date | null) => {
-    if (selectedDate) {
-      const formattedDate = format(selectedDate, 'dd/MM/yyyy', { locale: ptBR });
-      setDeadline(formattedDate);
-      if (errors.deadline) {
-        setErrors(prevErrors => ({ ...prevErrors, deadline: undefined }));
-      }
-    } else {
-      setDeadline('');
+    setDeadlineDate(selectedDate);
+    if (selectedDate && errors.deadline) {
+      setErrors((prevErrors) => ({ ...prevErrors, deadline: undefined }));
+    } else if (!selectedDate) {
+      setErrors((prevErrors) => ({ ...prevErrors, deadline: 'Prazo é obrigatório' }));
     }
   };
 
   const handleCreate = () => {
     const isTitleValid = !errors.title && title.trim();
     const isDescriptionValid = !errors.description && description.trim();
-
-    let isDeadlineValid = true;
-    if (!deadline.trim()) {
-      setErrors(prevErrors => ({ ...prevErrors, deadline: 'Prazo é obrigatório' }));
-      isDeadlineValid = false;
-    } else if (!/^\d{2}\/\d{2}\/\d{4}$/.test(deadline.trim())) {
-      setErrors(prevErrors => ({ ...prevErrors, deadline: 'Formato inválido. Use dd/mm/aaaa' }));
-      isDeadlineValid = false;
-    } else if (!isValidDate(deadline.trim())) {
-      setErrors(prevErrors => ({ ...prevErrors, deadline: 'Data inválida' }));
-      isDeadlineValid = false;
-    }
+    const isDeadlineValid = deadlineDate !== null;
 
     if (isTitleValid && isDescriptionValid && isDeadlineValid) {
-      onCreate({ title, description, deadline });
+      onCreate({ title, description, deadline: deadlineDate?.toISOString() });
       resetModalInputs();
     } else {
       if (!title.trim()) {
-        setErrors(prevErrors => ({ ...prevErrors, title: 'Título é obrigatório' }));
+        setErrors((prevErrors) => ({ ...prevErrors, title: 'Título é obrigatório' }));
       }
       if (!description.trim()) {
-        setErrors(prevErrors => ({ ...prevErrors, description: 'Descrição é obrigatória' }));
+        setErrors((prevErrors) => ({ ...prevErrors, description: 'Descrição é obrigatória' }));
+      }
+      if (!deadlineDate) {
+        setErrors((prevErrors) => ({ ...prevErrors, deadline: 'Prazo é obrigatório' }));
       }
     }
   };
+
+  const formattedDate = deadlineDate ? format(deadlineDate, 'dd/MM/yyyy', { locale: ptBR }) : '';
 
   return (
     <Modal
@@ -148,6 +138,10 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                 label="Prazo"
                 onDateChange={handleDeadlineChange}
                 error={errors.deadline}
+                initialDate={deadlineDate}
+                value={formattedDate}
+                editable={false}
+                placeholder={formattedDate || 'DD/MM/YYYY'}
               />
 
             </View>
