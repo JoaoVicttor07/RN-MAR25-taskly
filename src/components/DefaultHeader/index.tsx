@@ -12,7 +12,7 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ leftComponent }) => {
       {leftComponent && <View style={styles.leftContainer}>{leftComponent}</View>}
       <Text style={styles.title}>TASKLY</Text>
       <Image
-        source={require('../../Assets/Images/Avatars/avatar-1.jpg')}
+        source={require('../../Assets/Images/Avatars/avatar_1.png')}
         style={styles.avatar}
       />
     </View>
