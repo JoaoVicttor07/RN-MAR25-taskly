@@ -49,7 +49,6 @@ const Login: React.FC = () => {
     const loadRememberedEmail = async () => {
       try {
         const savedEmail = await AsyncStorage.getItem('rememberedEmail');
-        console.log('E-mail salvo carregado:', savedEmail);
         if (savedEmail) {
           setEmail(savedEmail);
           setRememberMe(true);
@@ -66,7 +65,6 @@ const Login: React.FC = () => {
 
   const handleEmailChange = useCallback(
     (text: string) => {
-      console.log('Alterando e-mail:', text);
       setEmail(text);
       setErrors(prevErrors => ({...prevErrors, email: undefined}));
     },
@@ -75,7 +73,6 @@ const Login: React.FC = () => {
 
   const handlePasswordChange = useCallback(
     (text: string) => {
-      console.log('Alterando senha:', text);
       setPassword(text);
       setErrors(prevErrors => ({...prevErrors, password: undefined}));
     },
@@ -94,24 +91,20 @@ const Login: React.FC = () => {
     let isValid = true;
 
     if (!email) {
-      console.log('Erro: E-mail é obrigatório.');
       setErrors(prevErrors => ({...prevErrors, email: 'Campo obrigatório'}));
       isValid = false;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      console.log('Erro: E-mail inválido.');
       setErrors(prevErrors => ({...prevErrors, email: 'E-mail inválido'}));
       isValid = false;
     }
 
     if (!password) {
-      console.log('Erro: Senha é obrigatória.');
       setErrors(prevErrors => ({
         ...prevErrors,
         password: 'Campo obrigatório',
       }));
       isValid = false;
     } else if (password.length < 8) {
-      console.log('Erro: Senha deve ter no mínimo 8 caracteres.');
       setErrors(prevErrors => ({
         ...prevErrors,
         password: 'A senha deve ter no mínimo 8 caracteres',
@@ -124,9 +117,7 @@ const Login: React.FC = () => {
   };
 
   const handleLogin = async () => {
-    console.log('Tentando login...');
     if (!validateInputs()) {
-      console.log('Inputs inválidos:', errors);
       return;
     }
 
@@ -147,23 +138,17 @@ const Login: React.FC = () => {
         console.log('Biometria desativada. Usuário deve fazer login manual.');
       }
 
-      console.log('Enviando requisição para:', `${API_BASE_URL}/auth/login`);
-      console.log('Corpo da requisição:', {email, password});
-
       const response = await axios.post(`${API_BASE_URL}/auth/login`, {
         email,
         password,
       });
 
-      console.log('Resposta da API de login:', response.data);
 
       if (response.status === 200) {
         const {id_token, refresh_token} = response.data;
 
-        console.log('Tokens recebidos:', {id_token, refresh_token});
 
         await storeToken(id_token, refresh_token);
-        console.log('Tokens armazenados com sucesso!');
 
         if (biometryEnabled) {
           await setBiometryEnabled(true);
@@ -181,18 +166,10 @@ const Login: React.FC = () => {
         const storedCredentials = await Keychain.getGenericPassword();
 
         if (storedCredentials) {
-          console.log(
-            'Credenciais armazenadas no Keychain:',
-            storedCredentials,
-          );
           let parsedCredentials;
           try {
             parsedCredentials = JSON.parse(storedCredentials.password);
           } catch (error) {
-            console.error(
-              'Erro ao fazer parse das credenciais do Keychain:',
-              error,
-            );
             parsedCredentials = {
               idToken: storedCredentials.password,
               refreshToken: storedCredentials.username,
@@ -200,10 +177,8 @@ const Login: React.FC = () => {
           }
 
           const {avatar} = parsedCredentials;
-          console.log('Avatar armazenado:', avatar);
 
           if (avatar) {
-            console.log('Atualizando avatar após login...');
             const response = await fetch(`${API_BASE_URL}/profile`, {
               method: 'PUT',
               headers: {
@@ -212,11 +187,6 @@ const Login: React.FC = () => {
               },
               body: JSON.stringify({picture: avatar}),
             });
-
-            console.log(
-              'Status da resposta ao atualizar avatar:',
-              response.status,
-            );
 
             const contentType = response.headers.get('Content-Type');
             let responseData;
@@ -227,7 +197,6 @@ const Login: React.FC = () => {
               responseData = await response.text();
             }
 
-            console.log('Resposta da API ao atualizar avatar:', responseData);
 
             if (response.ok) {
               console.log('Avatar atualizado com sucesso!');
@@ -238,15 +207,12 @@ const Login: React.FC = () => {
           }
         }
 
-        console.log('Redirecionando para a tela principal...');
         navigation.reset({index: 0, routes: [{name: 'MainApp'}]});
       } else {
-        console.error('Erro no login: status', response.status);
         setErrorMessage('E-mail e/ou senha incorretos');
         setIsErrorModalVisible(true);
       }
     } catch (error) {
-      console.error('Erro ao fazer login:', error);
       setErrorMessage('E-mail e/ou senha incorretos');
       setIsErrorModalVisible(true);
     } finally {
@@ -255,7 +221,6 @@ const Login: React.FC = () => {
   };
 
   const handleCreateAccount = () => {
-    console.log('Navegando para a tela de registro...');
     navigation.navigate('Register');
   };
 
