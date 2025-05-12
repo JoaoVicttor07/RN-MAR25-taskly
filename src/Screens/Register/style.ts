@@ -1,37 +1,27 @@
 import { StyleSheet } from 'react-native';
 import Fonts from '../../Theme/fonts';
-import { ThemeType } from '../../Theme/theme';
 
-const getStyles = (theme: ThemeType) => StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
       padding: 30,
-      backgroundColor: theme.background,
+      backgroundColor: '#F4F4F4',
       alignItems: 'center',
-      flex: 1,
     },
     form: {
       flex: 1,
-    },
-    loading:{
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: [{ translateX: -25 }, { translateY: -25 }],
-      zIndex: 9999,
-
     },
     backButton: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
       paddingHorizontal: 13,
-      backgroundColor: theme.backButton,
+      backgroundColor: '#AAAAAA',
       height: 50,
       width: 110,
       borderRadius: 10,
     },
     backText: {
-      color: theme.buttonText,
+      color: '#fff',
       ...Fonts.Roboto50018,
     },
     inputSpacing: {
@@ -41,24 +31,22 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
     },
     buttonSpacing: {
       marginTop: 16,
-
     },
     title: {
-      ...Fonts.Roboto70024,
       ...Fonts.Roboto70024,
       fontWeight: 'bold',
       alignSelf: 'center',
       marginVertical: 20,
-      color: theme.text,
+      color: '#222',
     },
 
     createButton: {
-      backgroundColor: theme.AvatarButton,
+      backgroundColor: '#5B3CC4',
       width: 329,
       height:47,
       marginTop:8,
     },
-
+    
   });
 
-export default getStyles;
+export default styles;

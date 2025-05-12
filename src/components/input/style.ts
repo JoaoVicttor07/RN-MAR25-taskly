@@ -1,7 +1,6 @@
-import { StyleSheet } from 'react-native';
-import { ThemeType } from '../../Theme/theme';
+import { StyleSheet } from 'react-native'
 
-const getStyles = (theme: ThemeType) => StyleSheet.create({
+export default StyleSheet.create({
   container: {
     width: 300,
     height: 50,
@@ -10,26 +9,22 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
   label: {
     fontSize: 14,
     marginBottom: 4,
-    color: theme.text,
+    color: '#333',
   },
   input: {
     paddingHorizontal: 12,
     paddingVertical: 10,
     borderWidth: 2,
-    borderColor: theme.AvatarButton,
+    borderColor: '#6C5CE7',
     borderRadius: 8,
     fontSize: 16,
-    color: theme.text,
   },
   inputError: {
-    borderColor: '#E74C3C',
-
+    
   },
   error: {
     marginTop: 4,
     color: '#E74C3C',
     fontSize: 12,
   },
-});
-
-export default getStyles;
+})

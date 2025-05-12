@@ -1,12 +1,12 @@
-import { StyleSheet } from 'react-native';
-import Fonts from '../../Theme/fonts';
-import { ThemeType } from '../../Theme/theme';
+import {StyleSheet} from 'react-native';
 
-const getStyles = (theme: ThemeType) => StyleSheet.create({
+import Fonts from '../../Theme/fonts';
+
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 32,
-    backgroundColor: theme.background,
+    backgroundColor: '#F4F4F4',
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingBottom: 127,
@@ -20,7 +20,7 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
   },
   title: {
     ...Fonts.Roboto70024,
-    color: theme.text,
+    color: '#000',
   },
   avatar: {
     width: 50,
@@ -37,7 +37,7 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
     marginBottom: 20,
     alignItems: 'center',
     width: '100%',
-  },
+  }
 });
 
-export default getStyles;
+export default styles;

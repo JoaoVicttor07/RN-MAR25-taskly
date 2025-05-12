@@ -1,24 +1,19 @@
 import React from 'react';
 import { SafeAreaView, View, StyleSheet } from 'react-native';
-import { WebView } from 'react-native-webview';
-import BackButton from '../../../components/BackButton';
-import { useTheme } from '../../../Theme/ThemeContext'; // Importe o useTheme
+import { WebView } from 'react-native-webview'; 
+import BackButton from '../../../components/BackButton'; 
 
 type Props = {
   navigation: any;
 };
 
 const TermosPage = ({ navigation }: Props) => {
-
-  const { theme } = useTheme(); // Obtenha o tema
-  const styles = getStyles(theme); // Aplique o tema aos estilos
-
   return (
     <SafeAreaView style={styles.container}>
       {/* Cabeçalho com o botão Voltar e o título 'Termos e Regulamentos' */}
       <View style={styles.header}>
         {/* Utilizando o BackButton aqui */}
-        <BackButton onPress={() => navigation.goBack()} rightText="Termos e regulamentos" />
+        <BackButton onPress={() => navigation.goBack()} rightText='Termos e regulamentos' />
       </View>
 
       {/* Barra de Separação */}
@@ -27,17 +22,17 @@ const TermosPage = ({ navigation }: Props) => {
       {/* Carregar conteúdo da URL diretamente no WebView */}
       <WebView
         originWhitelist={['*']} // Permite carregar qualquer conteúdo
-        source={{ uri: 'https://sobreuol.noticias.uol.com.br/normas-de-seguranca-e-privacidade/en/' }}
+        source={{ uri: 'https://sobreuol.noticias.uol.com.br/normas-de-seguranca-e-privacidade/en/' }} 
         style={styles.webview}
       />
     </SafeAreaView>
   );
 };
 
-const getStyles = (theme: any) => StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.background,
+    backgroundColor: '#FFF',
   },
   header: {
     padding: 0,
@@ -47,7 +42,7 @@ const getStyles = (theme: any) => StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: theme.separator,
+    backgroundColor: '#000000',
     marginVertical: 14,
   },
   webview: {

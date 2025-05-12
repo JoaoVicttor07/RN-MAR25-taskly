@@ -15,8 +15,7 @@ import {
   setBiometryEnabled,
   isBiometryEnabled,
 } from '../../Utils/authUtils';
-import getStyles from './style';
-import { useTheme } from '../../Theme/ThemeContext';
+import styles from './style';
 import Input from '../../components/input';
 import Button from '../../components/button';
 import Fonts from '../../Theme/fonts';
@@ -35,8 +34,6 @@ type LoginScreenNavigationProp = NativeStackNavigationProp<
 >;
 
 const Login: React.FC = () => {
-  const { theme } = useTheme();
-  const styles = getStyles(theme);
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -296,8 +293,8 @@ const Login: React.FC = () => {
         fontFamily={Fonts.Roboto60020.fontFamily}
         fontWeight={600}
         fontSize={Fonts.Roboto60020.fontSize}
-        textColor={theme.background}
-        backgroundColor={theme.AvatarButton}
+        textColor="#FFFFFF"
+        backgroundColor="#5B3CC4"
         width="100%"
         style={styles.buttonEnter}
         onPress={handleLogin}
@@ -315,9 +312,9 @@ const Login: React.FC = () => {
         fontFamily={Fonts.Roboto60020.fontFamily}
         fontWeight={600}
         fontSize={Fonts.Roboto60020.fontSize}
-        textColor={theme.AvatarButton}
+        textColor="#5B3CC4"
         borderWidth={2}
-        borderColor={theme.AvatarButton}
+        borderColor="#5B3CC4"
         backgroundColor="transparent"
         width="100%"
         style={styles.buttonCreate}

@@ -1,19 +1,18 @@
-import { StyleSheet } from 'react-native';
-import Fonts from '../../Theme/fonts';
-import { ThemeType } from '../../Theme/theme';
+import { StyleSheet } from "react-native";
+import Fonts from "../../Theme/fonts";
 
-const getStyles = (theme: ThemeType) => StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'space-between'
     },
     backButton: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 13,
-        backgroundColor: theme.backButton,
+        backgroundColor: '#AAAAAA',
         height: 50,
         width: 110,
         borderRadius: 10,
@@ -24,7 +23,7 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
       },
       editText: {
         ...Fonts.Roboto40016,
-      },
-});
+      }
+})
 
-export default getStyles;
+export default styles

@@ -9,8 +9,7 @@ import {
 } from 'react-native';
 import {CarouselActionList} from '../../../components/carouselActionList/index';
 import Modal from '../../AvatarSelector/Modal';
-import getStyles from './style';
-import { useTheme } from '../../../Theme/ThemeContext';
+import styles from './style';
 import {API_BASE_URL} from '../../../env';
 // import * as Keychain from 'react-native-keychain';
 import {
@@ -42,8 +41,6 @@ const MenuPrincipal = ({navigation, route}: Props) => {
     phone: '',
     avatarUrl: '', // Adicionado para armazenar o avatar
   });
-  const { theme } = useTheme(); // Obtenha o tema
-  const styles = getStyles(theme);
 
   const fetchUserProfile = useCallback(async () => {
     try {

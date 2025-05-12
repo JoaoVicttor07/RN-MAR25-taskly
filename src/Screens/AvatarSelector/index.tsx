@@ -7,7 +7,6 @@ import {
   Alert,
   Dimensions,
   BackHandler,
-  StyleSheet,
 } from 'react-native';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -17,8 +16,7 @@ import Button from '../../components/button';
 import ProfileHeader from '../../components/ProfileHeader';
 import ProgressBar from '../../components/ProgressBar';
 import Modal from './Modal';
-import { useTheme } from '../../Theme/ThemeContext';
-import { ThemeType } from '../../Theme/theme';
+import styles from './style';
 import {API_BASE_URL} from '../../env';
 import * as Keychain from 'react-native-keychain';
 
@@ -40,29 +38,8 @@ const AVATAR_SIZE = 100;
 const AVATAR_MARGIN = 12;
 const GRAY_BORDER = '#D1D5DB';
 
-const avatarTouchableStyle = StyleSheet.create({
-  container: {
-    borderWidth: 3,
-    borderRadius: AVATAR_SIZE / 2,
-    overflow: 'hidden',
-    margin: AVATAR_MARGIN / 2,
-    padding: 0,
-  },
-  dimmedOverlay: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    width: AVATAR_SIZE,
-    height: AVATAR_SIZE,
-    borderRadius: AVATAR_SIZE / 2,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-  },
-});
-
 export default function AvatarSelector() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const { theme } = useTheme();
-  const styles = getStyles(theme);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const route = useRoute<RouteProp<RootStackParamList, 'AvatarSelector'>>();
   const navigation =
@@ -226,36 +203,55 @@ export default function AvatarSelector() {
         <Text style={styles.textAvatar}>SELECIONE SEU AVATAR</Text>
         <Text style={styles.textPick}>(Escolha somente um.)</Text>
       </View>
-      <View style={themedStyles.avatarsRow}>
-        {AVATARS.map((avatar) => {
+      <View style={styles.avatarsRow}>
+        {AVATARS.map(avatar => {
           const isSelected = selectedId === avatar.id;
           const isDimmed = selectedId && !isSelected;
           return (
             <TouchableOpacity
               key={avatar.id}
               style={[
-                avatarTouchableStyle.container,
+                styles.avatarTouchable,
                 {
                   borderColor: selectedId
                     ? isSelected
                       ? avatar.borderColor
                       : GRAY_BORDER
                     : avatar.borderColor,
+                  borderWidth: 3,
+                  borderRadius: AVATAR_SIZE / 2,
+                  margin: AVATAR_MARGIN / 2,
+                  overflow: 'hidden',
+                  padding: 0,
                 },
               ]}
               activeOpacity={0.7}
-              onPress={() => handleAvatarPress(avatar.id)}
-            >
+              onPress={() => handleAvatarPress(avatar.id)}>
               <Image
                 source={avatar.source}
                 style={{
-                  width: AVATAR_SIZE,
+                  position: 'absolute',
+                  left: -(AVATAR_SIZE * 0.1),
+                  top: 0,
+                  width: AVATAR_SIZE * 1.2,
                   height: AVATAR_SIZE,
                   borderRadius: AVATAR_SIZE / 2,
                 }}
                 resizeMode="cover"
               />
-              {isDimmed && <View style={avatarTouchableStyle.dimmedOverlay} />}
+              {isDimmed && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    width: AVATAR_SIZE * 1.2,
+                    height: AVATAR_SIZE,
+                    borderRadius: AVATAR_SIZE / 2,
+                    backgroundColor: 'rgba(0,0,0,0.4)',
+                  }}
+                />
+              )}
             </TouchableOpacity>
           );
         })}
@@ -282,55 +278,6 @@ export default function AvatarSelector() {
         confirmColor="#32C25B"
         onClose={handleModalClose}
       />
-      <Modal
-        visible={isModalVisible}
-        title={
-          isEditing ? 'Perfil atualizado' : 'Cadastro realizado com sucesso!'
-        }
-        description={
-          isEditing
-            ? 'Suas informações foram salvas com sucesso.'
-            : 'Você será direcionado para a tela principal.'
-        }
-        confirmText="OK"
-        confirmColor="#32C25B"
-        onClose={handleModalClose}
-      />
     </View>
   );
 }
-
-const getStyles = (theme: ThemeType) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.background,
-  },
-  headerContainer: {
-    paddingBottom: 20,
-  },
-  content: {
-    alignItems: 'center',
-    padding: 20,
-  },
-  textAvatar: {
-    fontSize: 20,
-    fontFamily: 'Roboto70020',
-    color: theme.text,
-    marginBottom: 8,
-  },
-  textPick: {
-    fontSize: 16,
-    fontFamily: 'Roboto400',
-    color: theme.secondaryText,
-  },
-  avatarsRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    paddingHorizontal: AVATAR_MARGIN / 2,
-    marginTop: 20,
-  },
-  confirmButton: {
-    marginTop: 40,
-  },
-});
