@@ -1,9 +1,11 @@
 import {StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import Fonts from '../../Theme/fonts';
+import { ThemeType } from '../../Theme/theme';
 
-export const styles = StyleSheet.create({
+const getStyles = (theme: ThemeType) => StyleSheet.create({
   itemArea: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.card,
     paddingVertical: 24,
     paddingHorizontal: 12,
     borderRadius: 8,
@@ -23,9 +25,11 @@ export const styles = StyleSheet.create({
   },
   title: {
     ...Fonts.Roboto60020,
+    color: theme.text,
   },
   description: {
     ...Fonts.Roboto40016,
+    color: theme.text,
   },
   categoriesContainer: {},
   carousel: {
@@ -33,8 +37,9 @@ export const styles = StyleSheet.create({
     gap: 12,
   },
   tag: {
-    backgroundColor: '#E6E0F7',
+    backgroundColor: theme.tagTask,
     ...Fonts.Roboto40012,
+    color: theme.text,
     padding: 4,
     borderRadius: 8,
     alignSelf: 'flex-start',
@@ -56,3 +61,6 @@ export const styles = StyleSheet.create({
     ...Fonts.Roboto40016,
   },
 });
+
+export default getStyles;
+

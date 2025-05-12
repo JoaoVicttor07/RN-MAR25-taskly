@@ -1,66 +1,88 @@
 import { StyleSheet } from 'react-native';
 import Fonts from '../../Theme/fonts';
+import { ThemeType } from '../../Theme/theme';
 
-const styles = StyleSheet.create({
+const getStyles = (theme: ThemeType) => StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(17, 24, 39, 0.7)', 
+    backgroundColor: 'rgba(17, 24, 39, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: '#ffffff',
+    marginHorizontal: 1,
+    backgroundColor: theme.background,
     borderRadius: 12,
     padding: 24,
   },
   modalTitle: {
     ...Fonts.Roboto50018,
     textAlign: 'left',
+    color: theme.text,
   },
-
+  label: {
+    marginTop: 12,
+    ...Fonts.Roboto40012,
+    color: theme.text,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 5,
+    color: theme.text,
+    backgroundColor: theme.background,
+  },
+  textArea: {
+    height: 100,
+    textAlignVertical: 'top',
+    color: theme.text,
+    backgroundColor: theme.background,
+  },
+  error: {
+    color: '#E63946',
+    ...Fonts.Roboto40012,
+    marginTop: 7,
+  },
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 20,
-    gap: 12,
   },
   cancelButton: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.background,
     borderRadius: 8,
-    borderWidth: 2,   
-    borderColor: '#5B3CC4', 
+    borderWidth: 2,
+    borderColor: theme.AvatarButton,
     width: 134.5,
     height: 37,
     alignItems: 'center',
-    justifyContent:'center'
+    justifyContent:'center',
   },
   cancelText: {
-    color: '#5B3CC4',
+    color: theme.AvatarButton,
     ...Fonts.Roboto50018,
-    textTransform: 'uppercase',
   },
   createButton: {
-    backgroundColor: '#5B3CC4',
+    backgroundColor: theme.AvatarButton,
     borderRadius: 8,
     width: 134.5,
     height: 37,
     alignItems: 'center',
-    justifyContent:'center'
+    justifyContent:'center',
   },
   createText: {
-    color: '#fff',
+    color: theme.background,
     ...Fonts.Roboto50018,
-    textTransform: 'uppercase',
   },
   inputContainer: {
-    gap: 24,
-    marginBottom: 12,
-    marginTop: 12,
-    width: '100%',
+    gap: 16,
   },
-  textinputArea:{
-    marginBottom: 35,
-  }
+  textinputArea: {
+    gap: 16,
+    backgroundColor: theme.background,
+  },
 });
 
-export default styles;
+export default getStyles;

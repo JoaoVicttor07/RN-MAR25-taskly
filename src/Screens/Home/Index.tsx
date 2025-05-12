@@ -4,7 +4,6 @@ import {
   Text,
   Image,
 } from 'react-native';
-import styles from './style';
 import Button from '../../components/button';
 import CreateTaskModal from '../../components/ModalCreateTask/Index';
 import EmptyState from '../../components/EmptyState';
@@ -12,6 +11,8 @@ import TaskList from '../../components/TaskItem/TaskList';
 import Filter from '../../components/Filter';
 import FilterModal from '../../components/FilterModal';
 import Fonts from '../../Theme/fonts';
+import getStyles from './style';
+import { useTheme } from '../../Theme/ThemeContext';
 
 type PriorityType = 'lowToHigh' | 'highToLow' | null;
 type TagsType = string[];
@@ -30,6 +31,8 @@ interface Task {
 const Home: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
+  const { theme } = useTheme();
+  const styles = getStyles(theme);
   const [tasks, setTasks] = useState<Task[]>([
     {
       id: '1',

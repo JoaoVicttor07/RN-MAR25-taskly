@@ -1,12 +1,12 @@
 import {StyleSheet} from 'react-native';
 import Fonts from '../../Theme/fonts';
 
-const styles = StyleSheet.create({
+const styles = (theme: any) => StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#fff',
+    backgroundColor: theme.card,
     padding: 24,
     height:72,
     borderRadius: 12,
@@ -17,7 +17,8 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   text: {
-    ...Fonts.Roboto50018
+    ...Fonts.Roboto50018,
+    color: theme.primaryText,
   },
   icon: {
     tintColor: '#000',
@@ -25,4 +26,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default styles
+export default styles;

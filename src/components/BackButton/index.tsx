@@ -1,33 +1,38 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View, Image } from 'react-native';
 import Fonts from '../../Theme/fonts';
-
+import { useTheme } from '../../Theme/ThemeContext';
+//feito
 interface BackButtonProps {
   onPress: () => void;
   rightText?: string; // Texto opcional ao lado do botão
 }
 
 const BackButton: React.FC<BackButtonProps> = ({ onPress, rightText }) => {
+
+  const { theme } = useTheme(); // Obtenha o tema
+  const themedStyles = getStyles(theme); // Utilize a função getStyles
+
   return (
-    <View style={styles.container}>
+    <View style={themedStyles.container}>
       {/* Botão VOLTAR */}
-      <TouchableOpacity style={styles.button} onPress={onPress}>
-        <View style={styles.iconContainer}>
+      <TouchableOpacity style={themedStyles.button} onPress={onPress}>
+        <View style={themedStyles.iconContainer}>
           <Image
             source={require('../../Assets/icons/VectorBack.png')}
-            style={styles.icon}
+            style={themedStyles.icon}
           />
-          <Text style={styles.textButton}>VOLTAR</Text>
+          <Text style={themedStyles.textButton}>VOLTAR</Text>
         </View>
       </TouchableOpacity>
 
-      {/* Texto ao lado do botão, exemplo: 'Termos e regulamentos' */}
-      {rightText && <Text style={styles.textRight}>{rightText}</Text>}
+      {/* Texto abaixo do botão, como 'Termos e regulamentos' */}
+      {rightText && <Text style={themedStyles.textRight}>{rightText}</Text>}
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (theme: any) => StyleSheet.create({
   container: {
     width: 329,
     flexDirection: 'row',
@@ -39,7 +44,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: '#AAAAAA',
+    backgroundColor:  theme.backButton,
     width: 113,
     height: 48,
     borderRadius: 12,
@@ -56,11 +61,11 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   textButton: {
-    color: '#F4F4F4',
+    color: theme.buttonText,
     ...Fonts.Roboto50018,
   },
   textRight: {
-    color: '#000000',
+    color: theme.text,
     ...Fonts.Roboto40016,
   },
 });

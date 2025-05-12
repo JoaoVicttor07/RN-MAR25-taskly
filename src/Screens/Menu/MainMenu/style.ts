@@ -1,19 +1,19 @@
 //Estilos do Menu Principal
-
 import { StyleSheet } from 'react-native';
 import Fonts from '../../../Theme/fonts';
+import { ThemeType } from '../../../Theme/theme';
 
-const styles = StyleSheet.create({
+const getStyles = (theme: ThemeType) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F4F4F4',
+    backgroundColor: theme.background,
     paddingHorizontal: 32,
   },
 
   profileSection: {
     alignItems: 'center',
     marginTop: 40,
-    marginBottom:32,
+    marginBottom: 32,
   },
   avatar: {
     width: 150,
@@ -31,11 +31,12 @@ const styles = StyleSheet.create({
 
   profileText: {
     ...Fonts.Roboto40016,
-    color: '#1E1E1E',
+    color: theme.text,
   },
 
-  profileNome:{
+  profileNome: {
     ...Fonts.Roboto50018,
+    color: theme.text,
   },
 
   carouselContainer: {
@@ -44,17 +45,17 @@ const styles = StyleSheet.create({
 
   containerButtons: {
     gap: 16,
-    alignItems:'center',
+    alignItems: 'center',
   },
 
   button: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#fff',
+    backgroundColor: theme.card, // Uma cor para os cards/botões
     padding: 24,
-    width:329,
-    height:72,
+    width: 329,
+    height: 72,
     borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 3, height: 3 },
@@ -65,17 +66,17 @@ const styles = StyleSheet.create({
 
   buttonText: {
     ...Fonts.Roboto50018,
-    color: '#000',
+    color: theme.primaryText, // Uma cor primária para o texto
   },
 
   icon: {
     width: 9.75,
     height: 17.25,
     resizeMode: 'contain',
-    tintColor:'#000',
+    tintColor: theme.primaryText,
     transform: [{ rotate: '180deg' }],
-    marginRight:3.37,
+    marginRight: 3.37,
   },
 });
 
-export default styles;
+export default getStyles;

@@ -1,19 +1,19 @@
 import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
-    container: { 
+const styles = (theme: any) => StyleSheet.create({
+    container: {
         padding: 15,
         width: 120,
         height: 120,
         borderRadius: 10,
         marginHorizontal: 8,
-        backgroundColor: '#fff',
-        shadowColor: '#000',
+        backgroundColor: theme.card,
+        shadowColor: theme.shadow,
         shadowOpacity: 0.5,
         shadowRadius: 4,
         elevation: 6,
       },
-      icon: { 
+      icon: {
        position: 'absolute',
        bottom: '22%',
        left: '15%',
@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
       title: {
         fontSize: 15,
         fontWeight: 'bold',
+        color:theme.text,
       },
-})
+});
 
-export default styles
+export default styles;

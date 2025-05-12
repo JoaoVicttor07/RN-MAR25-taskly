@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
-import styles from './style';
 import Button from '../button';
 import Fonts from '../../Theme/fonts';
 import Collapsible from 'react-native-collapsible';
 import AnimatedCheck from '../AnimatedCheck';
 import DateInput from '../DateInput';
+import getStyles from './style';
+import { useTheme } from '../../Theme/ThemeContext';
+
 
 interface FilterModalProps {
   visible: boolean;
@@ -34,12 +36,15 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [filterDate, setFilterDate] = useState<Date | null>(null);
 
+  const { theme } = useTheme(); // Obtenha o tema atual
+  const styles = getStyles(theme); // Obtenha os estilos temáticos
+
   useEffect(() => {
     if (visible) {
       setIsSortOpen(false);
       setIsTagsOpen(false);
       setIsDateOpen(false);
-      
+
     }
   }, [visible]);
 
