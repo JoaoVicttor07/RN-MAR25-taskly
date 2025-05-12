@@ -52,7 +52,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     const uniqueTags = new Set<string>();
     tasks.forEach(task => {
-      task.categories.forEach(tag => uniqueTags.add(tag));
+      (task.categories ?? []).forEach(tag => uniqueTags.add(tag));
     });
     setAllTags(Array.from(uniqueTags));
   }, [tasks]);
@@ -85,7 +85,7 @@ const Home: React.FC = () => {
   const handleCreateTask = useCallback(async (taskData: {
     title: string;
     description: string;
-    deadline: string;
+    deadline: string | null | undefined;
   }) => {
     const newTask: Task = {
       ...taskData,
@@ -94,10 +94,12 @@ const Home: React.FC = () => {
       isCompleted: false,
       priority: 0,
       subtasks: [],
+      createdAt: Date.now(),
     };
     setTasks(prevTasks => [...prevTasks, newTask]);
     setIsModalVisible(false);
   }, []);
+
 
   const handleOpenCreateTaskModal = () => setIsModalVisible(true);
   const handleCloseCreateTaskModal = () => setIsModalVisible(false);
@@ -124,8 +126,8 @@ const Home: React.FC = () => {
     <TouchableOpacity onPress={() => handleTaskDetailsNavigation(item)}>
       <TaskItem
         title={item.title}
-        description={item.description}
-        categories={item.categories}
+        description={item.description ?? ''}
+        categories={item.categories ?? []}
         isCompleted={item.isCompleted}
         task={item}
         onToggleComplete={() => handleToggleTaskComplete(item.id)}
@@ -138,25 +140,34 @@ const Home: React.FC = () => {
   useEffect(() => {
     let tempTasks = [...tasks];
 
+    // Filtra por tags selecionadas
     if (selectedTags.length > 0) {
       tempTasks = tempTasks.filter(task =>
-        selectedTags.every(tag => task.categories.includes(tag))
+        selectedTags.every(tag => (task.categories ?? []).includes(tag))
       );
     }
 
+    // Filtra por data selecionada
     if (selectedDate) {
       const filterDateString = selectedDate.toISOString().split('T')[0];
+
       tempTasks = tempTasks.filter(task => {
+        if (!task.deadline) return false;
+
         const taskDate = new Date(task.deadline);
+        if (isNaN(taskDate.getTime())) return false;
+
         const taskDateString = taskDate.toISOString().split('T')[0];
         return taskDateString === filterDateString;
       });
     }
 
+    // Ordena por prioridade
     if (selectedPriority) {
       tempTasks.sort((a, b) => {
         const priorityA = a.priority ?? -1;
         const priorityB = b.priority ?? -1;
+
         return selectedPriority === 'lowToHigh'
           ? priorityA - priorityB
           : priorityB - priorityA;
@@ -164,7 +175,8 @@ const Home: React.FC = () => {
     }
 
     setFilteredTasks(tempTasks);
-  }, [tasks, selectedPriority, selectedTags, selectedDate]);
+  }, [tasks, selectedTags, selectedDate, selectedPriority]);
+
 
   useFocusEffect(
     useCallback(() => {
