@@ -25,7 +25,7 @@ export const LightTheme: ThemeType = {
   carouselText: '#000000', // Cor do texto de cada item do carousel
   activeCircle: '#5B3CC4', //Cor do circulo quando uma das opções da tabbar é selecionada
   cancelButton: '#5B3CC4', //cor do botão "Agora Não" dos modais
-  FilterButton: '#5B3CC4', //cor dos botões do filtro
+  FilterButton: '#5B3CC4', //cor dos botões do filtro e do botão confirmar seleção de avatar
   Inputborder: '#5B3CC4', //cor da borda dos inputs
 
 };
@@ -41,7 +41,7 @@ export const DarkTheme: ThemeType = {
   carouselText: '#F0F0F0', // Cor do texto e do icone de cada item do carousel
   activeCircle: '#552DDC', //Cor do circulo quando uma das opções da tabbar é selecionada
   cancelButton: '#552DDC', //cor do botão "Agora Não" dos modais
-  FilterButton: '#552DDC', //cor dos botões do filtro
+  FilterButton: '#552DDC', //cor dos botões do filtro e do botão confirmar seleção de avatar
   Inputborder: '#552DDC', //cor da borda dos inputs
 
 
