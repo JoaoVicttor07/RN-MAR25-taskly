@@ -26,6 +26,7 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
     alignSelf: 'flex-start',
     marginLeft: 8,
     textDecorationLine: 'underline',
+    color: theme.text,
   },
   row: {
     flexDirection: 'row',
@@ -36,7 +37,7 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
   card: {
     width: CARD_SIZE,
     height: CARD_SIZE,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.card,
     borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
@@ -46,7 +47,7 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
   },
   selectedCard: {
     borderColor: '#7B4AE4',
-    backgroundColor: '#fff',
+    backgroundColor: theme.card,
   },
   icon: {
     width: 80,

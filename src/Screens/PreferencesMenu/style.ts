@@ -6,6 +6,7 @@ import { ThemeType } from '../../Theme/theme';
 const getStyles = (theme: ThemeType) => StyleSheet.create({
     container: {
         paddingHorizontal: 30,
+        flex: 1,
         backgroundColor: theme.background,
     },
     header: {
