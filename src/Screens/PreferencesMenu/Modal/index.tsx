@@ -72,9 +72,9 @@ export default function ThemeModal({ visible, onClose }: ThemeModalProps) {
               fontFamily="Roboto50018"
               width={140}
               height={40}
-              backgroundColor={theme.card} // Use o theme para o fundo
-              textColor={theme.primaryButton} // Use o theme para a cor do texto
-              borderColor={theme.primaryButton} // Use o theme para a borda
+              backgroundColor={theme.background} // Use o theme para o fundo
+              textColor={theme.FilterButton} // Use o theme para a cor do texto
+              borderColor={theme.FilterButton} // Use o theme para a borda
               borderWidth={2}
               onPress={onClose}
             />
@@ -84,9 +84,9 @@ export default function ThemeModal({ visible, onClose }: ThemeModalProps) {
               fontFamily="Roboto50018"
               width={140}
               height={40}
-              backgroundColor={theme.confirmButton} // Use o theme para o fundo
+              backgroundColor="#32C25B" // Use o theme para o fundo
               onPress={handleConfirm}
-              textColor={theme.buttonText} // Use o theme para a cor
+              textColor={theme.background} // Use o theme para a cor
             />
 
           </View>

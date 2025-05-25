@@ -37,7 +37,7 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
   card: {
     width: CARD_SIZE,
     height: CARD_SIZE,
-    backgroundColor: theme.card,
+    backgroundColor: theme.Habilitarbutton,
     borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
@@ -47,7 +47,6 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
   },
   selectedCard: {
     borderColor: '#7B4AE4',
-    backgroundColor: theme.card,
   },
   icon: {
     width: 80,
