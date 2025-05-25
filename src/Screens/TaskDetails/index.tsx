@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../Navigation/types';
-import styles from './style';
+import getStyles from './style';
+import { useTheme } from '../../Theme/ThemeContext';
 import DefaultHeader from '../../components/DefaultHeader';
 import CategoryTag from '../../components/CategoryTag';
 import SmallBackButton from '../../components/SmallBackButton';
@@ -65,6 +66,8 @@ const TaskDetailsScreen: React.FC<TaskDetailsProps> = ({ onTaskUpdated }) => {
     const [editedPriority, setEditedPriority] = useState<number | undefined>(initialTask.priority);
     const [editedDeadline, setEditedDeadline] = useState<Date | null>(null);
     const [tagError, setTagError] = useState('');
+    const { theme } = useTheme();
+    const styles = getStyles(theme);
 
     const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'TaskDetails'>>();
 
