@@ -11,7 +11,7 @@ export interface ThemeType {
   FilterButton: string
   text2: string
   Inputborder: string
-
+  tagBackground: string
 }
 
 export const LightTheme: ThemeType = {
@@ -27,7 +27,7 @@ export const LightTheme: ThemeType = {
   cancelButton: '#5B3CC4', //cor do botão "Agora Não" dos modais
   FilterButton: '#5B3CC4', //cor dos botões do filtro e do botão confirmar seleção de avatar
   Inputborder: '#5B3CC4', //cor da borda dos inputs
-
+  tagBackground: '#E6E0F7', //fundo da tag
 };
 
 export const DarkTheme: ThemeType = {
@@ -43,6 +43,7 @@ export const DarkTheme: ThemeType = {
   cancelButton: '#552DDC', //cor do botão "Agora Não" dos modais
   FilterButton: '#552DDC', //cor dos botões do filtro e do botão confirmar seleção de avatar
   Inputborder: '#552DDC', //cor da borda dos inputs
+  tagBackground: '#A393D1', //fundo da tag
 
 
 
