@@ -85,7 +85,7 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
     marginBottom: 15,
   },
   addButton: {
-    backgroundColor: '#5B3CC4',
+    backgroundColor: theme.Inputborder,
     paddingVertical: 4,
     borderRadius: 8,
     alignItems: 'center',
