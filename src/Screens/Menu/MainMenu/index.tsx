@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import {CarouselActionList} from '../../../components/carouselActionList/index';
 import Modal from '../../AvatarSelector/Modal';
 import styles from './style';
@@ -43,65 +44,64 @@ const MenuPrincipal = ({navigation, route}: Props) => {
   //   avatarUrl: '', // Adicionado para armazenar o avatar
   // });
 
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const token = await getToken();
-        if (!token) throw new Error('Token não encontrado. Faça login novamente.');
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchUserProfile = async () => {
+        try {
+          const token = await getToken();
+          if (!token) throw new Error('Token não encontrado. Faça login novamente.');
 
-        const response = await getProfile(token);
+          const response = await getProfile(token);
 
-        if (response.status === 200) {
-          const data = response.data;
-          setUser({
-            name: data.name || 'Usuário',
-            email: data.email || 'Email não disponível',
-            phone: data.phone_number || 'Telefone não disponível',
-            avatarUrl: data.picture || '',
-          });
-        } else if (response.status === 401) {
-          try {
-            const newToken = await refreshAuthToken();
-            const retryResponse = await getProfile(newToken);
-            if (retryResponse.status === 200) {
-              const data = retryResponse.data;
-              setUser({
-                name: data.name || 'Usuário',
-                email: data.email || 'Email não disponível',
-                phone: data.phone_number || 'Telefone não disponível',
-                avatarUrl: data.picture || '',
-              });
-            } else {
-              throw new Error('Erro ao buscar perfil com novo token.');
-            }
-          } catch (refreshError) {
-            Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
-            await removeToken();
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Login' }],
+          if (response.status === 200) {
+            const data = response.data;
+            setUser({
+              name: data.name || 'Usuário',
+              email: data.email || 'Email não disponível',
+              phone: data.phone_number || 'Telefone não disponível',
+              avatarUrl: data.picture || '',
             });
+          } else if (response.status === 401) {
+            try {
+              const newToken = await refreshAuthToken();
+              const retryResponse = await getProfile(newToken);
+              if (retryResponse.status === 200) {
+                const data = retryResponse.data;
+                setUser({
+                  name: data.name || 'Usuário',
+                  email: data.email || 'Email não disponível',
+                  phone: data.phone_number || 'Telefone não disponível',
+                  avatarUrl: data.picture || '',
+                });
+              } else {
+                throw new Error('Erro ao buscar perfil com novo token.');
+              }
+            } catch (refreshError) {
+              Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
+              await removeToken();
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+              });
+            }
+          } else {
+            Alert.alert('Erro', 'Não foi possível carregar as informações do perfil.');
           }
-        } else {
-          Alert.alert('Erro', 'Não foi possível carregar as informações do perfil.');
+        } catch (error) {
+          Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+          });
         }
-      } catch (error) {
-        Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Login' }],
-        });
-      }
-    };
+      };
 
-    // Só busca se não houver dados no contexto
-    if (!user) {
       fetchUserProfile();
-    }
-  }, [navigation, setUser, user]);
+    }, [navigation, setUser])
+  );
 
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (route.params?.showConfirmationModal && !hasShownModal) {
       setIsModalVisible(true);
       setHasShownModal(true);
