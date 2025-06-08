@@ -17,7 +17,7 @@ import ProfileHeader from '../../components/ProfileHeader';
 import ProgressBar from '../../components/ProgressBar';
 import Modal from './Modal';
 import styles from './style';
-import {API_BASE_URL} from '../../env';
+import { updateProfile } from '../../services/authService';
 import * as Keychain from 'react-native-keychain';
 
 import avatar1 from '../../Assets/Images/Avatars/avatar_1.png';
@@ -71,7 +71,7 @@ export default function AvatarSelector() {
       return;
     }
 
-    console.log('API_BASE_URL:', API_BASE_URL);
+
 
     try {
       const credentials = await Keychain.getGenericPassword();
@@ -109,7 +109,7 @@ export default function AvatarSelector() {
       return;
     }
 
-    console.log('API_BASE_URL:', API_BASE_URL);
+
 
     try {
       const credentials = await Keychain.getGenericPassword();
@@ -127,43 +127,32 @@ export default function AvatarSelector() {
 
       const cleanedPhoneNumber = route.params?.phone_number?.replace(/\D/g, '');
 
-      const response = await fetch(`${API_BASE_URL}/profile`, {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: route.params?.name,
-          phone_number: cleanedPhoneNumber,
-          picture: selectedId,
-        }),
-      });
+      const response = await updateProfile(
+        {
+        name: route.params?.name ?? '',
+        phone_number: cleanedPhoneNumber ?? '',
+        picture: selectedId,
+      },
+      token
+      )
 
       console.log('Status da resposta:', response.status);
 
-      const contentType = response.headers.get('Content-Type');
-      let responseData;
+      
 
-      if (contentType && contentType.includes('application/json')) {
-        responseData = await response.json();
-      } else {
-        responseData = await response.text();
-      }
+      console.log('Resposta da API:', response.data);
 
-      console.log('Resposta da API:', responseData);
-
-      if (response.ok) {
+      if (response.status === 200) {
         console.log('Perfil atualizado com sucesso!');
         setIsModalVisible(true);
       } else {
-        console.error('Erro ao atualizar perfil:', responseData);
+        console.error('Erro ao atualizar perfil:', response.data);
         Alert.alert(
           'Erro',
-          responseData.error || 'Não foi possível atualizar o perfil.',
+          response.data?.error || 'Não foi possível atualizar o perfil.',
         );
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao processar a requisição:', error);
       Alert.alert('Erro', 'Ocorreu um erro ao processar sua solicitação.');
     }

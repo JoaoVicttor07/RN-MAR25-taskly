@@ -8,7 +8,7 @@ import type {RootStackParamList} from '../../Navigation/types';
 import ProfileHeader from '../../components/ProfileHeader';
 import ProgressBar from '../../components/ProgressBar';
 import styles from './style';
-import {API_BASE_URL} from '../../env';
+import { getProfile } from '../../services/authService';
 import * as Keychain from 'react-native-keychain';
 
 type NavigationProp = NativeStackNavigationProp<
@@ -31,15 +31,10 @@ function EditPersonalInfoScreen() {
         throw new Error('Token não encontrado. Faça login novamente.');
       }
 
-      const response = await fetch(`${API_BASE_URL}/profile`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${credentials.password}`,
-        },
-      });
+      const response = await getProfile(credentials.password);
 
-      if (response.ok) {
-        const data = await response.json();
+      if (response.status === 200) {
+        const data = await response.data;
         setEmail(data.email);
         setName(data.name || '');
         setPhone(data.phone_number || '');

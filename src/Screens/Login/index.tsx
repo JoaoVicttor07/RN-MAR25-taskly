@@ -6,15 +6,16 @@ import {
   TouchableOpacity,
   Text,
   ImageSourcePropType,
+  Alert,
 } from 'react-native';
-import axios from 'axios';
-import {API_BASE_URL} from '../../env';
 import * as Keychain from 'react-native-keychain';
 import {
   storeToken,
   setBiometryEnabled,
   isBiometryEnabled,
 } from '../../Utils/authUtils';
+import {loginUser, getProfile, updateAvatar} from '../../services/authService';
+import {useUser} from '../../contexts/userContext';
 import styles from './style';
 import Input from '../../components/input';
 import Button from '../../components/button';
@@ -35,6 +36,7 @@ type LoginScreenNavigationProp = NativeStackNavigationProp<
 
 const Login: React.FC = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
+  const {setUser} = useUser();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [errors, setErrors] = useState<{email?: string; password?: string}>({});
@@ -138,15 +140,11 @@ const Login: React.FC = () => {
         console.log('Biometria desativada. Usuário deve fazer login manual.');
       }
 
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, {
-        email,
-        password,
-      });
-
+      console.log('Tentando login com:', email, password);
+      const response = await loginUser({email, password});
 
       if (response.status === 200) {
         const {id_token, refresh_token} = response.data;
-
 
         await storeToken(id_token, refresh_token);
 
@@ -179,32 +177,26 @@ const Login: React.FC = () => {
           const {avatar} = parsedCredentials;
 
           if (avatar) {
-            const response = await fetch(`${API_BASE_URL}/profile`, {
-              method: 'PUT',
-              headers: {
-                Authorization: `Bearer ${id_token}`,
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({picture: avatar}),
-            });
+            const avatarResponse = await updateAvatar(avatar, id_token);
 
-            const contentType = response.headers.get('Content-Type');
-            let responseData;
-
-            if (contentType && contentType.includes('application/json')) {
-              responseData = await response.json();
-            } else {
-              responseData = await response.text();
-            }
-
-
-            if (response.ok) {
+            if (avatarResponse.status === 200) {
               console.log('Avatar atualizado com sucesso!');
             } else {
-              console.error('Erro ao atualizar avatar:', responseData);
+              console.error('Erro ao atualizar avatar:', response.data);
               throw new Error('Não foi possível atualizar o avatar.');
             }
           }
+        }
+
+        const profileResponse = await getProfile(id_token);
+        if (profileResponse.status === 200) {
+          const data = profileResponse.data;
+          setUser({
+            name: data.name || 'Usuário',
+            email: data.email || 'Email não disponível',
+            phone: data.phone_number || 'Telefone não disponível',
+            avatarUrl: data.picture || '',
+          });
         }
 
         navigation.reset({index: 0, routes: [{name: 'MainApp'}]});
@@ -212,9 +204,22 @@ const Login: React.FC = () => {
         setErrorMessage('E-mail e/ou senha incorretos');
         setIsErrorModalVisible(true);
       }
-    } catch (error) {
-      setErrorMessage('E-mail e/ou senha incorretos');
-      setIsErrorModalVisible(true);
+    } catch (error: any) {
+      if (error.response) {
+        setErrorMessage('E-mail e/ou senha incorretos');
+        setIsErrorModalVisible(true);
+        setIsSubmitting(false);
+      } else if (error.request) {
+        setIsSubmitting(false);
+        Alert.alert(
+          'Erro de conexão',
+          'Servidor indisponível. Por favor, tente novamente mais tarde ou entre em contato com o suporte.',
+        );
+      } else {
+        setErrorMessage('Ocorreu um erro inesperado. Tente novamente.');
+        setIsErrorModalVisible(true);
+        setIsSubmitting(false);
+      }
     } finally {
       setIsSubmitting(false);
     }
