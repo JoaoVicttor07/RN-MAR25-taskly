@@ -20,18 +20,20 @@ import styles from './style';
 import { updateProfile } from '../../services/authService';
 import * as Keychain from 'react-native-keychain';
 
-import avatar1 from '../../Assets/Images/Avatars/avatar_1.png';
-import avatar2 from '../../Assets/Images/Avatars/avatar_2.png';
-import avatar3 from '../../Assets/Images/Avatars/avatar_3.png';
-import avatar4 from '../../Assets/Images/Avatars/avatar_4.png';
-import avatar5 from '../../Assets/Images/Avatars/avatar_5.png';
+// import avatar1 from '../../Assets/Images/Avatars/avatar_1.png';
+// import avatar2 from '../../Assets/Images/Avatars/avatar_2.png';
+// import avatar3 from '../../Assets/Images/Avatars/avatar_3.png';
+// import avatar4 from '../../Assets/Images/Avatars/avatar_4.png';
+// import avatar5 from '../../Assets/Images/Avatars/avatar_5.png';
+
+const bucketBaseUrl = 'https://taskly-avatares-usuario.s3.us-east-2.amazonaws.com/avatars/';
 
 const AVATARS = [
-  {id: 'avatar_1', source: avatar1, borderColor: '#6C4AE4'},
-  {id: 'avatar_2', source: avatar2, borderColor: '#E4B14A'},
-  {id: 'avatar_3', source: avatar3, borderColor: '#4AE47B'},
-  {id: 'avatar_4', source: avatar4, borderColor: '#E44A4A'},
-  {id: 'avatar_5', source: avatar5, borderColor: '#B89B5B'},
+  {id: 'avatar_1', source: { uri: `${bucketBaseUrl}avatar_1.png` }, borderColor: '#6C4AE4'},
+  {id: 'avatar_2', source: { uri: `${bucketBaseUrl}avatar_2.png` }, borderColor: '#E4B14A'},
+  {id: 'avatar_3', source: { uri: `${bucketBaseUrl}avatar_3.png` }, borderColor: '#4AE47B'},
+  {id: 'avatar_4', source: { uri: `${bucketBaseUrl}avatar_4.png` }, borderColor: '#E44A4A'},
+  {id: 'avatar_5', source: { uri: `${bucketBaseUrl}avatar_5.png` }, borderColor: '#B89B5B'},
 ];
 
 const AVATAR_SIZE = 100;
