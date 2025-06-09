@@ -116,8 +116,8 @@ const MenuPrincipal = ({navigation, route}: Props) => {
         <Image
           source={
             user?.avatarUrl && avatarMap[user?.avatarUrl]
-              ? avatarMap[user?.avatarUrl]
-              : require('../../../Assets/Images/Avatars/avatar_5.png')
+              // ? avatarMap[user?.avatarUrl]
+              // : require('../../../Assets/Images/Avatars/avatar_5.png')
           }
           style={styles.avatar}
         />
