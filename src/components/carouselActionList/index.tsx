@@ -4,7 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import * as Keychain from 'react-native-keychain';
 import type {RootStackParamList} from '../../Navigation/types';
-import { API_BASE_URL } from '../../env';
+import { deleteAccount } from '../../services/authService';
 import {CarouselActionItem} from '../carouselActionItem';
 import userIcon from '../../Assets/icons/User.png';
 import biometryIcon from '../../Assets/icons/FingerprintSimple.png';
@@ -128,14 +128,9 @@ export function CarouselActionList() {
           throw new Error('Token não encontrado. Faça login novamente.');
         }
 
-        const response = await fetch(`${API_BASE_URL}/profile/delete-account`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token.password}`,
-          },
-        });
+        const response = await deleteAccount(token.password);
 
-        if (response.ok) {
+        if (response.status === 200) {
           console.log('Conta excluída com sucesso.');
           await removeToken();
           navigation.reset({

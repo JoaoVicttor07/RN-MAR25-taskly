@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -7,23 +7,26 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import {CarouselActionList} from '../../../components/carouselActionList/index';
 import Modal from '../../AvatarSelector/Modal';
 import styles from './style';
-import {API_BASE_URL} from '../../../env';
-// import * as Keychain from 'react-native-keychain';
+import {useUser} from '../../../contexts/userContext';
+import { getProfile } from '../../../services/authService';
 import {
   getToken,
   removeToken,
   refreshAuthToken,
 } from '../../../Utils/authUtils';
 
+const bucketBaseUrl = 'https://taskly-avatares-usuario.s3.us-east-2.amazonaws.com/avatars/';
+
 const avatarMap: Record<string, any> = {
-  avatar_1: require('../../../Assets/Images/Avatars/avatar_1.png'),
-  avatar_2: require('../../../Assets/Images/Avatars/avatar_2.png'),
-  avatar_3: require('../../../Assets/Images/Avatars/avatar_3.png'),
-  avatar_4: require('../../../Assets/Images/Avatars/avatar_4.png'),
-  avatar_5: require('../../../Assets/Images/Avatars/avatar_5.png'),
+  avatar_1: { uri: `${bucketBaseUrl}avatar_1.png` },
+  avatar_2: { uri: `${bucketBaseUrl}avatar_2.png` },
+  avatar_3: { uri: `${bucketBaseUrl}avatar_3.png` },
+  avatar_4: { uri: `${bucketBaseUrl}avatar_4.png` },
+  avatar_5: { uri: `${bucketBaseUrl}avatar_5.png` },
 };
 
 
@@ -33,99 +36,74 @@ type Props = {
 };
 
 const MenuPrincipal = ({navigation, route}: Props) => {
+  const {user, setUser} = useUser();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasShownModal, setHasShownModal] = useState(false);
-  const [userData, setUserData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    avatarUrl: '', // Adicionado para armazenar o avatar
-  });
+  // const [userData, setUserData] = useState({
+  //   name: '',
+  //   email: '',
+  //   phone: '',
+  //   avatarUrl: '', // Adicionado para armazenar o avatar
+  // });
 
-  const fetchUserProfile = useCallback(async () => {
-    try {
-      console.log('Tentando buscar perfil do usuário...');
-      const token = await getToken();
-
-      if (!token) {
-        throw new Error('Token não encontrado. Faça login novamente.');
-      }
-
-      console.log('Token usado para buscar perfil:', token);
-
-      const response = await fetch(`${API_BASE_URL}/profile`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Dados do perfil:', data);
-        setUserData({
-          name: data.name || 'Usuário',
-          email: data.email || 'Email não disponível',
-          phone: data.phone_number || 'Telefone não disponível', // Atualizado para usar phone_number
-          avatarUrl: data.picture || '', // Atualizado para usar picture
-        });
-      } else if (response.status === 401) {
-        console.log('Token inválido ou expirado. Tentando renovar...');
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchUserProfile = async () => {
         try {
-          const newToken = await refreshAuthToken();
-          console.log('Token renovado com sucesso:', newToken);
+          const token = await getToken();
+          if (!token) throw new Error('Token não encontrado. Faça login novamente.');
 
-          // Tentar buscar o perfil novamente com o novo token
-          const retryResponse = await fetch(`${API_BASE_URL}/profile`, {
-            method: 'GET',
-            headers: {
-              Authorization: `Bearer ${newToken}`,
-            },
-          });
+          const response = await getProfile(token);
 
-          if (retryResponse.ok) {
-            const data = await retryResponse.json();
-            console.log('Dados do perfil com novo token:', data);
-            setUserData({
+          if (response.status === 200) {
+            const data = response.data;
+            setUser({
               name: data.name || 'Usuário',
               email: data.email || 'Email não disponível',
               phone: data.phone_number || 'Telefone não disponível',
               avatarUrl: data.picture || '',
             });
+          } else if (response.status === 401) {
+            try {
+              const newToken = await refreshAuthToken();
+              const retryResponse = await getProfile(newToken);
+              if (retryResponse.status === 200) {
+                const data = retryResponse.data;
+                setUser({
+                  name: data.name || 'Usuário',
+                  email: data.email || 'Email não disponível',
+                  phone: data.phone_number || 'Telefone não disponível',
+                  avatarUrl: data.picture || '',
+                });
+              } else {
+                throw new Error('Erro ao buscar perfil com novo token.');
+              }
+            } catch (refreshError) {
+              Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
+              await removeToken();
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+              });
+            }
           } else {
-            throw new Error('Erro ao buscar perfil com novo token.');
+            Alert.alert('Erro', 'Não foi possível carregar as informações do perfil.');
           }
-        } catch (refreshError) {
-          console.error('Erro ao renovar o token:', refreshError);
+        } catch (error) {
           Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
-          await removeToken();
           navigation.reset({
             index: 0,
-            routes: [{name: 'Login'}],
+            routes: [{ name: 'Login' }],
           });
         }
-      } else {
-        console.error('Erro ao buscar perfil:', response.status);
-        Alert.alert(
-          'Erro',
-          'Não foi possível carregar as informações do perfil.',
-        );
-      }
-    } catch (error) {
-      console.error('Erro ao buscar perfil:', error);
-      Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'Login'}],
-      });
-    }
-  }, [navigation]);
+      };
 
-  useEffect(() => {
-    fetchUserProfile();
-  }, [fetchUserProfile]);
+      fetchUserProfile();
+    }, [navigation, setUser])
+  );
 
-  useEffect(() => {
+
+  React.useEffect(() => {
     if (route.params?.showConfirmationModal && !hasShownModal) {
       setIsModalVisible(true);
       setHasShownModal(true);
@@ -137,18 +115,18 @@ const MenuPrincipal = ({navigation, route}: Props) => {
       <View style={styles.profileSection}>
         <Image
           source={
-            userData.avatarUrl && avatarMap[userData.avatarUrl]
-              ? avatarMap[userData.avatarUrl]
+            user?.avatarUrl && avatarMap[user?.avatarUrl]
+              ? avatarMap[user?.avatarUrl]
               : require('../../../Assets/Images/Avatars/avatar_5.png')
           }
           style={styles.avatar}
         />
         <View style={styles.containerInfo}>
           <Text style={[styles.profileText, styles.profileNome]}>
-            {userData.name}
+            {user?.name}
           </Text>
-          <Text style={styles.profileText}>{userData.email}</Text>
-          <Text style={styles.profileText}>{userData.phone}</Text>
+          <Text style={styles.profileText}>{user?.email}</Text>
+          <Text style={styles.profileText}>{user?.phone}</Text>
         </View>
       </View>
 

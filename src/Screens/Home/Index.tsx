@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, FlatList, TouchableOpacity, Text, Image } from 'react-native';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
+import {View, FlatList, TouchableOpacity, Text, Image} from 'react-native';
 import styles from './style';
 import Button from '../../components/button';
 import CreateTaskModal from '../../components/ModalCreateTask/Index';
@@ -8,11 +8,30 @@ import TaskItem from '../../components/TaskItem';
 import Filter from '../../components/Filter';
 import FilterModal from '../../components/FilterModal';
 import Fonts from '../../Theme/fonts';
-import { useNavigation, useFocusEffect, useRoute, RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList, BottomTabParamList } from '../../Navigation/types';
-import { getTasks, saveTasks } from '../../Utils/asyncStorageUtils';
-import { Task } from '../../interfaces/task';
+import {
+  useNavigation,
+  useFocusEffect,
+  useRoute,
+  RouteProp,
+} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParamList, BottomTabParamList} from '../../Navigation/types';
+import {getTasks, saveTasks} from '../../Utils/asyncStorageUtils';
+import {Task} from '../../interfaces/task';
+import {useUser} from '../../contexts/userContext';
+import {getProfile} from '../../services/authService';
+import {getToken, refreshAuthToken, removeToken} from '../../Utils/authUtils';
+import {Alert} from 'react-native';
+
+const bucketBaseUrl = 'https://taskly-avatares-usuario.s3.us-east-2.amazonaws.com/avatars/';
+
+const avatarMap: Record<string, any> = {
+  avatar_1: { uri: `${bucketBaseUrl}avatar_1.png` },
+  avatar_2: { uri: `${bucketBaseUrl}avatar_2.png` },
+  avatar_3: { uri: `${bucketBaseUrl}avatar_3.png` },
+  avatar_4: { uri: `${bucketBaseUrl}avatar_4.png` },
+  avatar_5: { uri: `${bucketBaseUrl}avatar_5.png` },
+};
 
 type PriorityType = 'lowToHigh' | 'highToLow' | null;
 type TagsType = string[];
@@ -24,6 +43,7 @@ const Home: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const route = useRoute<HomeRouteProp>();
   const flatListRef = useRef<FlatList<Task>>(null);
+  const {user, setUser} = useUser();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
@@ -33,6 +53,66 @@ const Home: React.FC = () => {
   const [selectedPriority, setSelectedPriority] = useState<PriorityType>(null);
   const [selectedTags, setSelectedTags] = useState<TagsType>([]);
   const [selectedDate, setSelectedDate] = useState<DateType>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchUserProfile = async () => {
+        try {
+          const token = await getToken();
+          if (!token)
+            throw new Error('Token não encontrado. Faça login novamente.');
+
+          const response = await getProfile(token);
+
+          if (response.status === 200) {
+            const data = response.data;
+            setUser({
+              name: data.name || 'Usuário',
+              email: data.email || 'Email não disponível',
+              phone: data.phone_number || 'Telefone não disponível',
+              avatarUrl: data.picture || '',
+            });
+          } else if (response.status === 401) {
+            try {
+              const newToken = await refreshAuthToken();
+              const retryResponse = await getProfile(newToken);
+              if (retryResponse.status === 200) {
+                const data = retryResponse.data;
+                setUser({
+                  name: data.name || 'Usuário',
+                  email: data.email || 'Email não disponível',
+                  phone: data.phone_number || 'Telefone não disponível',
+                  avatarUrl: data.picture || '',
+                });
+              } else {
+                throw new Error('Erro ao buscar perfil com novo token.');
+              }
+            } catch (refreshError) {
+              Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
+              await removeToken();
+              navigation.reset({
+                index: 0,
+                routes: [{name: 'Login'}],
+              });
+            }
+          } else {
+            Alert.alert(
+              'Erro',
+              'Não foi possível carregar as informações do perfil.',
+            );
+          }
+        } catch (error) {
+          Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'Login'}],
+          });
+        }
+      };
+
+      fetchUserProfile();
+    }, [navigation, setUser]),
+  );
 
   useEffect(() => {
     const loadTasks = async () => {
@@ -75,53 +155,56 @@ const Home: React.FC = () => {
       const index = filteredTasks.findIndex(task => task.id === scrollToTaskId);
       if (index !== -1 && flatListRef.current) {
         setTimeout(() => {
-          flatListRef.current?.scrollToIndex({ index, animated: true });
+          flatListRef.current?.scrollToIndex({index, animated: true});
         }, 500);
       }
     }
   }, [route.params?.scrollToTaskId, filteredTasks]);
 
-  const handleCreateTask = useCallback(async (taskData: {
-    title: string;
-    description: string;
-    deadline: string | null | undefined;
-  }) => {
-    const newTask: Task = {
-      ...taskData,
-      id: String(Date.now()),
-      categories: [],
-      isCompleted: false,
-      priority: 0,
-      subtasks: [],
-      createdAt: Date.now(),
-    };
-    setTasks(prevTasks => [...prevTasks, newTask]);
-    setIsModalVisible(false);
-  }, []);
-
+  const handleCreateTask = useCallback(
+    async (taskData: {
+      title: string;
+      description: string;
+      deadline: string | null | undefined;
+    }) => {
+      const newTask: Task = {
+        ...taskData,
+        id: String(Date.now()),
+        categories: [],
+        isCompleted: false,
+        priority: 0,
+        subtasks: [],
+        createdAt: Date.now(),
+      };
+      setTasks(prevTasks => [...prevTasks, newTask]);
+      setIsModalVisible(false);
+    },
+    [],
+  );
 
   const handleOpenCreateTaskModal = () => setIsModalVisible(true);
   const handleCloseCreateTaskModal = () => setIsModalVisible(false);
   const handleOpenFilterModal = () => setIsFilterModalVisible(true);
   const handleCloseFilterModal = () => setIsFilterModalVisible(false);
 
-  const handlePrioritySelect = (priority: PriorityType) => setSelectedPriority(priority);
+  const handlePrioritySelect = (priority: PriorityType) =>
+    setSelectedPriority(priority);
   const handleTagSelect = (tags: TagsType) => setSelectedTags(tags);
   const handleDateSelect = (date: DateType) => setSelectedDate(date);
 
   const handleTaskDetailsNavigation = (taskItem: Task) => {
-    navigation.navigate('TaskDetails', { task: taskItem });
+    navigation.navigate('TaskDetails', {task: taskItem});
   };
 
   const handleToggleTaskComplete = (taskId: string) => {
     setTasks(prevTasks =>
       prevTasks.map(task =>
-        task.id === taskId ? { ...task, isCompleted: !task.isCompleted } : task
-      )
+        task.id === taskId ? {...task, isCompleted: !task.isCompleted} : task,
+      ),
     );
   };
 
-  const renderTaskItem = ({ item }: { item: Task }) => (
+  const renderTaskItem = ({item}: {item: Task}) => (
     <TouchableOpacity onPress={() => handleTaskDetailsNavigation(item)}>
       <TaskItem
         title={item.title}
@@ -142,7 +225,7 @@ const Home: React.FC = () => {
     // Filtra por tags selecionadas
     if (selectedTags.length > 0) {
       tempTasks = tempTasks.filter(task =>
-        selectedTags.every(tag => (task.categories ?? []).includes(tag))
+        selectedTags.every(tag => (task.categories ?? []).includes(tag)),
       );
     }
 
@@ -176,7 +259,6 @@ const Home: React.FC = () => {
     setFilteredTasks(tempTasks);
   }, [tasks, selectedTags, selectedDate, selectedPriority]);
 
-
   useFocusEffect(
     useCallback(() => {
       const loadUpdatedTasks = async () => {
@@ -190,7 +272,7 @@ const Home: React.FC = () => {
         }
       };
       loadUpdatedTasks();
-    }, [])
+    }, []),
   );
 
   return (
@@ -198,7 +280,11 @@ const Home: React.FC = () => {
       <View style={styles.header}>
         <Text style={styles.title}>TASKLY</Text>
         <Image
-          source={require('../../Assets/Images/Avatars/avatar_1.png')}
+          source={
+            user?.avatarUrl && avatarMap[user.avatarUrl]
+              ? avatarMap[user.avatarUrl]
+              : require('../../Assets/Images/Avatars/avatar_5.png')
+          }
           style={styles.avatar}
         />
       </View>
