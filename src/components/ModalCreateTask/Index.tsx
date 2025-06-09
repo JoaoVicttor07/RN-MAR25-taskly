@@ -83,7 +83,9 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
     const isDeadlineValid = deadlineDate !== null;
 
     if (isTitleValid && isDescriptionValid && isDeadlineValid) {
-      onCreate({ title, description, deadline: deadlineDate?.toISOString() });
+
+      const formattedDeadline = deadlineDate ? format(deadlineDate, 'dd/MM/yyyy') : null
+      onCreate({ title, description, deadline: formattedDeadline });
       resetModalInputs();
     } else {
       if (!title.trim()) {

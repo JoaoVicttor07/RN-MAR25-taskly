@@ -1,7 +1,7 @@
 import * as Keychain from 'react-native-keychain';
 import {jwtDecode} from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import api from '../hooks/useApi';
+import { refreshTokenRequest } from '../services/authService';
 
 // Salvar o estado de ativação da biometria
 export const setBiometryEnabled = async (enabled: boolean) => {
@@ -110,13 +110,13 @@ export const refreshAuthToken = async (): Promise<string> => {
 
     console.log('Refresh token usado para renovar o token:', refreshToken);
 
-    const response = await api.post('/refresh', {refreshToken});
+    const response = await refreshTokenRequest(refreshToken);
 
     if (response.status !== 200) {
       throw new Error('Erro ao renovar o token.');
     }
 
-    const {idToken, refreshToken: newRefreshToken} = response.data;
+    const { idToken, refreshToken: newRefreshToken } = response.data;
 
     console.log('Token renovado:', idToken);
     console.log('Novo refresh token:', newRefreshToken);

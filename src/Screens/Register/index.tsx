@@ -12,7 +12,7 @@ import {
 import Button from '../../components/button';
 import Input from '../../components/input';
 import BiometryModal from './BiometryResgister';
-import {registerUser} from '../../hooks/useApi';
+import {registerUser} from '../../services/authService';
 import styles from './style';
 import * as Keychain from 'react-native-keychain';
 import ReactNativeBiometrics from 'react-native-biometrics';
