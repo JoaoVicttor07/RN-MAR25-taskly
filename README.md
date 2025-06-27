@@ -1,190 +1,97 @@
-# 📱 Taskly - Task App
+# Taskly - Aplicativo de Gerenciamento de Tarefas com React Native
 
-Taskly is a mobile task management application developed to help users organize their activities, offering a range of features including biometric authentication, setting deadlines and priorities, and profile customization. The interface of this application was developed following the design specified in the provided Figma link.
+<p align="center">
+  <img alt="Prévia do Taskly" src="https://github.com/JoaoVicttor07/RN-MAR25-taskly/assets/160889212/8204b127-b644-42f8-bf75-680c43ca3f0f" width="800px">
+</p>
 
----
+<p align="center">
+  <img alt="Versão do React Native" src="https://img.shields.io/badge/React%20Native-0.79.1-61DAFB?logo=react&logoColor=black">
+  <img alt="Linguagem" src="https://img.shields.io/badge/TypeScript-4.8.4-3178C6?logo=typescript&logoColor=white">
+  <img alt="Licença" src="https://img.shields.io/badge/License-MIT-green.svg">
+</p>
 
-## 📑 Table of Contents
+## 📋 Sobre o Projeto
 
-- [⚙️ Features](#-features)
-- [✍️ Mandatory Validations](#mandatory-validations)
-- [🛠️ Technologies Used](#️-technologies-used)
-- [📦 Installation](#-installation)
-- [📂 Project Structure](#️-project-structure)
-- [🧩 Organization](#️-organization)
-- [🧑‍💻 Developers](#-developers)
+**Taskly** é um aplicativo móvel completo de gerenciamento de tarefas, desenvolvido em **React Native** e **TypeScript**. O projeto foi concebido como um desafio técnico para construir uma aplicação mobile robusta, aplicando conceitos avançados de segurança, componentização e gerenciamento de estado. O objetivo era criar uma experiência de usuário fluida e segura, desde o login até a organização detalhada de atividades do dia a dia.
 
-## ⚙️ Features
+Este projeto demonstra a implementação de um fluxo de autenticação completo, incluindo armazenamento seguro de credenciais, login com biometria e renovação automática de tokens (refresh token), funcionalidades essenciais em aplicações de mercado.
 
-#### 🔐 Authentication
-- Login with `Remember me` option and complete registration with validations, integrated with the proposed API.
+<br>
 
-#### 🧑‍🎨 Initial Customization
-- Avatar selection upon registration and in profile editing.
+## ✨ Funcionalidades Principais
 
-#### 🗂️ Task Management
-- Add, edit, and remove tasks with title, description, due date, tags, and priority.
+| Funcionalidade | Descrição |
+| :--- | :--- |
+| **🔐 Autenticação Segura** | Sistema completo de login e cadastro com validação de dados e tratamento de erros. Implementa **armazenamento seguro de tokens** no Keychain do dispositivo. |
+| ** biometrico: Login com Biometria** | Permite aos usuários um acesso rápido e seguro utilizando a biometria do dispositivo (Fingerprint/Face ID), uma alternativa moderna à senha tradicional. |
+| **🔄 Renovação de Sessão** | Gerenciamento automático da sessão do usuário através de **Refresh Tokens**, garantindo uma experiência contínua sem a necessidade de logins repetidos. |
+| **📝 Gestão de Tarefas (CRUD)** | Interface intuitiva para criar, visualizar, editar e deletar tarefas, com campos para título, descrição, prazo, prioridade e tags. |
+| **✔️ Subtarefas e Checklist** | Capacidade de dividir tarefas maiores em subtarefas menores (checklist), permitindo um acompanhamento detalhado do progresso. |
+| **🎨 Personalização de Perfil** | Os usuários podem editar suas informações pessoais e selecionar um avatar de sua preferência, que é armazenado em um **bucket S3 da AWS**. |
+| **🔍 Filtros e Ordenação** | Funcionalidade de filtro avançado que permite aos usuários ordenar e visualizar tarefas por prioridade, data de conclusão ou tags específicas. |
 
-#### ✅ Detailed Subtasks
-- Divide tasks into subtasks (checklist) for detailed tracking.
+<br>
 
-#### 🔍 Filtering
-- View tasks by priority (high or low).
+## 🚀 Tecnologias e Ferramentas
 
-#### 📅 Organization
-- Sort tasks by due date, tags, and priority.
+Este projeto foi construído utilizando tecnologias modernas do ecossistema mobile e JavaScript:
 
-#### 👤 Profile Editing
-- View and edit information, choose avatar, and preferences for theme selection.
+* **Framework:** React Native
+* **Linguagem:** TypeScript
+* **Navegação:** React Navigation (Stack & Tab Navigator)
+* **Gerenciamento de Estado:** React Context API
+* **Comunicação com API:** Axios (com interceptors para autenticação)
+* **Segurança:**
+    * `react-native-keychain` (Armazenamento seguro de tokens)
+    * `react-native-biometrics` (Autenticação biométrica)
+* **Estilização:** StyleSheet com organização modular.
+* **Linting & Formatação:** ESLint e Prettier
+* **Hooks de Git:** Lefthook para garantir a qualidade do código antes do commit.
 
----
+## ⚙️ Como Executar o Projeto
 
-## ✍️ Mandatory Validations
+Para executar o Taskly localmente, siga os passos abaixo.
 
-#### 🔐 Login
+#### **Pré-requisitos**
 
-- **Email:** Valid format (regex)
-- **Password:** Minimum 8 characters
-- **Error:** "Incorrect email and/or password"
+* Node.js (versão >= 18)
+* Yarn ou npm
+* Ambiente de desenvolvimento React Native configurado (Android Studio / Xcode).
+* Uma instância da **[API do Taskly](URL_DA_SUA_API_SE_HOUVER)** rodando.
 
-#### ✍️ Sign Up
+#### **Instalação**
 
-- **Full Name:** Minimum two names, up to 120 characters
-- **Email:** Valid format
-- **Phone:** Format (DDD) 9 dddd-dddd
-- **Password:**
-    - 8 to 20 characters
-    - At least: 1 uppercase letter, 1 lowercase letter, 1 special character
-- **Confirmation:** Passwords must match
+1.  **Clone o repositório:**
+    ```bash
+    git clone [https://github.com/JoaoVicttor07/RN-MAR25-taskly.git](https://github.com/JoaoVicttor07/RN-MAR25-taskly.git)
+    cd RN-MAR25-taskly
+    ```
 
-#### 📌 Tasks
+2.  **Instale as dependências:**
+    ```bash
+    npm install
+    ```
 
-- **Title:** Text only, up to 100 characters, no emojis
-- **Description:** Up to 500 characters, no emojis
-- **Due Date:** Valid date
-- **Tags:** Maximum 5, no spaces
-- **Subtasks:** Text up to 200 characters
+3.  **Configuração da API:**
+    No arquivo `src/services/api.ts`, altere a variável `API_BASE_URL` para o endereço do seu backend.
+    ```typescript
+    const API_BASE_URL = 'http://SEU_IP_OU_DOMINIO:3000';
+    ```
 
-#### 👤 Profile
+4.  **Execute o aplicativo:**
+    ```bash
+    # Para Android
+    npm run android
 
-- **Full Name:** Compound name required
-- **Phone:** (DD) 9 dddd-dddd
-
----
-
-## 🛠️ Technologies Used
-
-- [React Native](https://reactnative.dev/) - Framework for native mobile development with JavaScript.
-- [React Navigation](https://reactnavigation.org/) - Navigation between screens.
-- [Async Storage](https://react-native-async-storage.github.io/async-storage/) - Asynchronous local storage.
-- [TypeScript](https://www.typescriptlang.org/pt/docs/)
-- [Axios](https://axios-http.com/ptbr/docs/intro) - For making HTTP requests.
-- [Date-fns](https://date-fns.org/) and [Date-fns-tz](https://date-fns.org/tz) - For date and timezone manipulation.
-- [React Native Collapsible](https://github.com/oblador/react-native-collapsible) - For collapsible sections.
-- [JWT Decode](https://www.npmjs.com/package/jwt-decode) - For decoding JWT tokens.
-- [React Native Biometrics](https://github.com/fingerprintjs/react-native-biometrics) - For biometric authentication.
-- [React Native Date Picker](https://github.com/mmazzarolo/react-native-date-picker) - For date selection.
-- [React Native Keychain](https://github.com/oblador/react-native-keychain) - For secure credential storage.
-- [React Native Webview](https://github.com/react-native-webview/react-native-webview) - For displaying web content.
-- [AppCenter](https://appcenter.ms/) and its modules (Analytics, Crashes) - For app monitoring and analytics.
-
----
-
-## 📦 Installation
-
-#### Clone the repository
-
-
-```bash
-git clone https://github.com/JoaoVicttor07/RN-MAR25-taskly.git
-cd RN-MAR25-taskly
-```
-
-#### Install dependencies
-```bash
-npm install
-```
-
-#### Start the Server
-```bash
-npm start
-```
-
-#### Run the application
-```bash
-npm run android
-```
+    # Para iOS
+    npm run ios
+    ```
 
 ---
 
-## 📂 Project Structure
-The file and folder structure of the project is organized as follows:
-```
-📁 src                         # Main source code
-├── 📁 Assets                  # Static files
-│   ├── 📁 Images              # Image files
-│   ├── 📁 fonts               # Font files
-│   └── 📁 icons               # Icon files
-│
-├── 📁 Navigation              # Application navigation logic
-│       ├── index.tsx
-│       └── types.ts
-│
-├── 📁 Screens                  # Application screens
-│   ├── 📁 Home                 # Main application screen
-│   │   ├── Index.tsx            # Home screen component
-│   │   └── style.ts             # Styles for the Home screen
-│   └── 📁 Login                 # Login screen
-│       ├── 📁 Modal             # Specific modal component for the Login screen
-│       │   ├── Index.tsx         # Login modal component
-│       │   └── style.ts          # Styles for the Login modal
-│       ├── Index.tsx             # Login screen component
-│       └── style.ts              # Styles for the Login screen
-│
-├── 📁 Theme                     # Theme definitions for the application
-│   └── fonts.ts                  # Font styles and configurations
-│
-├── 📁 Utils                     # Reusable utility functions
-│   ├── authUtils.ts              # Functions related to authentication
-│   └── validateDate.ts           # Functions to validate dates
-│
-├── 📁 components                # Reusable React components
-│   ├── 📁 button                # Custom button component
-│   │   ├── index.tsx             # Button component
-│   │   └── style.ts              # Styles for the button component
-│   └── 📁 input                 # Custom input component
-│       ├── index.tsx             # Input component
-│       └── style.ts              # Styles for the input component
-│
-├── 📁 hooks                     # Custom React hooks
-│   └── useApi.ts                 # Hook to interact with an API
-│
-├── 📁 screens/Notifications     # Notifications screen
-│   ├── index.tsx                 # Notifications screen component
-│   └── style.ts                  # Styles for the notifications screen
-│
-└── App.tsx                       # Main entry point of the React Native application
+## 👨‍💻 Autor
 
-```
+**João Victor Santos Da Costa**
 
-## 🧩 Organization
-
-The development team for this project is organized as follows:
-
-- **Presenter (P.O):** Amanda Duarte Meneghini do Carmo
-- **Developer (Dev):** Diogo da Silva Souza
-- **Developer (Dev):** Jailson Rodrigues de Neiva
-- **Quality Assurance (QA):** João Victor Santos da Costa
-- **Scrum Master:** Camila Cardozo Rocha
-
-
-## 🧑‍💻 Developers
-
-This project was developed by a team of dedicated collaborators:
-
-- Amanda Duarte Meneghini do Carmo
-- Camila Cardozo Rocha
-- Diogo da Silva Souza
-- Jailson Rodrigues de Neiva
-- João Victor Santos da Costa
-
+* **LinkedIn:** [https://www.linkedin.com/in/seu-perfil/](https://www.linkedin.com/in/seu-perfil/)
+* **GitHub:** [https://github.com/JoaoVicttor07](https://github.com/JoaoVicttor07)
